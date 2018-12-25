@@ -8,3 +8,7 @@
           addr: "10.100.100.10"
           network: "home"
           type: "static"
+        v6:
+          addr: "2001:470:1F0A:1880:0:0:0:10"
+          network: "henet"
+          type: "static"

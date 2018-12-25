@@ -24,3 +24,12 @@
       ip:
         v4:
           type: "pppoe"
+
+    - name: "External HeNet"
+      ifname: "external_henet_0"
+      mac: "50:3e:aa:04:8f:b0"
+      ip:
+        v6:
+          type: "henet"
+          addr: "2001:470:1F0A:1880:0:0:0:2"
+          network: "henet"
