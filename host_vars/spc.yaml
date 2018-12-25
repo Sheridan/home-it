@@ -1,0 +1,10 @@
+---
+  network:
+    - name: "Internal"
+      ifname: "internal_0"
+      mac: "94:de:80:7c:8b:ee"
+      ip:
+        v4:
+          addr: "10.100.100.10"
+          network: "home"
+          type: "static"

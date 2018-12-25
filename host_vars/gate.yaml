@@ -1,0 +1,26 @@
+---
+  network:
+    - name: "Internal"
+      ifname: "internal_0"
+      mac: "94:de:80:6c:66:b0"
+      ip:
+        v4:
+          addr: "10.100.100.1"
+          network: "home"
+          type: "static"
+
+    - name: "External KIS"
+      ifname: "external_kis_0"
+      mac: "50:3e:aa:04:8f:b0"
+      ip:
+        v4:
+          addr: "91.210.98.62"
+          network: "kis"
+          type: "static"
+
+    - name: "External RT"
+      ifname: "external_rt_0"
+      mac: "50:3e:aa:04:cb:21"
+      ip:
+        v4:
+          type: "pppoe"

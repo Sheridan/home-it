@@ -1,0 +1,9 @@
+---
+  network:
+    - name: "Internal"
+      mac: "50:46:5d:7b:50:61"
+      ip:
+        v4:
+          addr: "10.100.100.3"
+          network: "home"
+          type: "static"
