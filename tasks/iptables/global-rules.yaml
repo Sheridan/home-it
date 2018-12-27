@@ -1,0 +1,21 @@
+---
+    # target_rule target_host host_interface host_rule_destination
+
+  - name: Loading global variables
+    include_vars:
+      file: vars/iptables-default.yaml
+      name: globalvars
+
+  - set_fact:
+      target_host: '0.0.0.0/0'
+      host_interface:
+        ip:
+          ipv4:
+            addr: '0.0.0.0/0'
+          ipv6:
+            addr: "::/0"
+
+  - include_tasks: tasks/iptables/host-rule-destination-loop.yaml
+    loop: "{{ globalvars.iptables.host_to_internet }}"
+    loop_control:
+      loop_var: target_rule

@@ -1,0 +1,9 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+{% for item in network %}
+{% if 'mac' in item %}
+
+# Renaming network interface "{{ item.name }}"
+ACTION=="add", SUBSYSTEM=="net",ATTR{address}=="{{ item.mac }}",NAME="{{ item.ifname }}"
+{% endif %}
+{% endfor %}

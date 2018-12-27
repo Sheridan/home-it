@@ -1,0 +1,24 @@
+---
+  - name: "Debug [{{ target_host }}]"
+    debug:
+      msg: "{{target_host}} -> {{ target_rule }} -> {{ host_interface }} -> {{ host_rule_destination }}"
+
+  - name: "Iptables host->internet [{{ target_host }}] rules"
+    iptables:
+      chain: OUTPUT
+      jump: "{{ target_rule.policy | default('ACCEPT') }}"
+      ip_version: "{{ item.0 }}"
+      protocol: "{{ item.1 }}"
+      destination_port: "{{ target_rule.ports | default('0:65535') }}"
+      comment: "{{ target_rule.name }} [{{ target_host }}]"
+      destination: "{{ host_rule_destination }}"
+      source: "{{ host_interface.ip[item.0].addr}}"
+      in_interface: "{{ (hostvars['gate'].network|selectattr('ifname', 'match', 'internal.*')|first).ifname }}"
+    when: host_interface.ip              is defined and
+          host_interface.ip[item.0]      is defined and
+          host_interface.ip[item.0].addr is defined
+    notify:
+    - "restart iptables.{{ item.0 }}"
+    with_nested:
+    - [ 'ipv6', 'ipv4' ]
+    - [ 'tcp', 'udp' ]

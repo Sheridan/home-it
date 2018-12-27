@@ -3,11 +3,11 @@
     - name: "Internal"
       mac: "6c:ad:f8:46:f8:b7"
       ip:
-        v4:
+        ipv4:
           addr: "10.100.100.71"
           network: "home"
           type: "static"
-        v6:
+        ipv6:
           addr: "2001:470:1F0A:1880:0:0:0:71"
           network: "henet"
           type: "static"

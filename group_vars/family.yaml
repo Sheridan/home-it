@@ -1,0 +1,5 @@
+---
+  iptables:
+    host_to_internet:
+      - name: "Torrent"
+        ports: 6881:6889

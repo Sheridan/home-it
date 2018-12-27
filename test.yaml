@@ -1,0 +1,22 @@
+---
+- hosts: gate
+  remote_user: root
+  vars_files:
+  - vars/network.yaml
+  - vars/iptables-default.yaml
+
+  handlers:
+  - import_tasks: handlers/systemd-base.yaml
+
+  tasks:
+
+  # - name: debug nested
+  #   debug:
+  #     msg: "Item: {{ hostvars[item] }}"
+  #     # msg: "{{ hostvars[item.0].iptables }}"
+  #   # when: hostvars[item.0].iptables is defined
+  #   loop: "{{ groups|difference(['all','ungrouped']) }}"
+
+  - name: debug if extract internal
+    debug:
+      msg: "{{ hostvars['gate'].network|selectattr('ifname', 'match', 'internal.*')|first }}"

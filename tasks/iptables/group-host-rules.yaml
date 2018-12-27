@@ -1,0 +1,5 @@
+---
+  - include_tasks: tasks/iptables/host-interface-loop.yaml
+    loop: "{{ query('inventory_hostnames', target_group)|difference(['gate']) }}"
+    loop_control:
+      loop_var: target_host

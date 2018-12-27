@@ -1,17 +1,11 @@
 ---
   iptables:
     host_to_internet:
-      ext_addreses:
-        v4:
-          - "all"
-        v6:
-          - "all"
-      ext_ports:
-        - name: "Default http"
-          ports: "80"
-        - name: "Default https"
-          ports: "443"
-        - name: "Default http extended"
-          ports: "8080,8081"
-        - name: "Default ssh"
-          ports: "22"
+      - name: "Default http"
+        ports: "80"
+      - name: "Default https"
+        ports: "443"
+      - name: "Default http extended"
+        ports: "8080,8081"
+      - name: "Default ssh"
+        ports: "22"

@@ -1,0 +1,65 @@
+---
+- hosts: gate
+  remote_user: root
+  vars_files:
+  - vars/network.yaml
+  - vars/iptables-default.yaml
+
+  handlers:
+  - import_tasks: handlers/systemd-base.yaml
+
+  tasks:
+
+  - name: Create Iptables NAT
+    iptables:
+      table: nat
+      chain: POSTROUTING
+      out_interface: '{{ item.ifname }}'
+      jump: MASQUERADE
+      comment: "Masquerading for {{ item.name }} ({{ item.ifname }})"
+    when: item.ifname is search("external") and item.ip.ipv4 is defined
+    with_items:
+      - "{{ network }}"
+    notify:
+    - restart iptables.ipv4
+
+  - name: Iptables ESTABLISHED, RELATED
+    iptables:
+      chain: INPUT
+      ctstate: ESTABLISHED,RELATED
+      jump: ACCEPT
+      ip_version: "{{ item }}"
+      comment: "Allow established and related for {{ item }}"
+    notify:
+    - "restart iptables.{{ item }}"
+    with_items:
+    - ipv4
+    - ipv6
+
+  - include_tasks: tasks/iptables/host-rules.yaml
+    loop: "{{ query('inventory_hostnames', 'all')|difference(['gate']) }}"
+    loop_control:
+      loop_var: target_host
+
+  - include_tasks: tasks/iptables/group-rules.yaml
+    loop: "{{ groups|difference(['all','ungrouped','gateways']) }}"
+    loop_control:
+      loop_var: target_group
+
+  - include_tasks: tasks/iptables/global-rules.yaml
+
+  # - name: Iptables global default rules
+  #   iptables:
+  #     chain: OUTPUT
+  #     jump: ACCEPT
+  #     ip_version: "{{ item.1 }}"
+  #     protocol: "{{ item.2 }}"
+  #     destination_port: "{{ item.0.ports }}"
+  #     comment: "Allow global {{ item.0.name }}"
+  #     destination: False
+  #   notify:
+  #   - "restart iptables.{{ item.1 }}"
+  #   with_nested:
+  #   - "{{ iptables.host_to_internet }}"
+  #   - [ 'ipv6', 'ipv4' ]
+  #   - [ 'tcp', 'udp' ]

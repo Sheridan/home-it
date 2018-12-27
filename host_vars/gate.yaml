@@ -4,32 +4,35 @@
       ifname: "internal_0"
       mac: "94:de:80:6c:66:b0"
       ip:
-        v4:
-          addr: "10.100.100.1"
-          network: "home"
+        ipv4:
           type: "static"
+          network: "home"
+          addr: "10.100.100.160"
+        ipv6:
+          type: "static"
+          network: "henet"
+          addr: "2001:470:1F0A:1880:0:0:0:3"
 
     - name: "External KIS"
       ifname: "external_kis_0"
       mac: "50:3e:aa:04:8f:b0"
       ip:
-        v4:
-          addr: "91.210.98.62"
-          network: "kis"
+        ipv4:
           type: "static"
+          network: "kis"
+          addr: "91.210.98.62"
 
     - name: "External RT"
       ifname: "external_rt_0"
       mac: "50:3e:aa:04:cb:21"
       ip:
-        v4:
+        ipv4:
           type: "pppoe"
 
     - name: "External HeNet"
       ifname: "external_henet_0"
-      mac: "50:3e:aa:04:8f:b0"
       ip:
-        v6:
+        ipv6:
           type: "henet"
-          addr: "2001:470:1F0A:1880:0:0:0:2"
           network: "henet"
+          addr: "2001:470:1F0A:1880:0:0:0:2"
