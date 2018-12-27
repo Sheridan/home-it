@@ -15,6 +15,7 @@
       table: nat
       chain: POSTROUTING
       out_interface: '{{ item.ifname }}'
+      in_interface: "{{ (network|selectattr('ifname', 'match', 'internal.*')|first).ifname }}"
       jump: MASQUERADE
       comment: "Masquerading for {{ item.name }} ({{ item.ifname }})"
     when: item.ifname is search("external") and item.ip.ipv4 is defined
