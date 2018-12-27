@@ -1,5 +1,0 @@
----
-  - include_tasks: tasks/iptables/host-to-internet-rules.yaml
-    loop: "{{ target_rule.destination|default(['0.0.0.0/0', '::/0']) }}"
-    loop_control:
-      loop_var: host_rule_destination

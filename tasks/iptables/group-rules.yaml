@@ -1,29 +1,24 @@
 ---
-  # - name: "Debug [{{ target_host }}]"
-  #   debug:
-  #     msg: "{{hostvars[target_host]}}"
+  - include_tasks: tasks/loading_variables/load-group-vars.yaml
 
-  # - include_tasks: tasks/iptables/host-rules.yaml
-  #   loop: "{{ query('inventory_hostnames', target_group)|difference(['gate']) }}"
-  #   loop_control:
-  #     loop_var: target_host
+  - name: "Setting group-to-host [{{ target_groupname }}] variables fact"
+    set_fact:
+      target_hostvars: "{{ target_groupvars }}"
+      target_hostvars_exists: "{{ target_groupvars_exists }}"
+    when: target_groupvars_exists
 
-  - name: Check for group [target_group] variables existing
-    stat:
-      path: /etc/file.txt
-    delegate_to: "localhost"
-    register: group_vars_exist_result
-
-  - name: Loading group [target_group] variables
-    include_vars:
-      file: "group_vars/{{ target_group }}.yaml"
-      name: groupvars
-    when: group_vars_exist_result.stat.exists
-
-  - include_tasks: tasks/iptables/group-host-rules.yaml
-    loop: "{{ groupvars.iptables.host_to_internet }}"
-    when: group_vars_exist_result.stat.exists            and
-          groupvars.iptables                  is defined and
-          groupvars.iptables.host_to_internet is defined
+  - name: "Set group->internet [{{ target_groupname }}] rules"
+    include_tasks: tasks/iptables/host-to-internet.yaml
+    loop: "{{ query('inventory_hostnames', target_groupname)|difference(['gate']) }}"
     loop_control:
-      loop_var: target_rule
+      loop_var: target_hostname
+    when: target_groupvars_exists
+
+  # - name: "Set group->gate [{{ target_group }}] rules"
+  #   include_tasks: tasks/iptables/group-host-rules.yaml
+  #   loop: "{{ alone_group_vars.iptables.host_to_gate }}"
+  #   when: group_vars_exist_result.stat.exists               and
+  #         alone_group_vars.iptables              is defined and
+  #         alone_group_vars.iptables.host_to_gate is defined
+  #   loop_control:
+  #     loop_var: target_rule

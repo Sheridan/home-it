@@ -1,9 +1,0 @@
----
-  # - name: "Debug [{{ target_host }}]"
-  #   debug:
-  #     msg: "{{hostvars[target_host]}}"
-
-  - include_tasks: tasks/iptables/host-rule-destination-loop.yaml
-    loop: "{{ hostvars[target_host].network }}"
-    loop_control:
-      loop_var: host_interface

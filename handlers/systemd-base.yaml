@@ -6,13 +6,3 @@
     service:
       name: systemd-networkd
       state: restarted
-
-  - name: restart iptables.ipv4
-    service:
-      name: firewall@iptables
-      state: restarted
-
-  - name: restart iptables.ipv6
-    service:
-      name: firewall@ipt6ables
-      state: restarted

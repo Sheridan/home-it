@@ -1,0 +1,10 @@
+---
+  iptables:
+    host_to_internet:
+    - name: "dns"
+      ports: "53"
+      destination:
+        - "8.8.8.8"
+        - "1.1.1.1"
+    - name: "Reject all"
+      policy: "REJECT"

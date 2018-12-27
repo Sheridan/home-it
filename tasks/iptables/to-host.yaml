@@ -1,0 +1,21 @@
+---
+  - name: "Iptables ->{{ ansible_hostname }} rules"
+    iptables:
+      chain: INPUT
+      jump:             "{{ to_host_rule.policy | default('ACCEPT') }}"
+      ip_version:       "{{ item.2 }}"
+      protocol:         "{{ item.3 }}"
+      destination_port: "{{ to_host_rule.ports }}"
+      comment:          "[->{{ ansible_hostname }}] {{ to_host_rule.name }} [{{ item.3 }}:{{ item.2 }}]"
+      source:           "{{ (to_host_rule.source|default(['0.0.0.0/0', '::/0']))|select('search', '\\:' if item.2 == 'ipv6' else '\\.')|list|join(',') }}"
+      in_interface:     "{{ (network|selectattr('ifname', 'match', '.*'+item.1+'.*')|first).ifname }}"
+      match:            ["multiport"]
+    when: item.2 in (network|selectattr('ifname', 'match', '.*'+item.1+'.*')|first).ip
+    notify:
+    - "restart iptables.{{ item.2 }}"
+    - finish iptables rules
+    with_nested:
+    - "{{ network }}"
+    - "{{ to_host_rule.interfaces }}"
+    - [ 'ipv6', 'ipv4' ]
+    - [ 'tcp', 'udp' ]

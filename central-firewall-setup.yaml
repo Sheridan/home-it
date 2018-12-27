@@ -3,26 +3,50 @@
   remote_user: root
   vars_files:
   - vars/network.yaml
-  - vars/iptables-default.yaml
+  # - vars/iptables-default.yaml
 
   handlers:
   - import_tasks: handlers/systemd-base.yaml
+  - import_tasks: handlers/iptables.yaml
 
   tasks:
 
-  - name: Create Iptables NAT
+  # - name: Reset rules
+  #   iptables:
+  #     flush: True
+
+  - name: "Set the policy for {{ item.0 }}"
     iptables:
-      table: nat
-      chain: POSTROUTING
-      out_interface: '{{ item.ifname }}'
-      in_interface: "{{ (network|selectattr('ifname', 'match', 'internal.*')|first).ifname }}"
-      jump: MASQUERADE
-      comment: "Masquerading for {{ item.name }} ({{ item.ifname }})"
-    when: item.ifname is search("external") and item.ip.ipv4 is defined
-    with_items:
-      - "{{ network }}"
+      chain: "{{ item.1.chain }}"
+      policy: "{{ item.1.policy }}"
+      ip_version: "{{ item.0 }}"
     notify:
-    - restart iptables.ipv4
+    - "restart iptables.{{ item.0 }}"
+    - finish iptables rules
+    with_nested:
+    - [ 'ipv6', 'ipv4' ]
+    - [{ chain: INPUT,   policy: ACCEPT }, { chain: OUTPUT,  policy: ACCEPT }, { chain: FORWARD, policy: ACCEPT }]
+
+  - name: Create Iptables NAT
+    include_tasks: tasks/iptables/main-nat.yaml
+    # loop: "{{ network|selectattr('ifname', 'match', 'external_.*')|list }}"
+    # loop_control:
+    #   loop_var: ext_interface
+
+  - name: Iptables allow ICMP
+    iptables:
+      chain: "{{ item.1 }}"
+      jump: ACCEPT
+      ip_version: "{{ item.0 }}"
+      protocol: icmp
+      comment: "Allow ICMP for {{ item.0 }}"
+      # state: absent
+    notify:
+    - "restart iptables.{{ item.0 }}"
+    - finish iptables rules
+    with_nested:
+    - [ 'ipv6', 'ipv4' ]
+    - [ 'INPUT', 'OUTPUT' ]
 
   - name: Iptables ESTABLISHED, RELATED
     iptables:
@@ -33,34 +57,25 @@
       comment: "Allow established and related for {{ item }}"
     notify:
     - "restart iptables.{{ item }}"
+    - finish iptables rules
     with_items:
     - ipv4
     - ipv6
 
-  - include_tasks: tasks/iptables/host-rules.yaml
+  - name: "Apply per-host rules"
+    include_tasks: tasks/iptables/host-rules.yaml
     loop: "{{ query('inventory_hostnames', 'all')|difference(['gate']) }}"
     loop_control:
-      loop_var: target_host
+      loop_var: target_hostname
 
-  - include_tasks: tasks/iptables/group-rules.yaml
+  - name: "Apply per-group rules"
+    include_tasks: tasks/iptables/group-rules.yaml
     loop: "{{ groups|difference(['all','ungrouped','gateways']) }}"
     loop_control:
-      loop_var: target_group
+      loop_var: target_groupname
 
-  - include_tasks: tasks/iptables/global-rules.yaml
+  - name: "Apply global rules"
+    include_tasks: tasks/iptables/global-rules.yaml
 
-  # - name: Iptables global default rules
-  #   iptables:
-  #     chain: OUTPUT
-  #     jump: ACCEPT
-  #     ip_version: "{{ item.1 }}"
-  #     protocol: "{{ item.2 }}"
-  #     destination_port: "{{ item.0.ports }}"
-  #     comment: "Allow global {{ item.0.name }}"
-  #     destination: False
-  #   notify:
-  #   - "restart iptables.{{ item.1 }}"
-  #   with_nested:
-  #   - "{{ iptables.host_to_internet }}"
-  #   - [ 'ipv6', 'ipv4' ]
-  #   - [ 'tcp', 'udp' ]
+  - name: "Apply to gate rules"
+    include_tasks: tasks/iptables/to-host-rules.yaml

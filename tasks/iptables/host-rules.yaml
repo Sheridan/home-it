@@ -1,11 +1,3 @@
 ---
-  # - name: "Debug [{{ target_host }}]"
-  #   debug:
-  #     msg: "{{hostvars[target_host]}}"
-
-  - include_tasks: tasks/iptables/host-interface-loop.yaml
-    loop: "{{ hostvars[target_host].iptables.host_to_internet }}"
-    when: hostvars[target_host].iptables                  is defined and
-          hostvars[target_host].iptables.host_to_internet is defined
-    loop_control:
-      loop_var: target_rule
+  - include_tasks: tasks/loading_variables/load-host-vars.yaml
+  - include_tasks: tasks/iptables/host-to-internet.yaml

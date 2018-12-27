@@ -6,6 +6,7 @@ After=network.target
 Type=oneshot
 ExecStart=/usr/local/bin/firewall-load.sh %i
 ExecStop=/usr/local/bin/firewall-save.sh %i
+ExecReload=/usr/local/bin/firewall-reload.sh %i
 RemainAfterExit=yes
 
 [Install]

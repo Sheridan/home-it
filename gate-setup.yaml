@@ -1,4 +1,5 @@
 ---
+# - import_playbook: check_ifnames.yaml
 - hosts: gate
   remote_user: root
   vars_files:
@@ -73,6 +74,7 @@
     with_items:
     - firewall-load.sh
     - firewall-save.sh
+    - firewall-reload.sh
     notify:
     - systemd daemon reload
 

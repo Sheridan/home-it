@@ -1,0 +1,11 @@
+---
+
+  # - debug:
+  #     msg: "{{ iptables }}"
+
+  - name: "Set ->{{ ansible_hostname }} rules"
+    include_tasks: tasks/iptables/to-host.yaml
+    loop: "{{ iptables.to_host }}"
+    loop_control:
+      loop_var: to_host_rule
+    when: iptables.to_host is defined

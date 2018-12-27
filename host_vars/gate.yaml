@@ -30,9 +30,26 @@
           type: "pppoe"
 
     - name: "External HeNet"
-      ifname: "external_henet_0"
+      ifname: "external_he_0"
       ip:
         ipv6:
           type: "henet"
           network: "henet"
           addr: "2001:470:1F0A:1880:0:0:0:2"
+
+  iptables:
+    to_host:
+      - name: "Proxy"
+        ports: "3128:3129"
+        interfaces:
+          - "internal"
+      - name: "Domain"
+        ports: "53"
+        interfaces:
+          - "internal"
+          - "external"
+      - name: "SSH"
+        ports: "22"
+        interfaces:
+          - "internal"
+          - "external"

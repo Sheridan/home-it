@@ -1,0 +1,16 @@
+---
+  - name: "Check for group [{{ target_groupname }}] variables existing"
+    stat:
+      path: "group_vars/{{ target_groupname }}.yaml"
+    delegate_to: "localhost"
+    register: group_vars_exist_result
+
+  - name: "Setting group [{{ target_groupname }}] variables existing fact"
+    set_fact:
+      target_groupvars_exists: group_vars_exist_result.stat.exists
+
+  - name: "Loading group [{{ target_groupname }}] variables"
+    include_vars:
+      file: "group_vars/{{ target_groupname }}.yaml"
+      name: target_groupvars
+    when: target_groupvars_exists

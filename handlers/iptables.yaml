@@ -1,0 +1,13 @@
+---
+  - name: restart iptables.ipv4
+    service:
+      name: firewall@iptables
+      state: reloaded
+
+  - name: restart iptables.ipv6
+    service:
+      name: firewall@ip6tables
+      state: reloaded
+
+  - name: finish iptables rules
+    include: handlers/iptables-tail-helper.yaml

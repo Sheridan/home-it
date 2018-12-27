@@ -1,0 +1,16 @@
+---
+- hosts: gate
+  remote_user: root
+
+  tasks:
+  - name: Reset rules
+    iptables:
+      flush: yes
+      ip_version: "{{ item.0 }}"
+      chain:      "{{ item.1 }}"
+      table:      "{{ item.2 }}"
+    ignore_errors: yes
+    with_nested:
+    - [ 'ipv6', 'ipv4' ]
+    - [ 'INPUT', 'OUTPUT', 'FORWARD', 'PREROUTING', 'POSTROUTING' ]
+    - [ 'filter', 'nat', 'mangle' ]

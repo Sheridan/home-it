@@ -1,0 +1,45 @@
+---
+
+  - name: Creating net->internet forward
+    iptables:
+      chain: FORWARD
+      jump: ACCEPT
+      out_interface: '{{ item.ifname }}'
+      in_interface: "{{ (network|selectattr('ifname', 'match', 'internal.*')|first).ifname }}"
+      source: "{{ networks.home.subnet }}/{{ networks.home.mask.short }}"
+      comment: "Forwarding net->internet for {{ item.name }} ({{ item.ifname }})"
+    when: item.ip.ipv4 is defined
+    with_items:
+    - "{{ network|selectattr('ifname', 'match', 'external_.*')|list }}"
+    notify:
+    - restart iptables.ipv4
+    - finish iptables rules
+
+  - name: Creating net<-internet forward
+    iptables:
+      chain: FORWARD
+      jump: ACCEPT
+      in_interface: '{{ item.ifname }}'
+      out_interface: "{{ (network|selectattr('ifname', 'match', 'internal.*')|first).ifname }}"
+      destination: "{{ networks.home.subnet }}/{{ networks.home.mask.short }}"
+      comment: "Forwarding net<-internet for {{ item.name }} ({{ item.ifname }})"
+    when: item.ip.ipv4 is defined
+    with_items:
+    - "{{ network|selectattr('ifname', 'match', 'external_.*')|list }}"
+    notify:
+    - restart iptables.ipv4
+    - finish iptables rules
+
+  - name: Creating NAT
+    iptables:
+      table: nat
+      chain: POSTROUTING
+      jump: MASQUERADE
+      out_interface: '{{ item.ifname }}'
+      comment: "Masquerading for {{ item.name }} ({{ item.ifname }})"
+    when: item.ip.ipv4 is defined
+    with_items:
+    - "{{ network|selectattr('ifname', 'match', 'external_.*')|list }}"
+    notify:
+    - restart iptables.ipv4
+    - finish iptables rules
