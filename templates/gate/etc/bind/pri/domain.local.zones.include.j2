@@ -1,0 +1,16 @@
+
+#Managed by ansible. Editing is useless
+#Sheridan
+
+zone "{{ networks.home.domain }}" in {
+        type master;
+        file "/etc/bind/pri/{{ networks.home.domain }}.zone";
+        notify yes;
+};
+
+# zone "{{ networks.home.subnet | ipaddr('revdns') }}" in {
+#         type master;
+#         file "/etc/bind/pri/{{ networks.home.subnet | ipaddr('revdns') }}zone";
+#         notify yes;
+# };
+# TODO: Сделать arpa!

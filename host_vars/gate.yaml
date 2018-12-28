@@ -2,12 +2,16 @@
   network:
     - name: "Internal"
       ifname: "internal_0"
+      dns:
+        aliases:
+          - garfana
+          - prometheus
       mac: "94:de:80:6c:66:b0"
       ip:
         ipv4:
           type: "static"
           network: "home"
-          addr: "10.100.100.160"
+          addr: "10.100.100.1"
         ipv6:
           type: "static"
           network: "henet"
@@ -15,6 +19,11 @@
 
     - name: "External KIS"
       ifname: "external_kis_0"
+      dns:
+        aliases:
+          - www
+          - root
+          - ns
       mac: "50:3e:aa:04:8f:b0"
       ip:
         ipv4:
@@ -30,6 +39,9 @@
           type: "pppoe"
 
     - name: "External HeNet"
+      dns:
+        aliases:
+          - www
       ifname: "external_he_0"
       ip:
         ipv6:

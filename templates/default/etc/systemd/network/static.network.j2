@@ -5,13 +5,15 @@ MACAddress={{ item.mac }}
 [Network]
 Description={{ item.name }}
 DHCP=no
+{% if 'ipv4' in item.ip %}
 Address={{ item.ip.ipv4.addr }}
-{% if 'v6' in item.ip %}
+{% endif %}
+{% if 'ipv6' in item.ip %}
 Address={{ item.ip.ipv6.addr }}
 {% endif %}
-{% if 'gateway' in networks[item.ip.ipv4.network] %}
+{% if 'gateway' in networks[item.ip.ipv4.network] and networks[item.ip.ipv4.network].gateway != item.ip.ipv4.addr %}
 Gateway={{ networks[item.ip.ipv4.network].gateway }}
 {% endif %}
 {% if networks[item.ip.ipv4.network].domain is defined %}
-Domais={{ networks[item.ip.ipv4.network].domain }}
+Domains={{ networks[item.ip.ipv4.network].domain }}
 {% endif %}

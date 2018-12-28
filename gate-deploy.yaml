@@ -1,0 +1,5 @@
+---
+  - import_playbook: gate-setup.yaml
+  - import_playbook: central-firewall-rebuild.yaml
+  - import_playbook: dhcp-setup.yaml
+  - import_playbook: bind-setup.yaml

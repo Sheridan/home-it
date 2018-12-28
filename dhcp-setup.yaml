@@ -1,0 +1,24 @@
+---
+- hosts: gate
+  remote_user: root
+  vars_files:
+  - vars/network.yaml
+  - vars/dhcp.yaml
+
+  handlers:
+  - import_tasks: handlers/systemd-base.yaml
+
+  tasks:
+
+  - name: make configuration
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dst }}"
+      owner: root
+      group: root
+      mode: 0644
+    loop:
+      - {src: templates/gate/etc/dhcp/dhcpd4.conf.j2, dst: /etc/dhcp/dhcpd.conf }
+      - {src: templates/gate/etc/dhcp/dhcpd6.conf.j2, dst: /etc/dhcp/dhcpd6.conf }
+    notify:
+    - restart dhcpd

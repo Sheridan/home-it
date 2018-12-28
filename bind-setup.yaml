@@ -1,0 +1,33 @@
+---
+- hosts: gate
+  remote_user: root
+  vars_files:
+  - vars/network.yaml
+  - vars/bind.yaml
+
+  handlers:
+  - import_tasks: handlers/systemd-base.yaml
+
+  tasks:
+
+  - name: Create log directory
+    file:
+      path: /var/log/named
+      state: directory
+      owner: named
+      group: named
+      mode: 0775
+
+  - name: make configuration
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dst }}"
+      owner: root
+      group: root
+      mode: 0644
+    loop:
+      - {src: templates/gate/etc/bind/named.conf.j2, dst: /etc/bind/named.conf }
+      - {src: templates/gate/etc/bind/pri/domain.local.zones.include.j2, dst: "/etc/bind/pri/{{ networks.home.domain }}.zones.include" }
+      - {src: templates/gate/etc/bind/pri/domain.local.zone.j2, dst: "/etc/bind/pri/{{ networks.home.domain }}.zone" }
+    notify:
+    - restart named

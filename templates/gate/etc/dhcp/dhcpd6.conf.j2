@@ -1,0 +1,31 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+{% set subnet_v6_with_mask = [networks.henet.subnet, networks.henet.mask.short]|join('/') -%}
+
+ddns-update-style none;
+authoritative;
+
+subnet6 {{ subnet_v6_with_mask | ipaddr('net') }}
+{
+  option dhcp6.name-servers {{ networks.henet.home_gateway | ipaddr('address') }};
+  option dhcp6.domain-search "{{ networks.home.domain }}";
+  default-lease-time {{ dhcp.lease_time }};
+  max-lease-time {{ dhcp.lease_time * 4 }};
+  range6 {{ subnet_v6_with_mask | ipaddr('net') | ipaddr('1024') | ipaddr('address') }} {{ subnet_v6_with_mask | ipaddr('net') | ipaddr('2048') | ipaddr('address') }};
+}
+
+{% for inventory_hostname in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
+  {% for hostname_interface in hostvars[inventory_hostname].network|sort -%}
+    {% if 'mac' in hostname_interface -%}
+
+      host {{ inventory_hostname }}
+      {
+        hardware ethernet {{ hostname_interface.mac }};
+        {% if 'ipv6' in hostname_interface.ip and hostname_interface.ip.ipv6.network == 'henet' -%}
+          fixed-address {{ hostname_interface.ip.ipv6.addr | ipaddr('address') }};
+        {% endif -%}
+      } # Interface name: {% if 'ifname' in hostname_interface -%} {{ hostname_interface.ifname }} {% endif -%} ({{ hostname_interface.name }})
+
+    {% endif -%}
+  {% endfor -%}
+{% endfor -%}

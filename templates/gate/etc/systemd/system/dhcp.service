@@ -1,0 +1,23 @@
+[Unit]
+Description=DHCPv6 Server Daemon
+After=network.target
+After=time-sync.target
+
+[Service]
+ExecStart=/usr/sbin/dhcpd -6 -f -s -cf /etc/dhcp/dhcpd.conf -user dhcp -group dhcp --no-pid
+
+[Install]
+WantedBy=multi-user.target
+
+
+[Unit]
+Description=DHCPv4 Server Daemon
+Documentation=man:dhcpd(8) man:dhcpd.conf(5)
+After=network.target
+After=time-sync.target
+
+[Service]
+ExecStart=/usr/sbin/dhcpd -f -cf /etc/dhcp/dhcpd.conf -user dhcp -group dhcp --no-pid
+
+[Install]
+WantedBy=multi-user.target

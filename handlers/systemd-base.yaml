@@ -6,3 +6,15 @@
     service:
       name: systemd-networkd
       state: restarted
+
+  - name: restart dhcpd
+    service:
+      name: dhcpd
+      state: restarted
+
+  - name: restart named
+    # debug:
+    #   msg: restarted
+    service:
+      name: named
+      state: restarted

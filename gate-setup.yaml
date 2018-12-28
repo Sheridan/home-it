@@ -21,6 +21,8 @@
     - sys-apps/iproute2
     - net-firewall/iptables
     - net-dns/bind
+    - net-misc/dhcp
+    - net-misc/radvd
 
   - name: Sysctl setup
     sysctl:
@@ -58,9 +60,13 @@
       owner: root
       group: root
       mode: 0644
+    when: item.mac is defined and
+          (
+            (item.ip.ipv4 is defined and item.ip.ipv4.type == 'static') or
+            (item.ip.ipv6 is defined and item.ip.ipv6.type == 'static')
+          )
     with_items:
       - "{{ network }}"
-    when: item.mac is defined and ((item.ipv4 is defined and item.ipv4.type == 'static') or (item.ipv6 is defined and item.ipv6.type == 'static'))
     notify:
     - restart networkd
 

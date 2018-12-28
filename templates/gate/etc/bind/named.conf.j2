@@ -1,0 +1,101 @@
+
+#Managed by ansible. Editing is useless
+#Sheridan
+
+{% set subnet_v4_with_mask = [networks.home.subnet , networks.home.mask.short ]|join('/') -%}
+{% set subnet_v6_with_mask = [networks.henet.subnet, networks.henet.mask.short]|join('/') -%}
+
+acl "xfer" { none; };
+
+acl "trusted" {
+  127.0.0.0/8;
+  {{ subnet_v4_with_mask }};
+  {{ subnet_v6_with_mask }};
+};
+
+acl Internal { {{ subnet_v4_with_mask }}; {{ subnet_v6_with_mask }}; localhost; };
+
+options {
+  directory "/var/bind";
+  pid-file "/var/run/named/named.pid";
+  managed-keys-directory "/etc/bind";
+
+  listen-on { 127.0.0.1; };
+  listen-on-v6 { ::1; };
+  {% for interface in network -%}
+    {% for ip_ver in ['ipv4', 'ipv6'] -%}
+      {% if ip_ver in interface.ip and 'addr' in interface.ip[ip_ver] -%}
+        {% if ip_ver == 'ipv4' -%} listen-on {% else -%} listen-on-v6 {% endif -%} { {{ interface.ip[ip_ver].addr | ipaddr('address') }}; }; /* {% if 'ifname' in interface -%} {{ interface.ifname }} {% endif -%} ({{ interface.name }}) */
+      {% endif -%}
+    {% endfor -%}
+  {% endfor -%}
+  allow-query       { any;     };
+  allow-query-cache { trusted; };
+  allow-recursion   { trusted; };
+  allow-transfer    { none;    };
+  allow-update      { none;    };
+
+
+  # forward first;
+  # forwarders {
+  #       123.123.123.123;        /* Your ISP NS */
+  #       124.124.124.124;        /* Your ISP NS */
+  #       4.2.2.1;                /* Level3 Public DNS */
+  #       4.2.2.2;                /* Level3 Public DNS */
+  #       8.8.8.8;                /* Google Open DNS */
+  #       8.8.4.4;                /* Google Open DNS */
+  # };
+  #check-names master ignore;
+  #check-names slave ignore;
+  #check-names response ignore;
+};
+
+
+logging {
+        channel default_log { file "/var/log/named/default.log" versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category default { default_log; };
+
+        channel client_log          { file "/var/log/named/client.log" versions 5 size 50M;          print-time yes; print-severity yes; print-category yes; }; category client          {client_log; };
+        channel config_log          { file "/var/log/named/config.log" versions 5 size 50M;          print-time yes; print-severity yes; print-category yes; }; category config          {config_log; };
+        channel database_log        { file "/var/log/named/database.log" versions 5 size 50M;        print-time yes; print-severity yes; print-category yes; }; category database        {database_log; };
+        channel delegation-only_log { file "/var/log/named/delegation-only.log" versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category delegation-only {delegation-only_log; };
+        channel dispatch_log        { file "/var/log/named/dispatch.log" versions 5 size 50M;        print-time yes; print-severity yes; print-category yes; }; category dispatch        {dispatch_log; };
+        channel dnssec_log          { file "/var/log/named/dnssec.log" versions 5 size 50M;          print-time yes; print-severity yes; print-category yes; }; category dnssec          {dnssec_log; };
+        channel general_log         { file "/var/log/named/general.log" versions 5 size 50M;         print-time yes; print-severity yes; print-category yes; }; category general         {general_log; };
+        channel lame-servers_log    { file "/var/log/named/lame-servers.log" versions 5 size 50M;    print-time yes; print-severity yes; print-category yes; }; category lame-servers    {lame-servers_log; };
+        channel network_log         { file "/var/log/named/network.log" versions 5 size 50M;         print-time yes; print-severity yes; print-category yes; }; category network         {network_log; };
+        channel notify_log          { file "/var/log/named/notify.log" versions 5 size 50M;          print-time yes; print-severity yes; print-category yes; }; category notify          {notify_log; };
+        channel queries_log         { file "/var/log/named/queries.log" versions 5 size 50M;         print-time yes; print-severity yes; print-category yes; }; category queries         {queries_log; };
+        channel resolver_log        { file "/var/log/named/resolver.log" versions 5 size 50M;        print-time yes; print-severity yes; print-category yes; }; category resolver        {resolver_log; };
+        channel security_log        { file "/var/log/named/security.log" versions 5 size 50M;        print-time yes; print-severity yes; print-category yes; }; category security        {security_log; };
+        channel unmatched_log       { file "/var/log/named/unmatched.log" versions 5 size 50M;       print-time yes; print-severity yes; print-category yes; }; category unmatched       {unmatched_log; };
+        channel update_log          { file "/var/log/named/update.log" versions 5 size 50M;          print-time yes; print-severity yes; print-category yes; }; category update          {update_log; };
+        channel update-security_log { file "/var/log/named/update-security.log" versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category update-security {update-security_log; };
+        channel xfer-in_log         { file "/var/log/named/xfer-in.log" versions 5 size 50M;         print-time yes; print-severity yes; print-category yes; }; category xfer-in         {xfer-in_log; };
+        channel xfer-out_log        { file "/var/log/named/xfer-out.log" versions 5 size 50M;        print-time yes; print-severity yes; print-category yes; }; category xfer-out        {xfer-out_log; };
+};
+
+
+#include "/etc/bind/rndc.key";
+controls {
+        inet 127.0.0.1 port 953 allow { 127.0.0.1/32; ::1/128; };
+};
+
+zone "." in {
+        type hint;
+        file "/var/bind/root.cache";
+};
+
+zone "localhost" IN {
+        type master;
+        file "pri/localhost.zone";
+        notify no;
+};
+
+# zone "127.in-addr.arpa" IN {
+#         type master;
+#         file "pri/127.zone";
+#         notify no;
+# };
+
+
+include "/etc/bind/pri/{{ networks.home.domain }}.zones.include";

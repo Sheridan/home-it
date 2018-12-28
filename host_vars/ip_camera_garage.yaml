@@ -1,0 +1,16 @@
+---
+  network:
+    - name: "Internal"
+      mac: "EC:71:DB:E9:CE:86"
+      ip:
+        ipv4:
+          addr: "10.100.100.166"
+          network: "home"
+          type: "static"
+
+  iptables:
+    host_to_internet:
+    - name: "Mail"
+      ports: "645"
+    - name: "NTP"
+      ports: "123"

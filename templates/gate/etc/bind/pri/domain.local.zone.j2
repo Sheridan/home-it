@@ -1,0 +1,40 @@
+
+;; Managed by ansible. Editing is useless
+;; Sheridan
+
+$ORIGIN {{ networks.home.domain }}.
+$TTL {{ 60*60*8 }}
+@ IN SOA ns.{{ networks.home.domain }}. root.{{ networks.home.domain }}. (
+        {{ ansible_date_time.epoch }} ; serial
+        {{ 60*60*24 }} ; refresh
+        {{ 60*15 }} ; rertry
+        {{ 60*60*24*7*2 }} ; expire
+        {{ 60*60*24*7 }} ; minimum
+)
+@ IN NS ns
+@ A {{ networks.home.gateway }}
+
+ns A {{ networks.home.gateway | ipaddr('address') }}
+ns AAAA {{ networks.henet.home_gateway | ipaddr('address') }}
+
+{% for inventory_hostname in query('inventory_hostnames', 'all')|sort %}
+{% for interface in hostvars[inventory_hostname].network %}
+{% set aliases = [] %}
+{% for ip_ver in ['ipv4', 'ipv6'] %}
+{% if ip_ver in interface.ip and 'addr' in interface.ip[ip_ver] and interface.ip[ip_ver].network in ['home', 'henet'] %}
+{{ inventory_hostname | regex_replace('_', '-') }} {% if ip_ver == 'ipv4' %} A {% else %} AAAA {% endif %} {{ interface.ip[ip_ver].addr | ipaddr('address') }}
+{% if 'dns' in interface and 'aliases' in interface.dns %}
+{% for alias in interface.dns.aliases|sort %}
+{{ aliases.append( alias ) }}
+{{ aliases.append( alias | regex_replace('_', '-') ) }}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% for alias in aliases|sort|unique %}
+{% if alias != inventory_hostname %}
+{{ alias }} CNAME {{ inventory_hostname }}
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% endfor %}
