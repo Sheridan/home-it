@@ -5,11 +5,11 @@
 $ORIGIN {{ networks.home.domain }}.
 $TTL {{ 60*60*8 }}
 @ IN SOA ns.{{ networks.home.domain }}. root.{{ networks.home.domain }}. (
-        {{ ansible_date_time.epoch }} ; serial
-        {{ 60*60*24 }} ; refresh
-        {{ 60*15 }} ; rertry
-        {{ 60*60*24*7*2 }} ; expire
-        {{ 60*60*24*7 }} ; minimum
+  {{ ansible_date_time.epoch }} ; serial
+  {{ 60*60*24 }} ; refresh
+  {{ 60*15 }} ; rertry
+  {{ 60*60*24*7*2 }} ; expire
+  {{ 60*60*24*7 }} ; minimum
 )
 @ IN NS ns
 @ A {{ networks.home.gateway }}

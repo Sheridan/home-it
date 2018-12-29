@@ -1,0 +1,7 @@
+{% set he_interface = network|selectattr('ifname', 'match', 'external_he.*')|first %}
+[Match]
+Name={{ he_interface.ifname }}
+
+[Network]
+Address={{ he_interface.ip.ipv6.addr | ipaddr('address') }}
+Gateway={{ networks.henet.gateway | ipaddr('address') }}

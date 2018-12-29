@@ -1,0 +1,23 @@
+{% set subnet_v6_with_mask = [networks.henet.subnet, networks.henet.mask.short]|join('/') -%}
+{% set interface = network|selectattr('ifname', 'match', 'internal_.*')|first %}
+
+interface {{ interface.ifname }}
+{
+    AdvSendAdvert on;
+    AdvManagedFlag on;
+    # AdvOtherConfigFlag on;
+
+    prefix {{ subnet_v6_with_mask | ipaddr('net') }}
+    {
+        AdvOnLink on;
+        AdvAutonomous off;
+    };
+
+    RDNSS {{ networks.henet.home_gateway | ipaddr('address') }}
+    {
+    };
+
+    DNSSL {{ networks.home.domain }}
+    {
+    };
+};

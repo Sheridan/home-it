@@ -1,19 +1,24 @@
 [Match]
-Name={{ item.ifname }}
-MACAddress={{ item.mac }}
+Name={{ target_interface.ifname }}
+{% if 'mac' in target_interface %}
+MACAddress={{ target_interface.mac }}
+{% endif %}
 
 [Network]
-Description={{ item.name }}
+Description={{ target_interface.name }}
 DHCP=no
-{% if 'ipv4' in item.ip %}
-Address={{ item.ip.ipv4.addr }}
+{% if 'ipv4' in target_interface.ip %}
+Address={{ target_interface.ip.ipv4.addr | ipaddr('address') }}
 {% endif %}
-{% if 'ipv6' in item.ip %}
-Address={{ item.ip.ipv6.addr }}
+{% if 'ipv6' in target_interface.ip %}
+Address={{ target_interface.ip.ipv6.addr | ipaddr('address') }}
 {% endif %}
-{% if 'gateway' in networks[item.ip.ipv4.network] and networks[item.ip.ipv4.network].gateway != item.ip.ipv4.addr %}
-Gateway={{ networks[item.ip.ipv4.network].gateway }}
+{% if 'gateway' in networks[target_interface.ip.ipv4.network] and networks[target_interface.ip.ipv4.network].gateway != target_interface.ip.ipv4.addr %}
+Gateway={{ networks[target_interface.ip.ipv4.network].gateway | ipaddr('address') }}
 {% endif %}
-{% if networks[item.ip.ipv4.network].domain is defined %}
-Domains={{ networks[item.ip.ipv4.network].domain }}
+{% if networks[target_interface.ip.ipv4.network].domain is defined %}
+Domains={{ networks[target_interface.ip.ipv4.network].domain }}
+{% endif %}
+{% if target_interface.tunnel is defined %}
+Tunnel={{ target_interface.tunnel }}
 {% endif %}

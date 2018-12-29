@@ -1,6 +1,15 @@
 #!/bin/bash
 
-iptables=$1
+ip_ver=$1
 
-/usr/local/bin/firewall-save.sh $iptables
-# /usr/local/bin/firewall-load.sh $iptables
+iptables="iptables"
+if [ "$ip_ver" = "6" ]
+then
+    iptables="ip6tables"
+fi
+
+if [ -e /etc/iptables/iptables.${ip_ver}.conf ]
+then
+    ${iptables}-restore < /etc/iptables/iptables.${ip_ver}.conf || exit 1
+    /usr/local/bin/firewall-save.sh ${ip_ver} || exit 1
+fi

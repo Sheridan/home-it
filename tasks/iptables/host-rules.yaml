@@ -1,3 +1,0 @@
----
-  - include_tasks: tasks/loading_variables/load-host-vars.yaml
-  - include_tasks: tasks/iptables/host-to-internet.yaml

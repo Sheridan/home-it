@@ -7,15 +7,18 @@
 
 acl "xfer" { none; };
 
-acl "trusted" {
+acl "trusted"
+{
   127.0.0.0/8;
+  ::1/128;
   {{ subnet_v4_with_mask }};
   {{ subnet_v6_with_mask }};
 };
 
 acl Internal { {{ subnet_v4_with_mask }}; {{ subnet_v6_with_mask }}; localhost; };
 
-options {
+options
+{
   directory "/var/bind";
   pid-file "/var/run/named/named.pid";
   managed-keys-directory "/etc/bind";
@@ -54,24 +57,24 @@ options {
 logging {
         channel default_log { file "/var/log/named/default.log" versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category default { default_log; };
 
-        channel client_log          { file "/var/log/named/client.log" versions 5 size 50M;          print-time yes; print-severity yes; print-category yes; }; category client          {client_log; };
-        channel config_log          { file "/var/log/named/config.log" versions 5 size 50M;          print-time yes; print-severity yes; print-category yes; }; category config          {config_log; };
-        channel database_log        { file "/var/log/named/database.log" versions 5 size 50M;        print-time yes; print-severity yes; print-category yes; }; category database        {database_log; };
+        channel client_log          { file "/var/log/named/client.log"          versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category client          {client_log; };
+        channel config_log          { file "/var/log/named/config.log"          versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category config          {config_log; };
+        channel database_log        { file "/var/log/named/database.log"        versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category database        {database_log; };
         channel delegation-only_log { file "/var/log/named/delegation-only.log" versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category delegation-only {delegation-only_log; };
-        channel dispatch_log        { file "/var/log/named/dispatch.log" versions 5 size 50M;        print-time yes; print-severity yes; print-category yes; }; category dispatch        {dispatch_log; };
-        channel dnssec_log          { file "/var/log/named/dnssec.log" versions 5 size 50M;          print-time yes; print-severity yes; print-category yes; }; category dnssec          {dnssec_log; };
-        channel general_log         { file "/var/log/named/general.log" versions 5 size 50M;         print-time yes; print-severity yes; print-category yes; }; category general         {general_log; };
-        channel lame-servers_log    { file "/var/log/named/lame-servers.log" versions 5 size 50M;    print-time yes; print-severity yes; print-category yes; }; category lame-servers    {lame-servers_log; };
-        channel network_log         { file "/var/log/named/network.log" versions 5 size 50M;         print-time yes; print-severity yes; print-category yes; }; category network         {network_log; };
-        channel notify_log          { file "/var/log/named/notify.log" versions 5 size 50M;          print-time yes; print-severity yes; print-category yes; }; category notify          {notify_log; };
-        channel queries_log         { file "/var/log/named/queries.log" versions 5 size 50M;         print-time yes; print-severity yes; print-category yes; }; category queries         {queries_log; };
-        channel resolver_log        { file "/var/log/named/resolver.log" versions 5 size 50M;        print-time yes; print-severity yes; print-category yes; }; category resolver        {resolver_log; };
-        channel security_log        { file "/var/log/named/security.log" versions 5 size 50M;        print-time yes; print-severity yes; print-category yes; }; category security        {security_log; };
-        channel unmatched_log       { file "/var/log/named/unmatched.log" versions 5 size 50M;       print-time yes; print-severity yes; print-category yes; }; category unmatched       {unmatched_log; };
-        channel update_log          { file "/var/log/named/update.log" versions 5 size 50M;          print-time yes; print-severity yes; print-category yes; }; category update          {update_log; };
+        channel dispatch_log        { file "/var/log/named/dispatch.log"        versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category dispatch        {dispatch_log; };
+        channel dnssec_log          { file "/var/log/named/dnssec.log"          versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category dnssec          {dnssec_log; };
+        channel general_log         { file "/var/log/named/general.log"         versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category general         {general_log; };
+        channel lame-servers_log    { file "/var/log/named/lame-servers.log"    versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category lame-servers    {lame-servers_log; };
+        channel network_log         { file "/var/log/named/network.log"         versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category network         {network_log; };
+        channel notify_log          { file "/var/log/named/notify.log"          versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category notify          {notify_log; };
+        channel queries_log         { file "/var/log/named/queries.log"         versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category queries         {queries_log; };
+        channel resolver_log        { file "/var/log/named/resolver.log"        versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category resolver        {resolver_log; };
+        channel security_log        { file "/var/log/named/security.log"        versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category security        {security_log; };
+        channel unmatched_log       { file "/var/log/named/unmatched.log"       versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category unmatched       {unmatched_log; };
+        channel update_log          { file "/var/log/named/update.log"          versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category update          {update_log; };
         channel update-security_log { file "/var/log/named/update-security.log" versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category update-security {update-security_log; };
-        channel xfer-in_log         { file "/var/log/named/xfer-in.log" versions 5 size 50M;         print-time yes; print-severity yes; print-category yes; }; category xfer-in         {xfer-in_log; };
-        channel xfer-out_log        { file "/var/log/named/xfer-out.log" versions 5 size 50M;        print-time yes; print-severity yes; print-category yes; }; category xfer-out        {xfer-out_log; };
+        channel xfer-in_log         { file "/var/log/named/xfer-in.log"         versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category xfer-in         {xfer-in_log; };
+        channel xfer-out_log        { file "/var/log/named/xfer-out.log"        versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category xfer-out        {xfer-out_log; };
 };
 
 
@@ -80,12 +83,14 @@ controls {
         inet 127.0.0.1 port 953 allow { 127.0.0.1/32; ::1/128; };
 };
 
-zone "." in {
+zone "." in
+{
         type hint;
         file "/var/bind/root.cache";
 };
 
-zone "localhost" IN {
+zone "localhost" IN
+{
         type master;
         file "pri/localhost.zone";
         notify no;

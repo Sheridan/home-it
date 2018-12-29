@@ -2,11 +2,7 @@
 - hosts: workstations_linux,gate
   remote_user: root
 
-  handlers:
-  - import_tasks: handlers/systemd-base.yaml
-
   tasks:
-
   - name: "Check interface name size"
     fail:
       msg: "Name of interface {{ item.ifname }} ({{ item.name }}) longer than 15 symbols"

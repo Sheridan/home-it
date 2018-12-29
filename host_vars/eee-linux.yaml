@@ -1,0 +1,29 @@
+---
+  network:
+  - name: "Internal ethernet"
+    ifname: "ethernet_0"
+    mac: "00:22:15:96:f3:85"
+    duid: "00:01:00:01:1d:23:e1:f7:00:22:15:96:f3:85"
+    ip:
+      ipv4:
+        addr: "10.100.100.20"
+        network: "home"
+        type: "dhcp"
+      ipv6:
+        addr: "2001:470:1F0A:1880:0:0:0:20"
+        network: "henet"
+        type: "dhcp"
+
+  - name: "Internal wifi"
+    ifname: "wifi_0"
+    mac: "00:15:af:ef:5b:dc"
+    duid: "00:01:00:01:1d:23:e1:f7:00:22:15:96:f3:85"
+    ip:
+      ipv4:
+        addr: "10.100.100.21"
+        network: "home"
+        type: "dhcp"
+      ipv6:
+        addr: "2001:470:1F0A:1880:0:0:0:21"
+        network: "henet"
+        type: "dhcp"

@@ -1,0 +1,34 @@
+---
+  - name: systemd daemon reload
+    shell: systemctl daemon-reload
+
+  - name: restart networkd
+    service:
+      name: systemd-networkd
+      state: restarted
+
+  - name: restart dhcpd
+    service:
+      name: "dhcpd@{{ item }}"
+      state: restarted
+    loop:
+      - 6
+      - 4
+
+  - name: restart radvd
+    service:
+      name: radvd
+      state: restarted
+
+  - name: restart named
+    service:
+      name: named
+      state: restarted
+
+  - name: reload firewall
+    service:
+      name: "firewall@{{ item }}"
+      state: reloaded
+    loop:
+      - 6
+      - 4

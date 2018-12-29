@@ -1,13 +1,43 @@
 ---
-  iptables:
+  iptables_global:
     host_to_internet:
-    - name: "Default http"
-      ports: "80"
-    - name: "Default https"
-      ports: "443"
-    - name: "Default http extended"
-      ports: "8080,8081"
-    - name: "Default ftp"
-      ports: "20,21,115,989,990"
-    - name: "Default nntp"
-      ports: "563,119"
+      http:
+        name: "Default http"
+        ports:
+        - 80
+      https:
+        name: "Default https"
+        ports:
+        - 443
+      http_extented:
+        name: "Default http extended"
+        ports:
+          - 8080
+          - 8081
+      ftp:
+        name: "Default ftp"
+        ports:
+        - 20
+        - 21
+        - 115
+        - 989
+        - 990
+      nntp:
+        name: "Default nntp"
+        ports:
+        - 563
+        - 119
+
+
+  # iptables:
+  #   host_to_internet:
+  #   - name: "Default http"
+  #     ports: "80"
+  #   - name: "Default https"
+  #     ports: "443"
+  #   - name: "Default http extended"
+  #     ports: "8080,8081"
+  #   - name: "Default ftp"
+  #     ports: "20,21,115,989,990"
+  #   - name: "Default nntp"
+  #     ports: "563,119"

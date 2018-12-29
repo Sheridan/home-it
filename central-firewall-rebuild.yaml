@@ -1,3 +1,0 @@
----
-  - import_playbook: central-firewall-flush.yaml
-  - import_playbook: central-firewall-setup.yaml

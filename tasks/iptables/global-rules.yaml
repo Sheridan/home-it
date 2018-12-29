@@ -1,8 +1,0 @@
----
-  - name: Loading global variables
-    include_vars:
-      file: vars/iptables-default.yaml
-      name: global_vars
-
-  - name: "Apply global all->internet default rules"
-    include_tasks: tasks/iptables/network-to-internet.yaml

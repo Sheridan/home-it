@@ -1,6 +1,8 @@
 [Match]
-Name={{ item.ifname }}
-MACAddress={{ item.mac }}
+Name={{ target_interface.ifname }}
+{% if 'mac' in target_interface %}
+MACAddress={{ target_interface.mac }}
+{% endif %}
 
 [Network]
 DHCP=yes

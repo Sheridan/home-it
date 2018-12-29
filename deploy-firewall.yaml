@@ -1,0 +1,64 @@
+---
+- hosts: gate
+  remote_user: root
+  vars_files:
+  - vars/network.yaml
+  - vars/iptables-default.yaml
+
+  handlers:
+  - import_tasks: handlers/systemd.yaml
+
+  tasks:
+  - name: Create conf directory
+    file:
+      path: /etc/iptables
+      state: directory
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: make configuration
+    template:
+      src: templates/gate/etc/iptables/iptables.conf.j2
+      dest: "/etc/iptables/iptables.{{ item }}.conf"
+      owner: root
+      group: root
+      mode: 0644
+    loop:
+      - 4
+      - 6
+    notify:
+    - reload firewall
+
+  - name: Install iptables save/restore service
+    template:
+      src: templates/default/etc/systemd/system/firewall@.service.j2
+      dest: /etc/systemd/system/firewall@.service
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - systemd daemon reload
+
+  - name: Install scripts for firewall save/restore
+    template:
+      src: "templates/default/usr/local/bin/{{ item }}"
+      dest: "/usr/local/bin/{{ item }}"
+      owner: root
+      group: root
+      mode: 0744
+    with_items:
+    - firewall-load.sh
+    - firewall-save.sh
+    - firewall-reload.sh
+    notify:
+    - systemd daemon reload
+    - reload firewall
+
+  - name: Enabling services
+    service:
+      name: "firewall@{{ item }}"
+      enabled: yes
+    loop:
+      - 4
+      - 6

@@ -1,8 +1,16 @@
 #!/bin/bash
 
-iptables=$1
+ip_ver=$1
 
-if [-e /var/lib/${iptables}/data.conf]
+iptables="iptables"
+if [ "$ip_ver" = "6" ]
 then
-    ${iptables}-restore < /var/lib/${iptables}/data.conf
+    iptables="ip6tables"
+fi
+
+if [ -e /var/lib/iptables/data.${ip_ver}.conf ]
+then
+    ${iptables}-restore < /var/lib/iptables/data.${ip_ver}.conf || exit 1
+else
+    ${iptables}-restore < /etc/iptables/iptables.${ip_ver}.conf || exit 1
 fi

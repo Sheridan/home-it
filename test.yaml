@@ -10,13 +10,6 @@
 
   tasks:
 
-  # - name: debug nested
-  #   debug:
-  #     msg: "Item: {{ hostvars[item] }}"
-  #     # msg: "{{ hostvars[item.0].iptables }}"
-  #   # when: hostvars[item.0].iptables is defined
-  #   loop: "{{ groups|difference(['all','ungrouped']) }}"
-
-  - name: debug if extract internal
+  - name: debug addresses
     debug:
       msg: "{{ hostvars['gate'].network|selectattr('ifname', 'match', 'internal.*')|first }}"

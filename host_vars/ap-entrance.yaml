@@ -1,0 +1,13 @@
+---
+  network:
+  - name: "Internal"
+    mac: "64:70:02:62:21:8a"
+    ip:
+      ipv4:
+        addr: "10.100.100.4"
+        network: "home"
+        type: "static"
+      ipv6:
+        addr: "2001:470:1F0A:1880:0:0:10:4"
+        network: "henet"
+        type: "static"

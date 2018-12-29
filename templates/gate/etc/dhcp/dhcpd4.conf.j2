@@ -1,12 +1,14 @@
 # Managed by ansible. Editing is useless
 # Sheridan
 {% set subnet_v4_with_mask = [networks.home.subnet , networks.home.mask.short ]|join('/') -%}
+{% set interface = network|selectattr('ifname', 'match', 'internal_.*')|first %}
 
 ddns-update-style none;
 authoritative;
 
 subnet {{ networks.home.subnet }} netmask {{ networks.home.mask.long }}
 {
+  interface {{ interface.ifname }};
   option domain-name "{{ networks.home.domain }}";
   option domain-name-servers ns.{{ networks.home.domain }};
   default-lease-time {{ dhcp.lease_time }};
@@ -22,10 +24,9 @@ subnet {{ networks.home.subnet }} netmask {{ networks.home.mask.long }}
 }
 
 {% for inventory_hostname in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
-  {% for hostname_interface in hostvars[inventory_hostname].network|sort -%}
+  {% for hostname_interface in hostvars[inventory_hostname].network -%}
     {% if 'mac' in hostname_interface -%}
-
-      host {{ inventory_hostname }}
+      host {{ inventory_hostname }}_{{ hostname_interface.mac|regex_replace(':', '_') }}
       {
         hardware ethernet {{ hostname_interface.mac }};
         {% if 'ipv4' in hostname_interface.ip and hostname_interface.ip.ipv4.network == 'home' -%}

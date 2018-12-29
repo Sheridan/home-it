@@ -1,5 +1,11 @@
 #!/bin/bash
 
-iptables=$1
+ip_ver=$1
 
-${iptables}-save > /var/lib/${iptables}/data.conf
+iptables="iptables"
+if [ "$ip_ver" = "6" ]
+then
+    iptables="ip6tables"
+fi
+
+${iptables}-save > /var/lib/iptables/data.${ip_ver}.conf || exit 1

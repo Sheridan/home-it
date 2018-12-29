@@ -1,67 +1,101 @@
 ---
   network:
-    - name: "Internal"
-      ifname: "internal_0"
-      dns:
-        aliases:
-          - garfana
-          - prometheus
-      mac: "94:de:80:6c:66:b0"
-      ip:
-        ipv4:
-          type: "static"
-          network: "home"
-          addr: "10.100.100.1"
-        ipv6:
-          type: "static"
-          network: "henet"
-          addr: "2001:470:1F0A:1880:0:0:0:3"
+  - name: "Internal"
+    ifname: "internal_0"
+    dns:
+      aliases:
+        - garfana
+        - prometheus
+    mac: "94:de:80:6c:66:b0"
+    ip:
+      ipv4:
+        type: "static"
+        network: "home"
+        addr: "10.100.100.1"
+      ipv6:
+        type: "static"
+        network: "henet"
+        addr: "2001:470:1F0A:1880:0:0:0:3"
 
-    - name: "External KIS"
-      ifname: "external_kis_0"
-      dns:
-        aliases:
-          - www
-          - root
-          - ns
-      mac: "50:3e:aa:04:8f:b0"
-      ip:
-        ipv4:
-          type: "static"
-          network: "kis"
-          addr: "91.210.98.62"
+  - name: "External KIS"
+    ifname: "external_kis_0"
+    tunnel: "external_he_0"
+    dns:
+      aliases:
+        - www
+        - root
+        - ns
+    mac: "50:3e:aa:04:8f:b0"
+    ip:
+      ipv4:
+        type: "static"
+        network: "kis"
+        addr: "91.210.98.62"
 
-    - name: "External RT"
-      ifname: "external_rt_0"
-      mac: "50:3e:aa:04:cb:21"
-      ip:
-        ipv4:
-          type: "pppoe"
+  - name: "External RT"
+    ifname: "external_rt_0"
+    mac: "50:3e:aa:04:cb:21"
+    ip:
+      ipv4:
+        type: "pppoe"
 
-    - name: "External HeNet"
-      dns:
-        aliases:
-          - www
-      ifname: "external_he_0"
-      ip:
-        ipv6:
-          type: "henet"
-          network: "henet"
-          addr: "2001:470:1F0A:1880:0:0:0:2"
+  - name: "External HeNet"
+    dns:
+      aliases:
+        - www
+    ifname: "external_he_0"
+    need_netdev: yes
+    ip:
+      ipv6:
+        type: "static"
+        network: "henet"
+        addr: "2001:470:1F0A:1880:0:0:0:2"
 
   iptables:
     to_host:
-      - name: "Proxy"
-        ports: "3128:3129"
+      proxy:
+        name: "Proxy"
+        ports:
+        - 3128:3129
         interfaces:
           - "internal"
-      - name: "Domain"
-        ports: "53"
+      dhcpd:
+        name: "DHCPd"
+        ports:
+        - 67
+        - 68
+        - 546
+        - 547
+        interfaces:
+          - "internal"
+      dns:
+        name: "Domain"
+        ports:
+        - 53
         interfaces:
           - "internal"
           - "external"
-      - name: "SSH"
-        ports: "22"
+      ssh:
+        name: "SSH"
+        ports:
+        - 22
         interfaces:
           - "internal"
           - "external"
+
+  # iptables:
+  #   to_host:
+  #     - name: "Proxy"
+  #       ports: "3128:3129"
+  #       interfaces:
+  #         - "internal"
+  #     - name: "Domain"
+  #       ports: "53"
+  #       interfaces:
+  #         - "internal"
+  #         - "external"
+  #     - name: "SSH"
+  #       ports: "22"
+  #       interfaces:
+  #         - "internal"
+  #         - "external"

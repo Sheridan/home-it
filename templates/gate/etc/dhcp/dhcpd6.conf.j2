@@ -1,31 +1,63 @@
 # Managed by ansible. Editing is useless
 # Sheridan
 {% set subnet_v6_with_mask = [networks.henet.subnet, networks.henet.mask.short]|join('/') -%}
+{% set interface = network|selectattr('ifname', 'match', 'internal_.*')|first %}
 
 ddns-update-style none;
 authoritative;
+# allow leasequery;
+option dhcp6.name-servers {{ networks.henet.home_gateway | ipaddr('address') }};
+option dhcp6.domain-search "{{ networks.home.domain }}";
+# option routers {{ networks.henet.home_gateway | ipaddr('address') }};
+default-lease-time {{ dhcp.lease_time }};
+max-lease-time {{ dhcp.lease_time * 4 }};
+option client-class-information code  97 = string;
 
-subnet6 {{ subnet_v6_with_mask | ipaddr('net') }}
+shared-network "sheridan-home"
 {
-  option dhcp6.name-servers {{ networks.henet.home_gateway | ipaddr('address') }};
-  option dhcp6.domain-search "{{ networks.home.domain }}";
-  default-lease-time {{ dhcp.lease_time }};
-  max-lease-time {{ dhcp.lease_time * 4 }};
-  range6 {{ subnet_v6_with_mask | ipaddr('net') | ipaddr('1024') | ipaddr('address') }} {{ subnet_v6_with_mask | ipaddr('net') | ipaddr('2048') | ipaddr('address') }};
+  interface {{ interface.ifname }};
+  subnet6 {{ subnet_v6_with_mask | ipaddr('net') }}
+  {
+    pool6
+    {
+      # prefix6 {{ subnet_v6_with_mask | ipaddr('net') }};
+      range6 {{ subnet_v6_with_mask | ipaddr('net') | ipaddr('10') | ipaddr('address') }} {{ subnet_v6_with_mask | ipaddr('net') | ipaddr('65536') | ipaddr('address') }};
+      range6 {{ subnet_v6_with_mask | ipaddr('net') }} temporary;
+      # range6 {{ networks.henet.subrouters_range.from | ipaddr('address') }} {{ networks.henet.subrouters_range.to | ipaddr('address') }} /{{ networks.henet.subrouters_range.mask }};
+      # allow unknown-clients;
+      # ipv6rs;
+      # ipv6ra_autoconf;
+    }
+  }
 }
 
+
+
 {% for inventory_hostname in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
-  {% for hostname_interface in hostvars[inventory_hostname].network|sort -%}
+  {% for hostname_interface in hostvars[inventory_hostname].network -%}
     {% if 'mac' in hostname_interface -%}
 
-      host {{ inventory_hostname }}
+      host {{ inventory_hostname }}_{{ hostname_interface.mac|regex_replace(':', '_') }}
       {
         hardware ethernet {{ hostname_interface.mac }};
+        {% if 'duid' in hostname_interface -%}
+          host-identifier option dhcp6.client-id {{ hostname_interface.duid }};
+        {% endif -%}
         {% if 'ipv6' in hostname_interface.ip and hostname_interface.ip.ipv6.network == 'henet' -%}
-          fixed-address {{ hostname_interface.ip.ipv6.addr | ipaddr('address') }};
+          fixed-address6 {{ hostname_interface.ip.ipv6.addr | ipaddr('address') }};
         {% endif -%}
       } # Interface name: {% if 'ifname' in hostname_interface -%} {{ hostname_interface.ifname }} {% endif -%} ({{ hostname_interface.name }})
 
     {% endif -%}
   {% endfor -%}
 {% endfor -%}
+
+if known
+{
+    log(info, concat("DUID: "         , option dhcp6.client-id,
+                     " interface-id: ", option dhcp6.interface-id,
+                     " remote-id: "   , option dhcp6.remote-id));
+}
+
+# http://www.ipamworldwide.com/ipam/isc-dhcpv6-options.html
+# https://linux.die.net/man/5/dhcpd-eval

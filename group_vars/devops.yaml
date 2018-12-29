@@ -1,15 +1,45 @@
 ---
   iptables:
     host_to_internet:
-    - name: "Devops to SSH"
-      ports: "22"
-    - name: "Devops to telnet"
-      ports: "23,107"
-    - name: "Devops to dns"
-      ports: "53"
-    - name: "Devops to snmp"
-      ports: "161,162,992"
-    - name: "Devops to rsync"
-      ports: "873"
-    - name: "Devops to openvpn"
-      ports: "1194"
+      ssh:
+        name: "Devops to SSH"
+        ports:
+        - 22
+      telnet:
+        name: "Devops to telnet"
+        ports:
+        - 23
+        - 107
+      dns:
+        name: "Devops to dns"
+        ports:
+        - 53
+      snmp:
+        name: "Devops to snmp"
+        ports:
+        - 161
+        - 162
+        - 992
+      rsync:
+        name: "Devops to rsync"
+        ports:
+        - 873
+      openvpn:
+        name: "Devops to openvpn"
+        ports:
+        - 1194
+
+  # iptables:
+  #   host_to_internet:
+  #   - name: "Devops to SSH"
+  #     ports: "22"
+  #   - name: "Devops to telnet"
+  #     ports: "23,107"
+  #   - name: "Devops to dns"
+  #     ports: "53"
+  #   - name: "Devops to snmp"
+  #     ports: "161,162,992"
+  #   - name: "Devops to rsync"
+  #     ports: "873"
+  #   - name: "Devops to openvpn"
+  #     ports: "1194"

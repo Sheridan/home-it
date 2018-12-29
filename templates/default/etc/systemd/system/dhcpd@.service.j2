@@ -1,0 +1,11 @@
+[Unit]
+Description=DHCPv%i Server Daemon
+After=network.target
+After=time-sync.target
+
+[Service]
+ExecStart=/usr/sbin/dhcpd -f -%i -cf /etc/dhcp/dhcpd%i.conf -lf /var/lib/dhcp/dhcpd.leases.%i -user dhcp -group dhcp --no-pid
+SyslogIdentifier=dhcpdv%i
+
+[Install]
+WantedBy=multi-user.target

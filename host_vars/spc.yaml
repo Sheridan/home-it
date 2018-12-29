@@ -1,21 +1,33 @@
 ---
   network:
-    - name: "Internal"
-      ifname: "internal_0"
-      mac: "94:de:80:7c:8b:ee"
-      ip:
-        ipv4:
-          addr: "10.100.100.10"
-          network: "home"
-          type: "static"
-        ipv6:
-          addr: "2001:470:1F0A:1880:0:0:0:10"
-          network: "henet"
-          type: "static"
-  iptables:
-    host_to_internet:
-    - name: "dns"
-      ports: "53"
-      destination:
-        - "8.8.8.8"
-        - "1.1.1.1"
+  - name: "Internal"
+    ifname: "internal_0"
+    mac: "94:de:80:7c:8b:ee"
+    duid: "00:02:00:00:ab:11:7a:1c:61:eb:ac:c3:f0:f3"
+    ip:
+      ipv4:
+        addr: "10.100.100.10"
+        network: "home"
+        type: "dhcp"
+      ipv6:
+        addr: "2001:470:1F0A:1880:0:0:0:10"
+        network: "henet"
+        type: "dhcp"
+
+  # iptables:
+  #   host_to_internet:
+  #     dns:
+  #       name: "dns"
+  #       ports:
+  #       - 53
+  #       destination:
+  #         - "8.8.8.8"
+  #         - "1.1.1.1"
+
+  # iptables:
+  #   host_to_internet:
+  #   - name: "dns"
+  #     ports: "53"
+  #     destination:
+  #       - "8.8.8.8"
+  #       - "1.1.1.1"

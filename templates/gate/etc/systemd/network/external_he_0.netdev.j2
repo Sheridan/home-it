@@ -1,0 +1,13 @@
+{% set v4_interface = network|selectattr('ifname', 'match', 'external_kis.*')|first %}
+{% set he_interface = network|selectattr('ifname', 'match', 'external_he.*')|first %}
+[Match]
+
+[NetDev]
+Name={{ he_interface.ifname }}
+Kind=sit
+MTUBytes=1480
+
+[Tunnel]
+Local={{ v4_interface.ip.ipv4.addr | ipaddr('address') }}
+Remote={{ networks.henet.tunnel_addr | ipaddr('address') }}
+TTL=255
