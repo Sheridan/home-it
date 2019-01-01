@@ -2,12 +2,6 @@
   network:
   - name: "Internal"
     mac: "6c:ad:f8:46:f8:b7"
-    ip:
-      ipv4:
-        addr: "10.100.100.71"
-        network: "home"
-        type: "static"
-      ipv6:
-        addr: "2001:470:1F0A:1880:0:0:0:71"
-        network: "henet"
-        type: "static"
+    ip: "{{ query('ship', 'ip', 71) }}"
+    network: 'home'
+    type: 'dhcp'

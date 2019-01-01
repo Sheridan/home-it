@@ -2,20 +2,17 @@
 #Managed by ansible. Editing is useless
 #Sheridan
 
-{% set subnet_v4_with_mask = [networks.home.subnet , networks.home.mask.short ]|join('/') -%}
-{% set subnet_v6_with_mask = [networks.henet.subnet, networks.henet.mask.short]|join('/') -%}
-
 acl "xfer" { none; };
 
 acl "trusted"
 {
   127.0.0.0/8;
   ::1/128;
-  {{ subnet_v4_with_mask }};
-  {{ subnet_v6_with_mask }};
+  {{ networks.home.subnet.ipv4.full }};
+  {{ networks.home.subnet.ipv6.full }};
 };
 
-acl Internal { {{ subnet_v4_with_mask }}; {{ subnet_v6_with_mask }}; localhost; };
+acl Internal { {{ networks.home.subnet.ipv4.full }}; {{ networks.home.subnet.ipv6.full }}; localhost; };
 
 options
 {
@@ -27,8 +24,8 @@ options
   listen-on-v6 { ::1; };
   {% for interface in network -%}
     {% for ip_ver in ['ipv4', 'ipv6'] -%}
-      {% if ip_ver in interface.ip and 'addr' in interface.ip[ip_ver] -%}
-        {% if ip_ver == 'ipv4' -%} listen-on {% else -%} listen-on-v6 {% endif -%} { {{ interface.ip[ip_ver].addr | ipaddr('address') }}; }; /* {% if 'ifname' in interface -%} {{ interface.ifname }} {% endif -%} ({{ interface.name }}) */
+      {% if ip_ver in interface.ip and ( ( interface.type is defined and interface.type != 'pppoe' ) or interface.type is not defined ) -%}
+        {% if ip_ver == 'ipv4' -%} listen-on {% else -%} listen-on-v6 {% endif -%} { {{ interface.ip[ip_ver].ip }}; }; /* {% if 'ifname' in interface -%} {{ interface.ifname }} {% endif -%} ({{ interface.name }}) */
       {% endif -%}
     {% endfor -%}
   {% endfor -%}

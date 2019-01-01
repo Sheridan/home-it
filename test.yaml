@@ -1,24 +1,60 @@
 ---
-- hosts: localhost
-  remote_user: root
+- hosts: gate
+  gather_facts: False
   vars_files:
   - vars/network.yaml
   - vars/iptables-default.yaml
   vars:
-    a: "{{ lookup('ship', 'ip', 22) }}"
+    a: "{{ query('ship', 'ip', 100) }}"
+    b: "{{ a }}"
+    iplist:
+      - name: "ddd1"
+        il: "{{ query('ship', 'ip', 100) }}"
+      - name: "www2"
+        il: "{{ query('ship', 'ip', 55) }}"
+      - name: "www3"
+        il: "{{ query('ship', 'ip', 10) }}"
 
   tasks:
 
-  - name: ipv6 test
-    debug:
-      msg: "{{ item }} is ipv6"
-    when: item | ipv6
-    loop:
-      - 192.168.0.1
-      - 100:100::/28
-      - "{{ networks.henet.subnet | ipaddr('address') }}"
+  # - set_fact:
+  #     b: '{{ query("ship", "ip", 1) }}'
 
-  - name: ship test
+  # - name: ship ip test
+  #   debug:
+  #     msg: "{{ item }}"
+  #   loop: "{{ network|selectattr('ifname', 'match', 'int.*')|list }}"
+
+  # - name: network
+  #   debug:
+  #     msg: "{{ networks }}"
+
+  # - name: prov test
+  #   debug:
+  #     msg: "{{ item }}"
+  #   with_items:
+  #     - "{{ query('ship', 'kis_net') }}"
+  #     - "{{ query('ship', 'kis_ip', 1) }}"
+  #     - "{{ query('ship', 'kis_ip', 2) }}"
+  #     - "{{ query('ship', 'henet_net') }}"
+  #     - "{{ query('ship', 'henet_ip', 1) }}"
+  #     - "{{ query('ship', 'henet_ip', 2) }}"
+
+  # - name: ipv6 test
+  #   debug:
+  #     msg: "{{ item }} is ipv6"
+  #   when: item | ipv6
+  #   loop:
+  #     - 192.168.0.1
+  #     - 100:100::/28
+  #     - "{{ networks.henet.subnet }}"
+
+  - name: ship ip test loop
     debug:
-      msg: "{{ lookup('ship', 'ip', item).ipv6.format() }} {{ lookup('ship', 'ip', item - 1).ipv4.reverse_dns }}"
-    loop: "{{ [11,2,3,4,5,6,7,8,9,22,75, 32] }}"
+      msg: "{{ query('ship', 'ip', item) }}"
+    loop: "{{ [1,2,3,4,5,6,7,8] }}"
+
+  # - name: ship net test
+  #   debug:
+  #     msg: "{{ query('ship', 'net', item).net }} {{ query('ship', 'net', item).size }}"
+  #   loop: "{{ ['ipv4', 'ipv6'] }}"

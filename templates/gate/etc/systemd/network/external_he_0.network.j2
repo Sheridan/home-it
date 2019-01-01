@@ -3,5 +3,5 @@
 Name={{ he_interface.ifname }}
 
 [Network]
-Address={{ he_interface.ip.ipv6.addr | ipaddr('address') }}
-Gateway={{ networks.henet.gateway | ipaddr('address') }}
+Address={{ he_interface.ip.ipv6.prefixed }}
+Gateway={{ networks.henet.gateway.ipv6.ip }}

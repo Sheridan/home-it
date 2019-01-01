@@ -3,43 +3,35 @@
   #   debug:
   #     msg: "{{target_interface}}"
 
-  - name: Setup systemd static network interface files
+  - name: "Setup systemd static network interface files ({{ target_interface.ifname }})"
     template:
       src: "{{ item }}"
       dest: "/etc/systemd/network/{{ target_interface.ifname }}.network"
       owner: root
       group: root
       mode: 0644
-    when: target_interface.ifname is defined and
-          (
-            (target_interface.ip.ipv4 is defined and target_interface.ip.ipv4.type == 'static') or
-            (target_interface.ip.ipv6 is defined and target_interface.ip.ipv6.type == 'static')
-          )
+    when: target_interface.ifname is defined and target_interface.type == 'static'
     with_first_found:
       - "templates/{{ inventory_hostname }}/etc/systemd/network/{{ target_interface.ifname }}.network.j2"
       - templates/default/etc/systemd/network/static.network.j2
     notify:
     - restart networkd
 
-  - name: Setup systemd dhcp network interface files
+  - name: "Setup systemd dhcp network interface files ({{ target_interface.ifname }})"
     template:
       src: "{{ item }}"
       dest: "/etc/systemd/network/{{ target_interface.ifname }}.network"
       owner: root
       group: root
       mode: 0644
-    when: target_interface.ifname is defined and
-          (
-            (target_interface.ip.ipv4 is defined and target_interface.ip.ipv4.type == 'dhcp') or
-            (target_interface.ip.ipv6 is defined and target_interface.ip.ipv6.type == 'dhcp')
-          )
+    when: target_interface.ifname is defined and target_interface.type == 'dhcp'
     with_first_found:
       - "templates/{{ inventory_hostname }}/etc/systemd/network/{{ target_interface.ifname }}.network.j2"
       - templates/default/etc/systemd/network/dhcp.network.j2
     notify:
     - restart networkd
 
-  - name: Setup systemd netdev files
+  - name: "Setup systemd netdev files ({{ target_interface.ifname }})"
     template:
       src: "{{ item }}"
       dest: "/etc/systemd/network/{{ target_interface.ifname }}.netdev"

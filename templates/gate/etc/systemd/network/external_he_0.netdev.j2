@@ -8,6 +8,6 @@ Kind=sit
 MTUBytes=1480
 
 [Tunnel]
-Local={{ v4_interface.ip.ipv4.addr | ipaddr('address') }}
+Local={{ v4_interface.ip.ipv4.ip }}
 Remote={{ networks.henet.tunnel_addr | ipaddr('address') }}
 TTL=255

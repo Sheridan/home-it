@@ -2,8 +2,6 @@
   network:
   - name: "Internal"
     mac: "f4:f2:6d:5d:a1:10"
-    ip:
-      ipv4:
-        addr: "10.100.100.51"
-        network: "home"
-        type: "static"
+    ip: "{{ query('ship', 'ip', 51) }}"
+    network: 'home'
+    type: 'dhcp'

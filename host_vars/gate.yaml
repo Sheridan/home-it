@@ -7,15 +7,9 @@
         - garfana
         - prometheus
     mac: "94:de:80:6c:66:b0"
-    ip:
-      ipv4:
-        type: "static"
-        network: "home"
-        addr: "10.100.100.1"
-      ipv6:
-        type: "static"
-        network: "henet"
-        addr: "2001:470:1F0A:1880:0:0:0:3"
+    ip: "{{ query('ship', 'ip', 1) }}"
+    network: 'home'
+    type: 'static'
 
   - name: "External KIS"
     ifname: "external_kis_0"
@@ -27,17 +21,16 @@
         - ns
     mac: "50:3e:aa:04:8f:b0"
     ip:
-      ipv4:
-        type: "static"
-        network: "kis"
-        addr: "91.210.98.62"
+      ipv4: "{{ query('ship', 'kis_ip', 2) }}"
+    network: 'kis'
+    type: 'static'
 
   - name: "External RT"
     ifname: "external_rt_0"
     mac: "50:3e:aa:04:cb:21"
+    type: "pppoe"
     ip:
-      ipv4:
-        type: "pppoe"
+      ipv4: 'dynamic'
 
   - name: "External HeNet"
     dns:
@@ -46,10 +39,9 @@
     ifname: "external_he_0"
     need_netdev: yes
     ip:
-      ipv6:
-        type: "static"
-        network: "henet"
-        addr: "2001:470:1F0A:1880:0:0:0:2"
+      ipv6: "{{ query('ship', 'henet_ip', 2) }}"
+    network: 'henet'
+    type: 'static'
 
   iptables:
     to_host:
@@ -82,20 +74,3 @@
         interfaces:
           - "internal"
           - "external"
-
-  # iptables:
-  #   to_host:
-  #     - name: "Proxy"
-  #       ports: "3128:3129"
-  #       interfaces:
-  #         - "internal"
-  #     - name: "Domain"
-  #       ports: "53"
-  #       interfaces:
-  #         - "internal"
-  #         - "external"
-  #     - name: "SSH"
-  #       ports: "22"
-  #       interfaces:
-  #         - "internal"
-  #         - "external"

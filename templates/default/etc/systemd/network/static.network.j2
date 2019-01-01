@@ -7,17 +7,17 @@ MACAddress={{ target_interface.mac }}
 [Network]
 Description={{ target_interface.name }}
 DHCP=no
-{% if 'ipv4' in target_interface.ip %}
-Address={{ target_interface.ip.ipv4.addr | ipaddr('address') }}
+{% for ip_ver in ['ipv4', 'ipv6'] %}
+{% if ip_ver in target_interface.ip %}
+Address={{ target_interface.ip[ip_ver].prefixed }}
+{% if ip_ver in networks[target_interface.network].gateway and
+      networks[target_interface.network].gateway[ip_ver].ip != target_interface.ip[ip_ver].ip %}
+Gateway={{ networks[target_interface.network].gateway[ip_ver].ip }}
 {% endif %}
-{% if 'ipv6' in target_interface.ip %}
-Address={{ target_interface.ip.ipv6.addr | ipaddr('address') }}
 {% endif %}
-{% if 'gateway' in networks[target_interface.ip.ipv4.network] and networks[target_interface.ip.ipv4.network].gateway != target_interface.ip.ipv4.addr %}
-Gateway={{ networks[target_interface.ip.ipv4.network].gateway | ipaddr('address') }}
-{% endif %}
-{% if networks[target_interface.ip.ipv4.network].domain is defined %}
-Domains={{ networks[target_interface.ip.ipv4.network].domain }}
+{% endfor %}
+{% if networks[target_interface.network].domain is defined %}
+Domains={{ networks[target_interface.network].domain }}
 {% endif %}
 {% if target_interface.tunnel is defined %}
 Tunnel={{ target_interface.tunnel }}

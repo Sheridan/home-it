@@ -9,10 +9,10 @@ zone "{{ networks.home.domain }}" in
         notify yes;
 };
 
-# zone "{{ networks.home.subnet | ipaddr('revdns') }}" in
+# zone "{{ networks.home.subnet.ipv4.reverse }}" in
 # {
 #         type master;
-#         file "/etc/bind/pri/{{ networks.home.subnet | ipaddr('revdns') }}zone";
+#         file "/etc/bind/pri/{{ networks.home.subnet.ipv4.reverse }}zone";
 #         notify yes;
 # };
 # TODO: Сделать arpa!
