@@ -1,0 +1,7 @@
+---
+  pppoe:
+    providers:
+      - rt
+    rt:
+      login: 9jhpoyqz6q
+      password: nMUkLeUR4UZi

@@ -1,0 +1,18 @@
+[Unit]
+Description=PPPoE <--> %i over bridge_%i_0
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+# ExecStart=/usr/sbin/pon %i
+# ExecStop=/usr/sbin/poff %i
+# ExecStart=/usr/sbin/pppoe-start /etc/ppp/pppoe.%i.conf
+# ExecStop=/usr/sbin/pppoe-stop /etc/ppp/pppoe.%i.conf
+# PIDFile=/var/run/pppoe.%i.pid
+ExecStart=/usr/sbin/pppd call %i
+SendSIGHUP=yes
+PIDFile=/var/run/ppp-%i.pid
+
+[Install]
+WantedBy=multi-user.target

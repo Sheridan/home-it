@@ -27,8 +27,14 @@
 
   - name: "External RT"
     ifname: "external_rt_0"
-    mac: "50:3e:aa:04:cb:21"
     type: "pppoe"
+    ip:
+      ipv4: 'dynamic'
+
+  - name: "Bridge RT"
+    ifname: "bridge_rt_0"
+    mac: "50:3e:aa:04:cb:21"
+    type: "bridge"
     ip:
       ipv4: 'dynamic'
 

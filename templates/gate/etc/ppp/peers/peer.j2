@@ -1,0 +1,25 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+{% set bridge_interface = network|selectattr('ifname', 'match', 'bridge_' + item + '.*')|first %}
+{% set external_interface = network|selectattr('ifname', 'match', 'external_' + item + '.*')|first %}
+plugin rp-pppoe.so {{ bridge_interface.ifname }}
+ifname {{ external_interface.ifname }}
+name "{{ pppoe[item].login }}"
+user "{{ pppoe[item].login }}"
+linkname {{ item }}
+persist
+noipdefault
+nodefaultroute
+hide-password
+default-asyncmap
+noauth
+mtu 1492
+mru 1492
+nodetach
+noaccomp
+nodeflate
+nopcomp
+novj
+novjccomp
+lcp-echo-interval 20
+lcp-echo-failure 3

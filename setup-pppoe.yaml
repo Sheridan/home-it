@@ -1,0 +1,63 @@
+---
+- hosts: gate
+  remote_user: root
+  vars_files:
+  - vars/network.yaml
+  - vars/pppoe.yaml
+
+  handlers:
+  - import_tasks: handlers/systemd.yaml
+
+  tasks:
+  - name: Setup PPPoE passwords
+    template:
+      src: "templates/gate/etc/ppp/secrets.j2"
+      dest: "/etc/ppp/{{ item }}-secrets"
+      owner: root
+      group: root
+      mode: 0644
+    loop:
+      - pap
+      - chap
+    notify:
+    - restart pppoe
+
+  - name: Setup PPPoE peer options
+    template:
+      src: "templates/gate/etc/ppp/peers/peer.j2"
+      dest: "/etc/ppp/peers/{{ item }}"
+      owner: root
+      group: root
+      mode: 0644
+    loop: "{{ pppoe.providers }}"
+    notify:
+    - "restart pppoe@{{ item }}"
+
+  - name: Setup PPPoE options
+    template:
+      src: "templates/gate/etc/ppp/pppoe.conf.j2"
+      dest: "/etc/ppp/pppoe.{{ item }}.conf"
+      owner: root
+      group: root
+      mode: 0644
+    loop: "{{ pppoe.providers }}"
+    notify:
+    - systemd daemon reload
+    - "restart pppoe@{{ item }}"
+
+  - name: Setup PPPoE service
+    template:
+      src: templates/default/etc/systemd/system/pppoe@.service.j2
+      dest: /etc/systemd/system/pppoe@.service
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - systemd daemon reload
+    - restart pppoe
+
+  - name: Enabling PPPoE services
+    service:
+      name: "pppoe@{{ item }}"
+      enabled: yes
+    loop: "{{ pppoe.providers }}"

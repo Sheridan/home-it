@@ -1,10 +1,12 @@
 ---
 - import_playbook: check_ifnames.yaml
 - import_playbook: deploy-nginx.yaml
+- import_playbook: setup-pppoe.yaml
 - hosts: gate
   remote_user: root
   vars_files:
   - vars/network.yaml
+  - vars/pppoe.yaml
 
   handlers:
   - import_tasks: handlers/systemd.yaml
@@ -29,7 +31,7 @@
     - { key: net.ipv6.conf.all.disable_ipv6,value: 0 }
     - { key: net.ipv6.conf.default.disable_ipv6, value: 0 }
     - { key: net.ipv6.conf.lo.disable_ipv6, value: 0 }
-    - { key: net.ipv6.conf.external_rt_0.disable_ipv6, value: 1 }
+    - { key: net.ipv6.conf.bridge_rt_0.disable_ipv6, value: 1 }
     - { key: net.ipv6.conf.all.forwarding, value: 1 }
     - { key: net.ipv6.conf.default.forwarding, value: 1 }
     - { key: net.ipv4.ip_forward, value: 1 }

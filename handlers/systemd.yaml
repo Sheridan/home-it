@@ -68,3 +68,14 @@
     service:
       name: nginx
       state: restarted
+
+  - name: restart pppoe@rt
+    service:
+      name: pppoe@rt
+      state: restarted
+
+  - name: restart pppoe
+    service:
+      name: "pppoe@{{ item }}"
+      state: restarted
+    loop: "{{ pppoe.providers }}"
