@@ -5,14 +5,11 @@ Wants=network.target
 
 [Service]
 Type=simple
-# ExecStart=/usr/sbin/pon %i
-# ExecStop=/usr/sbin/poff %i
-# ExecStart=/usr/sbin/pppoe-start /etc/ppp/pppoe.%i.conf
-# ExecStop=/usr/sbin/pppoe-stop /etc/ppp/pppoe.%i.conf
-# PIDFile=/var/run/pppoe.%i.pid
 ExecStart=/usr/sbin/pppd call %i
 SendSIGHUP=yes
 PIDFile=/var/run/ppp-%i.pid
+Restart=always
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target

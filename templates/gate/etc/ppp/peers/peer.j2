@@ -13,13 +13,19 @@ nodefaultroute
 hide-password
 default-asyncmap
 noauth
-mtu 1492
-mru 1492
+mtu {{ pppoe[item].mtu }}
+mru {{ pppoe[item].mru }}
 nodetach
+
+# -- compression --
 noaccomp
 nodeflate
 nopcomp
 novj
 novjccomp
-lcp-echo-interval 20
-lcp-echo-failure 3
+# nobsdcomp
+# noccp
+# nodeflate
+
+lcp-echo-interval {{ pppoe[item].lcp_echo.interval }}
+lcp-echo-failure {{ pppoe[item].lcp_echo.failures }}

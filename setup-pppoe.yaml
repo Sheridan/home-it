@@ -33,18 +33,6 @@
     notify:
     - "restart pppoe@{{ item }}"
 
-  - name: Setup PPPoE options
-    template:
-      src: "templates/gate/etc/ppp/pppoe.conf.j2"
-      dest: "/etc/ppp/pppoe.{{ item }}.conf"
-      owner: root
-      group: root
-      mode: 0644
-    loop: "{{ pppoe.providers }}"
-    notify:
-    - systemd daemon reload
-    - "restart pppoe@{{ item }}"
-
   - name: Setup PPPoE service
     template:
       src: templates/default/etc/systemd/system/pppoe@.service.j2
