@@ -1,0 +1,29 @@
+---
+- hosts: gate
+  vars_files:
+  - vars/prometheus.yaml
+  vars_prompt:
+    - name: "metric"
+      prompt: "metric name (example: curl_touching_http_code)"
+      private: no
+
+    - name: "timeout"
+      prompt: "set wait time in seconds (example: 60)"
+      private: no
+      default: 60
+
+  tasks:
+  - name: "Cleanup {{ metric }} from database"
+    when: metric is defined
+    uri:
+      url: "http://[{{ prometheus.listen.addr }}]:{{ prometheus.listen.port }}/api/v1/admin/tsdb/delete_series?match[]={{ metric }}"
+      return_content: yes
+      method: POST
+      status_code: "{{ [200] }}"
+      timeout: "{{ timeout }}"
+    register: clean_result
+
+  - name: "Cleanup results for {{ metric }}"
+    when: metric is defined
+    debug:
+      msg: "Response: {{ clean_result.content }}"

@@ -1,0 +1,56 @@
+worker_rlimit_nofile 65535;
+user  nginx;
+worker_processes auto;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+
+events { worker_connections 8000; }
+
+
+http
+{
+   proxy_max_temp_file_size 0;
+   sendfile on;
+   tcp_nopush on;
+   tcp_nodelay on;
+   types_hash_max_size 2048;
+   map_hash_bucket_size 64;
+   server_names_hash_bucket_size 64;
+   default_type application/octet-stream;
+   include mime.types;
+   client_max_body_size 500M;
+   server_tokens off;
+   ssl_stapling on;
+   ssl_stapling_verify on;
+   ssl_prefer_server_ciphers   on;
+   ssl_session_cache shared:SSL:10m;
+   ssl_session_timeout 10m;
+#    ssl_dhparam /etc/nginx/dh2048.pem;
+   ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
+   ssl_ciphers !aNULL:!CAMELLIA:!RC4:!SEED:!DES:!MD5:!EXP:HIGH;
+   keepalive_timeout  65;
+   resolver [::1] valid=300s;
+   resolver_timeout 300s;
+
+   gzip on;
+   gzip_comp_level 6;
+   gzip_http_version 1.0;
+   gzip_proxied any;
+   gzip_disable "MSIE [1-6]\.";
+   gzip_types  application/atom+xml
+               application/json
+               application/x-javascript
+               application/javascript
+               application/xml
+               application/xml+rss
+               text/comma-separated-values
+               text/css
+               text/javascript
+               text/plain
+               text/xml
+               image/svg+xml ;
+
+   include /etc/nginx/sites/*.conf;
+}

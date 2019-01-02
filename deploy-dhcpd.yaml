@@ -10,6 +10,14 @@
 
   tasks:
 
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - net-misc/dhcp
+    - net-misc/radvd
+
   - name: Make dhcpd configuration
     template:
       src: "templates/gate/etc/dhcp/dhcpd{{ item }}.conf.j2"

@@ -3,3 +3,4 @@
   - import_playbook: deploy-firewall.yaml
   - import_playbook: deploy-dhcpd.yaml
   - import_playbook: deploy-bind.yaml
+  - import_playbook: deploy-monitoring.yaml

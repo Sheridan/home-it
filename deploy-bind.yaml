@@ -4,11 +4,19 @@
   vars_files:
   - vars/network.yaml
   - vars/bind.yaml
+  - vars/prometheus.yaml
 
   handlers:
   - import_tasks: handlers/systemd.yaml
 
   tasks:
+
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - net-dns/bind
 
   - name: Create log directory
     file:

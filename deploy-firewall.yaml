@@ -9,6 +9,14 @@
   - import_tasks: handlers/systemd.yaml
 
   tasks:
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - sys-apps/iproute2
+    - net-firewall/iptables
+
   - name: Create conf directory
     file:
       path: /etc/iptables

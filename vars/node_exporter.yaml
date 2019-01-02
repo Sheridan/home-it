@@ -1,0 +1,70 @@
+---
+  node_exporter:
+    textfile_dir: /var/lib/node_exporter/textfile_collector
+    listen:
+      port: 9100
+    collectors:
+      enabled:
+      - arp
+      - conntrack
+      - cpu
+      - diskstats
+      - entropy
+      - filefd
+      - filesystem
+      - hwmon
+      - loadavg
+      - meminfo
+      - meminfo_numa
+      - mountstats
+      - netdev
+      - netstat
+      - sockstat
+      - systemd
+      - stat
+      - time
+      - uname
+      all:
+      - arp
+      - bcache
+      - bonding
+      - buddyinfo
+      - conntrack
+      - cpu
+      - diskstats
+      - drbd
+      - edac
+      - entropy
+      - filefd
+      - filesystem
+      - hwmon
+      - infiniband
+      - interrupts
+      - ipvs
+      - ksmd
+      - loadavg
+      - logind
+      - mdadm
+      - meminfo
+      - meminfo_numa
+      - mountstats
+      - netdev
+      - netstat
+      - nfs
+      - nfsd
+      - ntp
+      - qdisc
+      - runit
+      - sockstat
+      - stat
+      - supervisord
+      - systemd
+      - tcpstat
+      - textfile
+      - time
+      - uname
+      - vmstat
+      - wifi
+      - xfs
+      - zfs
+      - timex

@@ -50,7 +50,6 @@ options
   #check-names response ignore;
 };
 
-
 logging {
         channel default_log { file "/var/log/named/default.log" versions 5 size 50M; print-time yes; print-severity yes; print-category yes; }; category default { default_log; };
 
@@ -76,9 +75,18 @@ logging {
 
 
 #include "/etc/bind/rndc.key";
-controls {
+controls
+{
         inet 127.0.0.1 port 953 allow { 127.0.0.1/32; ::1/128; };
 };
+statistics-channels
+{
+  inet {{ bind_exporter.bind.addr }} port {{ bind_exporter.bind.port }} allow
+  {
+    127.0.0.1/32;
+    ::1/128;
+  };
+}; # bind_exporter
 
 zone "." in
 {

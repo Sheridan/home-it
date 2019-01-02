@@ -1,0 +1,8 @@
+{% set interfaces = network|selectattr('ifname', 'match', '(ethernet|wifi|internal)_.*') %}
+- targets:
+{% for interface in interfaces %}
+  - '{{ inventory_hostname }}:{{ node_exporter.listen.port }}'
+{% endfor %}
+  labels:
+    job: node_exporter
+    host: {{ inventory_hostname }}

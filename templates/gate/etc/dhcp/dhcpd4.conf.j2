@@ -5,21 +5,24 @@
 ddns-update-style none;
 authoritative;
 
-subnet {{ networks.home.subnet.ipv4.net }} netmask {{ networks.home.subnet.ipv4.mask.long }}
+shared-network "sheridan-home"
 {
-  interface {{ interface.ifname }};
-  option domain-name "{{ networks.home.domain }}";
-  option domain-name-servers ns.{{ networks.home.domain }};
-  default-lease-time {{ dhcp.lease_time }};
-  max-lease-time {{ dhcp.lease_time * 4 }};
-  option subnet-mask {{ networks.home.subnet.ipv4.mask.long }};
-  option broadcast-address {{ networks.home.subnet.ipv4.broadcast }};
-  option routers {{ networks.home.gateway.ipv4.ip }};
-  pool
+  subnet {{ networks.home.subnet.ipv4.net }} netmask {{ networks.home.subnet.ipv4.mask.long }}
   {
-    range {{ query('ship', 'ip', 200).ipv4.ip }} {{ query('ship', 'ip', 250).ipv4.ip }};
-    allow unknown-clients;
-  } # guests
+    interface {{ interface.ifname }};
+    option domain-name "{{ networks.home.domain }}";
+    option domain-name-servers ns.{{ networks.home.domain }};
+    default-lease-time {{ dhcp.lease_time }};
+    max-lease-time {{ dhcp.lease_time * 4 }};
+    option subnet-mask {{ networks.home.subnet.ipv4.mask.long }};
+    option broadcast-address {{ networks.home.subnet.ipv4.broadcast }};
+    option routers {{ networks.home.gateway.ipv4.ip }};
+    pool
+    {
+      range {{ query('ship', 'ip', 200).ipv4.ip }} {{ query('ship', 'ip', 250).ipv4.ip }};
+      allow unknown-clients;
+    } # guests
+  }
 }
 
 {% for inventory_hostname in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}

@@ -4,7 +4,7 @@
     ifname: "internal_0"
     dns:
       aliases:
-        - garfana
+        - grafana
         - prometheus
     mac: "94:de:80:6c:66:b0"
     ip: "{{ query('ship', 'ip', 1) }}"
@@ -74,3 +74,16 @@
         interfaces:
           - "internal"
           - "external"
+      web:
+        name: "web"
+        ports:
+        - 80
+        - 443
+        interfaces:
+          - "internal"
+          - "external"
+
+  node_exporter:
+    collectors:
+      enabled:
+      - textfile

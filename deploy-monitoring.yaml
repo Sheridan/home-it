@@ -1,0 +1,92 @@
+---
+- hosts: gate
+  remote_user: root
+  vars_files:
+  - vars/network.yaml
+  - vars/grafana.yaml
+  - vars/prometheus.yaml
+
+  handlers:
+  - import_tasks: handlers/systemd.yaml
+
+  tasks:
+
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - app-metrics/prometheus
+    - www-apps/grafana-bin
+    - app-metrics/bind_exporter
+
+  - name: create dirs for prometheus
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: prometheus
+    with_items:
+      - /etc/prometheus/
+      - /etc/prometheus/rules
+      - /etc/prometheus/file_sd_configs
+      - /var/lib/prometheus
+      - /var/lib/prometheus/metrics
+
+  - name: deploy prometheus configuration
+    template:
+      owner: root
+      group: root
+      src: "templates/gate/{{ item.file }}.j2"
+      dest: "/{{ item.file }}"
+      mode: "{{ item.mode }}"
+    with_items:
+        - { mode: 644, file: 'etc/prometheus/prometheus.yaml' }
+        - { mode: 644, file: 'etc/systemd/system/prometheus.service' }
+        - { mode: 644, file: 'etc/prometheus/file_sd_configs/prometheus.yaml' }
+        - { mode: 644, file: 'etc/prometheus/file_sd_configs/bind_exporter.yaml' }
+    notify:
+    - systemd daemon reload
+    - restart prometheus
+
+  - name: deploy grafana configuration
+    template:
+      owner: root
+      group: root
+      src: "templates/gate/{{ item.file }}.j2"
+      dest: "/{{ item.file }}"
+      mode: "{{ item.mode }}"
+    notify: restart grafana
+    with_items:
+        - { mode: 644, file: 'etc/grafana/grafana.ini' }
+
+  - name: deploy nginx configuration
+    template:
+      owner: nginx
+      group: nginx
+      src: templates/gate/etc/nginx/sites/simple_proxy.conf.j2
+      dest: "/etc/nginx/sites/{{ item.name }}.conf"
+      mode: 0644
+    with_items:
+        - { name: grafana   , target: { addr: "{{ grafana.listen.addr }}"   , port: "{{ grafana.listen.port }}"    } }
+        - { name: prometheus, target: { addr: "{{ prometheus.listen.addr }}", port: "{{ prometheus.listen.port }}" } }
+    notify:
+    - restart nginx
+
+  - name: deploy bind_exporter configuration
+    template:
+      owner: bind_exporter
+      src: templates/gate/etc/systemd/system/bind_exporter.service.j2
+      dest: /etc/systemd/system/bind_exporter.service
+      mode: 644
+    notify:
+    - systemd daemon reload
+    - restart bind_exporter
+
+  - name: Enabling services
+    service:
+      name: "{{ item }}"
+      enabled: yes
+    loop:
+      - grafana
+      - prometheus
+      - bind_exporter

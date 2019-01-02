@@ -49,7 +49,7 @@ COMMIT
 {% for protocol in ['tcp', 'udp'] %}
 {% for rule_interface_name_part in rule.interfaces %}
 {% for rule_interface in network|selectattr('ifname', 'match', '.*' + rule_interface_name_part + '.*')|list %}
--A INPUT -i {{ rule_interface.ifname }} -p {{ protocol }} {% if 'ports' in rule %} -m multiport --dports {{ rule.ports|join(',') }} {% endif %} -m comment --comment "[->{{ ansible_hostname }}] {{ rule.name }} [{{ protocol }}]" -j ACCEPT
+-A INPUT -i {{ rule_interface.ifname }} -p {{ protocol }} {% if 'ports' in rule %} -m multiport --dports {{ rule.ports|join(',') }} {% endif %} -m comment --comment "[->{{ inventory_hostname }}] {{ rule.name }} [{{ protocol }}]" -j ACCEPT
 {% endfor %}
 {% endfor %}
 {% endfor %}

@@ -1,0 +1,13 @@
+---
+  prometheus:
+    data_retention: "{{60 * 24 * 16}}h"
+    listen:
+      addr: ::1
+      port: 9090
+  bind_exporter:
+    listen:
+      addr: ::1
+      port: 9089
+    bind:
+      addr: ::1
+      port: 8053

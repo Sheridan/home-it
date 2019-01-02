@@ -23,12 +23,6 @@ class ConfigLoader:
             except yaml.YAMLError as exc:
                 print(exc)
 
-class ClassIP:
-    def __init__(self, ipv4, ipv6):
-        self.ipv4 = ipv4
-        self.ipv6 = ipv6
-    def ipv4(self):
-        return self.ipv4
 
 prepared_data = None
 try:

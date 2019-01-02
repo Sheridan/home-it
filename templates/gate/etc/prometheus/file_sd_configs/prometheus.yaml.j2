@@ -1,0 +1,5 @@
+- targets:
+  - '[{{ prometheus.listen.addr }}]:{{ prometheus.listen.port }}'
+  labels:
+    job: prometheus
+    host: {{ inventory_hostname }}

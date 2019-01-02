@@ -1,0 +1,27 @@
+{% if 'node_exporter' in hostvars[inventory_hostname] and
+      'collectors'    in hostvars[inventory_hostname].node_exporter %}
+    {% set enabled_collectors = (node_exporter.collectors.enabled|union(hostvars[inventory_hostname].node_exporter.collectors.enabled))|sort|unique %}
+{% else %}
+    {% set enabled_collectors = node_exporter.collectors.enabled|sort|unique %}
+{% endif %}
+[Unit]
+Description=Node exporter service
+After=network-online.target
+
+[Service]
+User=node_exporter
+Restart=on-failure
+ExecStart=/usr/bin/node_exporter \
+      {% for collector in enabled_collectors %}
+      --collector.{{ collector }} \
+      {% endfor -%}
+      {% for collector in (node_exporter.collectors.all|difference(enabled_collectors))|sort|unique %}
+      --no-collector.{{ collector }} \
+      {% endfor -%}
+      --web.listen-address=[::]:{{ node_exporter.listen.port }} \
+      --collector.diskstats.ignored-devices=^(ram|loop|fd)\d+$ \
+      --collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/) \
+      --collector.textfile.directory="{{ node_exporter.textfile_dir }}/"
+
+[Install]
+WantedBy=multi-user.target
