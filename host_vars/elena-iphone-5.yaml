@@ -2,6 +2,7 @@
   network:
   - name: "Internal"
     mac: "84:8e:0c:61:6f:c6"
+    duid: "00:01:00:01:22:5d:50:dc:84:8e:0c:61:6f:c6"
     ip: "{{ query('ship', 'ip', 30) }}"
     network: 'home'
     type: 'dhcp'
