@@ -45,3 +45,17 @@
       - templates/default/etc/systemd/network/interface.netdev.j2
     notify:
     - restart networkd
+
+  - name: "Setup systemd bridge netdev files ({{ target_interface.ifname }})"
+    template:
+      src: "{{ item }}"
+      dest: "/etc/systemd/network/{{ target_interface.ifname }}.netdev"
+      owner: root
+      group: root
+      mode: 0644
+    when: target_interface.ifname is defined and target_interface.type == 'bridge'
+    with_first_found:
+      - "templates/{{ inventory_hostname }}/etc/systemd/network/{{ target_interface.ifname }}.netdev.j2"
+      - templates/default/etc/systemd/network/bridge.netdev.j2
+    notify:
+    - restart networkd

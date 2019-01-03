@@ -1,6 +1,0 @@
-{% set interface = network|selectattr('ifname', 'match', 'bridge_' + item.1 + '.*')|first %}
-[Match]
-
-[NetDev]
-Name={{ interface.ifname }}
-Kind=bridge

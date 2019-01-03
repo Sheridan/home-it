@@ -28,6 +28,7 @@
   - name: "External RT"
     ifname: "external_rt_0"
     type: "pppoe"
+    bridge: "bridge_rt_0"
     ip:
       ipv4: 'dynamic'
 

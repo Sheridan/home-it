@@ -9,6 +9,7 @@
   - import_tasks: handlers/systemd.yaml
 
   tasks:
+
   - name: Setup PPPoE passwords
     template:
       src: "templates/gate/etc/ppp/secrets.j2"
