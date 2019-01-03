@@ -43,6 +43,7 @@
     notify:
     - systemd daemon reload
     - restart pppoe
+    # TODO: Добавить поднятие бриджа
 
   - name: Enabling PPPoE services
     service:

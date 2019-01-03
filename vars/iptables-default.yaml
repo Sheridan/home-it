@@ -28,7 +28,10 @@
         - 563
         - 119
 
-
+  ballance_global:
+    mark:
+      rt: 2
+      kis: 3
   # iptables:
   #   host_to_internet:
   #   - name: "Default http"
