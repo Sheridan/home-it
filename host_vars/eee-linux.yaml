@@ -15,3 +15,7 @@
     ip: "{{ query('ship', 'ip', 21) }}"
     network: 'home'
     type: 'dhcp'
+
+  kernel:
+    genkernel:
+      enabled: no

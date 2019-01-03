@@ -1,0 +1,25 @@
+#!/bin/bash
+cd linux
+
+function exit_test
+{
+    if [ $1 -ne 0 ]
+    then
+        echo "Failed. exiting."
+        exit $1
+    fi
+}
+
+echo "---> Building kernel <---"
+make -j{{ ansible_processor_vcpus }} bzImage modules
+exit_test $?
+echo "---> Installing kernel <---"
+make modules_install install
+exit_test $?
+{% if kernel.genkernel.enabled %}
+    echo "---> Building initramfs <---"
+    genkernel {% for option in kernel.genkernel.options|default([]) %} --{{ option}} {% endfor %} initramfs
+    exit_test $?
+{% endif %}
+echo "---> Making grub config <---"
+grub-mkconfig -o /boot/grub/grub.cfg

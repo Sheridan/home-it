@@ -93,3 +93,14 @@
     collectors:
       enabled:
       - textfile
+
+  kernel:
+    genkernel:
+      enabled: yes
+      options:
+        - btrfs
+        - no-zfs
+        - no-lvm
+        - no-mdadm
+        - no-dmraid
+        - no-luks

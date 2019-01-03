@@ -1,0 +1,47 @@
+- hosts: workstations-linux,gate
+  remote_user: root
+  vars_files:
+  - vars/network.yaml
+
+  handlers:
+  - import_tasks: handlers/systemd.yaml
+
+  tasks:
+
+  - name: Setup device names
+    template:
+      src: "templates/default/etc/udev/rules.d/00-network.rules.j2"
+      dest: /etc/udev/rules.d/00-network.rules
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - restart networkd
+
+  - name: Setup network interface files
+    include_tasks: tasks/systemd/network/setup-interface.yaml
+    loop: "{{ network }}"
+    loop_control:
+      loop_var: target_interface
+
+  - name: Setup kernel scripts
+    template:
+      src: "templates/default/{{ item }}.j2"
+      dest: "/{{ item }}"
+      owner: root
+      group: root
+      mode: 0744
+    loop:
+    - usr/src/build.sh
+    - usr/src/configure.sh
+
+  - name: Setup kernel options
+    lineinfile:
+      path: /usr/src/linux/.config
+      regexp: '^(# )?{{ item.option }}='
+      line: '{{ item.option }}={{ item.value }}'
+      backup: yes
+    loop:
+      - { option: 'CONFIG_LOCALVERSION', value: '".Sheridan.home.{{ inventory_hostname }}"' }
+      - { option: 'CONFIG_LOCALVERSION_AUTO', value: 'y' }
+      - { option: 'CONFIG_DEFAULT_HOSTNAME', value: '"{{ inventory_hostname }}"' }

@@ -7,3 +7,7 @@
     ip: "{{ query('ship', 'ip', 10) }}"
     network: 'home'
     type: 'dhcp'
+
+  kernel:
+    genkernel:
+      enabled: no
