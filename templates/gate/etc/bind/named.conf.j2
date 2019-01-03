@@ -14,6 +14,9 @@ acl "trusted"
 
 acl Internal { {{ networks.home.subnet.ipv4.full }}; {{ networks.home.subnet.ipv6.full }}; localhost; };
 
+server ::/0 { edns yes; };
+server 0.0.0.0/0 { edns yes; };
+
 options
 {
   directory "/var/bind";
@@ -48,6 +51,9 @@ options
   #check-names master ignore;
   #check-names slave ignore;
   #check-names response ignore;
+
+  dnssec-enable yes;
+  dnssec-validation auto;
 };
 
 logging {

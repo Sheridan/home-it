@@ -6,13 +6,13 @@ zone "{{ networks.home.domain }}" in
 {
         type master;
         file "/etc/bind/pri/{{ networks.home.domain }}.zone";
-        notify yes;
+        notify no;
 };
 
 # zone "{{ networks.home.subnet.ipv4.reverse }}" in
 # {
 #         type master;
 #         file "/etc/bind/pri/{{ networks.home.subnet.ipv4.reverse }}zone";
-#         notify yes;
+#         notify no;
 # };
 # TODO: Сделать arpa!
