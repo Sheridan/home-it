@@ -1,0 +1,123 @@
+#!/sbin/nft -f
+
+{% set internal_interface = network|selectattr('ifname', 'match', 'internal_.*')|first %}
+{% set external_interfaces = network|selectattr('ifname', 'match', 'external_.*')|list %}
+
+flush ruleset
+
+# filter, inet
+table inet filter {
+  chain output {
+    type filter hook output priority 0; policy accept;
+    # default global rules
+    {% for rule_name in firewall_global.host_to_internet|list -%}
+      {%- set rule = firewall_global.host_to_internet[rule_name] -%}
+      {%- for external_interface in external_interfaces -%}
+        {%- for protocol in ['tcp', 'udp'] -%}
+          {%- for ip_version in ['ipv4', 'ipv6'] -%}
+            {%- if ip_version in external_interface.ip -%}
+            {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
+    {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ networks.home.subnet[ip_version].full }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} {{ rule.policy|default('accept') }} comment "[network->internet] {{ rule.name }} [{{ protocol }}]"
+    {# -#}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    {%- endfor -%}
+
+    # output per host
+    {% for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
+      {%- set host = hostvars[host_name] -%}
+      {%- if 'firewall' in host -%}
+        {%- for host_internal_interface in host.network -%}
+          {%- for rule_name in host.firewall.host_to_internet -%}
+            {%- set rule = host.firewall.host_to_internet[rule_name] -%}
+            {%- for external_interface in external_interfaces -%}
+              {%- for protocol in ['tcp', 'udp'] -%}
+                {%- for ip_version in ['ipv4', 'ipv6'] -%}
+                  {%- if ip_version in external_interface.ip -%}
+                    {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
+    {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ host_internal_interface.ip[ip_version].ip }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} {{ rule.policy|default('accept') }} comment "[{{ host_name }}->internet] {{ rule.name }} [{{ protocol }}]"
+    {# -#}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endfor -%}
+            {%- endfor -%}
+          {%- endfor -%}
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+    counter comment "count accepted packets"
+  }
+
+  chain forward {
+    type filter hook forward priority 0; policy drop;
+    # Masquerading forwards
+    {% for external_interface in external_interfaces -%}
+      {%- for ip_version in ['ipv4', 'ipv6'] -%}
+        {%- if ip_version in external_interface.ip -%}
+        {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
+    {{ query('nft', 'as_iif', internal_interface) }} {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ networks.home.subnet[ip_version].full }} counter accept comment "Forwarding net->internet for {{ external_interface.name }} ({{ external_interface.ifname }})"
+    {{ query('nft', 'as_iif', external_interface) }} {{ query('nft', 'as_oif', internal_interface) }} {{ nfipv }} daddr {{ networks.home.subnet[ip_version].full }} counter accept comment "Forwarding net<-internet for {{ external_interface.name }} ({{ external_interface.ifname }})"
+    {# -#}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endfor -%}
+
+    counter comment "count dropped packets"
+  }
+
+  chain input {
+    type filter hook input priority 0; policy drop;
+    ct state invalid counter drop comment "drop invalid packets"
+    ct state {established, related} counter accept comment "accept all connections related to connections made by us"
+    iif lo accept comment "accept loopback"
+    iif != lo ip daddr 127.0.0.1/8 counter drop comment "drop connections to loopback not coming from loopback"
+    iif != lo ip6 daddr ::1/128 counter drop comment "drop connections to loopback not coming from loopback"
+    ip protocol icmp counter accept comment "accept all icmp types"
+    ip6 nexthdr icmpv6 counter accept comment "accept all icmp types"
+    tcp dport 22 counter accept comment "accept ssh"
+    # to_host
+    {% for rule_name in firewall.to_host|list -%}
+        {%- set rule = firewall.to_host[rule_name] -%}
+        {%- for protocol in ['tcp', 'udp'] -%}
+            {%- for rule_interface_name_part in rule.interfaces -%}
+                {%- for rule_interface in network|selectattr('ifname', 'match', '.*' + rule_interface_name_part + '.*')|list -%}
+    {{ query('nft', 'as_iif', rule_interface) }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} accept comment "[->{{ inventory_hostname }}] {{ rule.name }} [{{ protocol }}]"
+    {# -#}
+              {%- endfor -%}
+            {%- endfor -%}
+        {%- endfor -%}
+    {%- endfor -%}
+    counter comment "count dropped packets"
+  }
+}
+
+# nat, ipv4
+table ip nat {
+  chain prerouting {
+    type nat hook prerouting priority 0; policy accept;
+    counter comment "count accepted packets"
+  }
+
+  chain input {
+    type nat hook input priority 0; policy accept;
+    counter comment "count accepted packets"
+  }
+
+  chain output {
+    type nat hook output priority 0; policy accept;
+    counter comment "count accepted packets"
+  }
+
+  chain postrouting {
+    type nat hook postrouting priority 0; policy accept;
+    {% for external_interface in external_interfaces -%}
+        {%- if 'ipv4' in external_interface.ip -%}
+    ip saddr {{ networks.home.subnet.ipv4.full }} {{ query('nft', 'as_oif', external_interface) }} masquerade
+    {# -#}
+        {%- endif -%}
+    {%- endfor -%}
+    counter comment "count accepted packets"
+  }
+}

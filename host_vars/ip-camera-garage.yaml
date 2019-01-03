@@ -6,7 +6,7 @@
     network: 'home'
     type: 'dhcp'
 
-  iptables:
+  firewall:
     host_to_internet:
       email:
         name: "Mail"

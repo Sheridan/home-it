@@ -49,12 +49,12 @@
     network: 'henet'
     type: 'static'
 
-  iptables:
+  firewall:
     to_host:
       proxy:
         name: "Proxy"
         ports:
-        - 3128:3129
+        - 3128-3129
         interfaces:
           - "internal"
       dhcpd:
@@ -87,7 +87,6 @@
         - 443
         interfaces:
           - "internal"
-          - "external"
 
   node_exporter:
     collectors:

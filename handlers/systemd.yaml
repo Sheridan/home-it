@@ -25,13 +25,8 @@
       name: named
       state: restarted
 
-  - name: reload firewall
-    service:
-      name: "firewall@{{ item }}"
-      state: reloaded
-    loop:
-      - 6
-      - 4
+  - name: update firewall
+    include_tasks: firewall.yaml
 
   - name: restart prometheus
     service:

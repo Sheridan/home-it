@@ -1,0 +1,24 @@
+---
+  - name: Checking firewall ruleset
+    shell: "nft --check -f /etc/nftables/nftables.rules"
+    register: firewall_check_result
+
+  # - debug:
+  #     msg: "{{ firewall_check_result }}"
+
+  - name: Looking result
+    set_fact:
+      firewall_success: "{{ not firewall_check_result.failed and firewall_check_result.stderr_lines|length == 0 and firewall_check_result.stdout_lines|length == 0 }}"
+
+  # - debug:
+  #     msg: "{{ firewall_success }}"
+
+  - name: Update firewall ruleset
+    shell: "nft -f /etc/nftables/nftables.rules"
+    when: firewall_success
+
+  - name: Storing firewall ruleset
+    service:
+      name: nftables-restore
+      state: restarted
+    when: firewall_success

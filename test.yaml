@@ -3,7 +3,7 @@
   gather_facts: False
   vars_files:
   - vars/network.yaml
-  - vars/iptables-default.yaml
+  - vars/firewall-default.yaml
   vars:
     a: "{{ query('ship', 'ip', 100) }}"
     b: "{{ a }}"

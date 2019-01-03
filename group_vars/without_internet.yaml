@@ -1,11 +1,6 @@
 ---
-  iptables:
+  firewall:
     host_to_internet:
       reject:
         name: "Reject all"
-        policy: "REJECT"
-
-  # iptables:
-  #   host_to_internet:
-  #   - name: "Reject all"
-  #     policy: "REJECT"
+        policy: "reject"

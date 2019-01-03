@@ -1,10 +1,10 @@
 ---
-  iptables:
+  firewall:
     host_to_internet:
       torrent:
         name: "Torrent"
         ports:
-        - 6881:6889
+        - 6881-6889
       email:
         name: "Mail"
         ports:
@@ -23,14 +23,3 @@
         name: "IRC"
         ports:
         - 6667
-
-  # iptables:
-  #   host_to_internet:
-  #   - name: "Torrent"
-  #     ports: "6881:6889"
-  #   - name: "Mail"
-  #     ports: "25,110,143,587,465,993,995"
-  #   - name: "Socks"
-  #     ports: "1080"
-  #   - name: "IRC"
-  #     ports: "6667"

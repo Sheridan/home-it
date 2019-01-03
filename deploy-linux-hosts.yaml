@@ -45,3 +45,5 @@
       - { option: 'CONFIG_LOCALVERSION', value: '".Sheridan.home.{{ inventory_hostname }}"' }
       - { option: 'CONFIG_LOCALVERSION_AUTO', value: 'y' }
       - { option: 'CONFIG_DEFAULT_HOSTNAME', value: '"{{ inventory_hostname }}"' }
+
+# app-misc/jq

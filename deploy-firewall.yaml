@@ -3,7 +3,7 @@
   remote_user: root
   vars_files:
   - vars/network.yaml
-  - vars/iptables-default.yaml
+  - vars/firewall-default.yaml
 
   handlers:
   - import_tasks: handlers/systemd.yaml
@@ -15,11 +15,11 @@
       state: present
     with_items:
     - sys-apps/iproute2
-    - net-firewall/iptables
+    - net-firewall/nftables
 
   - name: Create conf directory
     file:
-      path: /etc/iptables
+      path: /etc/nftables
       state: directory
       owner: root
       group: root
@@ -27,46 +27,15 @@
 
   - name: make configuration
     template:
-      src: templates/gate/etc/iptables/iptables.conf.j2
-      dest: "/etc/iptables/iptables.{{ item }}.conf"
-      owner: root
-      group: root
-      mode: 0644
-    loop:
-      - 4
-      - 6
-    notify:
-    - reload firewall
-
-  - name: Install iptables save/restore service
-    template:
-      src: templates/default/etc/systemd/system/firewall@.service.j2
-      dest: /etc/systemd/system/firewall@.service
+      src: templates/gate/etc/nftables/nftables.rules.j2
+      dest: "/etc/nftables/nftables.rules"
       owner: root
       group: root
       mode: 0644
     notify:
-    - systemd daemon reload
+      - update firewall
 
-  - name: Install scripts for firewall save/restore
-    template:
-      src: "templates/default/usr/local/bin/{{ item }}"
-      dest: "/usr/local/bin/{{ item }}"
-      owner: root
-      group: root
-      mode: 0744
-    with_items:
-    - firewall-load.sh
-    - firewall-save.sh
-    - firewall-reload.sh
-    notify:
-    - systemd daemon reload
-    - reload firewall
-
-  - name: Enabling services
+  - name: Enabling firewall service
     service:
-      name: "firewall@{{ item }}"
+      name: nftables-restore
       enabled: yes
-    loop:
-      - 4
-      - 6
