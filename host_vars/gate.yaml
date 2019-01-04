@@ -17,8 +17,6 @@
     dns:
       aliases:
         - www
-        - root
-        - ns
     mac: "50:3e:aa:04:8f:b0"
     ip:
       ipv4: "{{ query('ship', 'kis_ip', 2) }}"

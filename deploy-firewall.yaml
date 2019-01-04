@@ -3,7 +3,7 @@
   remote_user: root
   vars_files:
   - vars/network.yaml
-  - vars/firewall-default.yaml
+  - vars/firewall.yaml
 
   handlers:
   - import_tasks: handlers/systemd.yaml
@@ -25,10 +25,31 @@
       group: root
       mode: 0644
 
+  - name: Install manager script
+    template:
+      src: templates/default/usr/local/bin/firewall-manager.sh.j2
+      dest: /usr/local/bin/firewall-manager.sh
+      owner: root
+      group: root
+      mode: 0744
+    notify:
+      - update firewall
+
+  - name: Install firewall service
+    template:
+      src: templates/default/etc/systemd/system/firewall.service.j2
+      dest: /etc/systemd/system/firewall.service
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - systemd daemon reload
+    - update firewall
+
   - name: make configuration
     template:
       src: templates/gate/etc/nftables/nftables.rules.j2
-      dest: "/etc/nftables/nftables.rules"
+      dest: "{{ firewall_global.service.rules }}"
       owner: root
       group: root
       mode: 0644
@@ -37,5 +58,5 @@
 
   - name: Enabling firewall service
     service:
-      name: nftables-restore
+      name: firewall
       enabled: yes

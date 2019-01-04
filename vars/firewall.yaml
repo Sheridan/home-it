@@ -1,5 +1,7 @@
 ---
   firewall_global:
+    service:
+      rules: /etc/nftables/nftables.rules
     host_to_internet:
       http:
         name: "Default http"

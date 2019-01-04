@@ -1,1 +1,33 @@
 bind:
+  logging:
+    categoryes:
+    - client
+    - cname
+    - config
+    - database
+    - default
+    - delegation-only
+    - dispatch
+    - dnssec
+    - dnstap
+    - edns-disabled
+    - general
+    - lame-servers
+    - network
+    - notify
+    - queries
+    - query-errors
+    - rate-limit
+    - resolver
+    - rpz
+    - security
+    - spill
+    - trust-anchor-telemetry
+    - unmatched
+    - update
+    - update-security
+    - xfer-in
+    - xfer-out
+    versions: 2
+    max_size: 32M
+    severity: info

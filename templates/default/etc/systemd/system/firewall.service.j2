@@ -1,0 +1,14 @@
+[Unit]
+Description=NFTables firewall service
+Before=network-pre.target
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/firewall-manager.sh start
+ExecStop=/usr/local/bin/firewall-manager.sh stop
+ExecReload=/usr/local/bin/firewall-manager.sh reload
+
+[Install]
+WantedBy=basic.target
