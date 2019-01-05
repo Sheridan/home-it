@@ -74,3 +74,8 @@
       name: "pppoe@{{ item }}"
       state: restarted
     loop: "{{ pppoe.providers }}"
+
+  - name: restart sshd
+    service:
+      name: sshd
+      state: restarted

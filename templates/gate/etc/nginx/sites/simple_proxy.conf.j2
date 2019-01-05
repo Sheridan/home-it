@@ -1,3 +1,4 @@
+{% set interface = network|selectattr('ifname', 'match', 'internal_.*')|first %}
 upstream {{ item.name }}
 {
   server [{{ item.target.addr }}]:{{ item.target.port }};
@@ -5,8 +6,8 @@ upstream {{ item.name }}
 
 server
 {
-  listen 80;
-  listen [::]:80;
+  listen {{ interface.ip.ipv4.ip }}:80;
+  listen [{{ interface.ip.ipv6.ip }}]:80;
   server_name          {{ item.name }}.{{ networks.home.domain }};
   access_log           /var/log/nginx/{{ item.name }}.access.log;
   error_log            /var/log/nginx/{{ item.name }}.error.log;

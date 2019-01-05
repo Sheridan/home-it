@@ -3,9 +3,11 @@
   remote_user: root
   vars_files:
   - vars/network.yaml
+  - vars/sh.yaml
 
   handlers:
   - import_tasks: handlers/systemd.yaml
+  - import_tasks: handlers/motd.yaml
 
   tasks:
 
@@ -15,6 +17,8 @@
       state: present
     with_items:
     - www-servers/nginx
+    notify:
+    - update motd
 
   - name: create dirs for nginx
     file:
@@ -24,6 +28,8 @@
     with_items:
       - /etc/nginx/sites
       - /var/log/nginx
+    notify:
+    - update motd
 
   - name: deploy nginx configuration
     template:
@@ -34,6 +40,7 @@
       mode: 0644
     notify:
     - restart nginx
+    - update motd
 
   - name: Enabling services
     service:

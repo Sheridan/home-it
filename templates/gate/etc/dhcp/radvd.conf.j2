@@ -3,7 +3,6 @@
 interface {{ interface.ifname }}
 {
     AdvSendAdvert on;
-    # AdvDefaultPreference high;
     AdvManagedFlag on;
     AdvOtherConfigFlag on;
 
@@ -21,6 +20,4 @@ interface {{ interface.ifname }}
     DNSSL {{ networks.home.domain }}
     {
     };
-
-    # route ::/0 {};
 };

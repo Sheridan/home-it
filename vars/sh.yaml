@@ -1,0 +1,21 @@
+---
+  sh_escape: "\e"
+  sh:
+    colors:
+      default:       "{{ sh_escape }}[39m"
+      white:         "{{ sh_escape }}[97m"
+      black:         "{{ sh_escape }}[30m"
+      red:           "{{ sh_escape }}[31m"
+      light_red:     "{{ sh_escape }}[91m"
+      green:         "{{ sh_escape }}[32m"
+      light_green:   "{{ sh_escape }}[92m"
+      yellow:        "{{ sh_escape }}[33m"
+      light_yellow:  "{{ sh_escape }}[93m"
+      blue:          "{{ sh_escape }}[34m"
+      light_blue:    "{{ sh_escape }}[94m"
+      magenta:       "{{ sh_escape }}[35m"
+      light_magenta: "{{ sh_escape }}[95m"
+      cyan:          "{{ sh_escape }}[36m"
+      light_cyan:    "{{ sh_escape }}[96m"
+      gray:          "{{ sh_escape }}[90m"
+      light_gray:    "{{ sh_escape }}[37m"

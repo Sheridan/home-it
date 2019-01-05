@@ -3,16 +3,10 @@
     shell: "nft --check -f {{ firewall_global.service.rules }}"
     register: firewall_check_result
 
-  # - debug:
-  #     msg: "{{ firewall_check_result }}"
-
   - name: Looking result
     set_fact:
       firewall_success: "{{ not firewall_check_result.failed and firewall_check_result.stderr_lines|length == 0 and firewall_check_result.stdout_lines|length == 0 }}"
     when: not ansible_check_mode
-
-  # - debug:
-  #     msg: "{{ firewall_success }}"
 
   - name: Reload firewall ruleset
     service:

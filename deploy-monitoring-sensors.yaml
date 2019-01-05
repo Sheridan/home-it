@@ -4,9 +4,11 @@
   vars_files:
   - vars/network.yaml
   - vars/node_exporter.yaml
+  - vars/sh.yaml
 
   handlers:
   - import_tasks: handlers/systemd.yaml
+  - import_tasks: handlers/motd.yaml
 
   tasks:
 
@@ -16,6 +18,8 @@
       state: present
     with_items:
     - app-metrics/node_exporter
+    notify:
+    - update motd
 
   - name: create dirs for node_exporter
     file:
@@ -24,6 +28,8 @@
       owner: node_exporter
     with_items:
       - /var/lib/node_exporter/textfile_collector
+    notify:
+    - update motd
 
   - name: deploy node_exporter configuration
     template:
@@ -34,6 +40,7 @@
     notify:
     - systemd daemon reload
     - restart node_exporter
+    - update motd
 
   - name: Deploy config to prometheus
     template:
@@ -44,6 +51,7 @@
     delegate_to: gate
     notify:
     - restart gate prometheus
+    - update motd
 
   - name: Enabling services
     service:

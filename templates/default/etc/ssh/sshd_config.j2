@@ -1,0 +1,58 @@
+#Managed by ansible. Editing is useless
+#Sheridan
+
+Protocol 2
+Port 22
+AddressFamily any
+{% for interface in network -%}
+    {%- if interface.type in ['static', 'dhcp'] -%}
+        {%- for ip_ver in ['ipv4', 'ipv6'] -%}
+            {%- if ip_ver in interface.ip -%}
+ListenAddress {{ interface.ip[ip_ver].ip }}
+{# -#}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
+{%- endfor -%}
+
+SyslogFacility AUTH
+LogLevel INFO
+
+LoginGraceTime 30
+PermitRootLogin without-password
+
+StrictModes yes
+MaxAuthTries 3
+MaxSessions 8
+
+PubkeyAuthentication yes
+
+AuthorizedKeysFile .ssh/authorized_keys
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+PasswordAuthentication no
+PermitEmptyPasswords no
+
+UsePAM yes
+
+AllowAgentForwarding yes
+AllowTcpForwarding yes
+PrintMotd no
+PrintLastLog yes
+MaxStartups 2:50:10
+
+AcceptEnv LANG LC_ALL LC_COLLATE LC_CTYPE LC_MESSAGES LC_MONETARY LC_NUMERIC LC_TIME LANGUAGE LC_ADDRESS LC_IDENTIFICATION LC_MEASUREMENT LC_NAME LC_PAPER LC_TELEPHONE
+AcceptEnv COLORTERM
+
+Banner /etc/banner
+Subsystem sftp  /usr/lib64/misc/sftp-server
+
+Compression yes
+PermitTTY yes
+
+AllowUsers {{ users|map('json_query','name') | join(' ') }}
+
+Match User sheridan
+  X11Forwarding yes
+  X11DisplayOffset 10
+  X11UseLocalhost yes

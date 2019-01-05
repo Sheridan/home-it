@@ -4,9 +4,11 @@
   vars_files:
   - vars/network.yaml
   - vars/firewall.yaml
+  - vars/sh.yaml
 
   handlers:
   - import_tasks: handlers/systemd.yaml
+  - import_tasks: handlers/motd.yaml
 
   tasks:
   - name: Install packages
@@ -16,6 +18,8 @@
     with_items:
     - sys-apps/iproute2
     - net-firewall/nftables
+    notify:
+    - update motd
 
   - name: Create conf directory
     file:
@@ -24,6 +28,8 @@
       owner: root
       group: root
       mode: 0644
+    notify:
+    - update motd
 
   - name: Install manager script
     template:
@@ -33,7 +39,8 @@
       group: root
       mode: 0744
     notify:
-      - update firewall
+    - update firewall
+    - update motd
 
   - name: Install firewall service
     template:
@@ -45,6 +52,7 @@
     notify:
     - systemd daemon reload
     - update firewall
+    - update motd
 
   - name: make configuration
     template:
@@ -54,7 +62,8 @@
       group: root
       mode: 0644
     notify:
-      - update firewall
+    - update firewall
+    - update motd
 
   - name: Enabling firewall service
     service:

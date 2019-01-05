@@ -8,14 +8,12 @@ option dhcp6.name-servers {{ networks.home.gateway.ipv6.ip }};
 option dhcp6.domain-search "{{ networks.home.domain }}";
 default-lease-time {{ dhcp.lease_time }};
 max-lease-time {{ dhcp.lease_time * 4 }};
-option client-class-information code  97 = string;
-# one-lease-per-client true;
+# option client-class-information code  97 = string;
 deny duplicates;
 ping-check true;
-# allow leasequery;
 update-optimization false;
 
-shared-network "sheridan-home"
+shared-network "{{ networks.home.domain }}"
 {
   interface {{ interface.ifname }};
   # subnet6 {{ query('ship', 'delegated_v6_net').full }} {}
@@ -53,9 +51,10 @@ shared-network "sheridan-home"
   {% endfor -%}
 {% endfor -%}
 
-if known
+if not known
 {
-    log(info, concat("DUID: "         , option dhcp6.client-id,
+    log(info, concat("Unknown host.",
+                     " DUID: "        , option dhcp6.client-id,
                      " interface-id: ", option dhcp6.interface-id,
                      " remote-id: "   , option dhcp6.remote-id));
 }

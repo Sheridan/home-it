@@ -1,0 +1,16 @@
+---
+  - name: Making motd
+    template:
+      src: templates/default/etc/motd.gentoo.j2
+      dest: /etc/motd
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Making banner
+    template:
+      src: templates/default/etc/banner.j2
+      dest: /etc/banner
+      owner: root
+      group: root
+      mode: 0644

@@ -102,3 +102,27 @@
         - no-mdadm
         - no-dmraid
         - no-luks
+
+  users:
+  - name: root
+    password: yv9wtb9odz3ogh6qzy4g5cysww3guexq
+  - name: sheridan
+    password: g7xjy83yuh4boy6asbbt996hpfmomrz4
+    groups:
+    - users
+    - tty
+    - disk
+    - wheel
+    - uucp
+    - console
+    - audio
+    - cdrom
+    - video
+    - cdrw
+    - usb
+    - utmp
+
+  zsh:
+    theme: "gentoo"
+    plugins:
+    - git

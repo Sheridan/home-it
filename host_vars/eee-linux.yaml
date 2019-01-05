@@ -19,3 +19,28 @@
   kernel:
     genkernel:
       enabled: no
+
+  users:
+  - name: root
+    password: eeeroot
+  - name: sheridan
+    password: gfhjkm
+    groups:
+    - users
+    - tty
+    - disk
+    - wheel
+    - uucp
+    - console
+    - audio
+    - cdrom
+    - video
+    - cdrw
+    - usb
+    - utmp
+
+  zsh:
+    theme: "gentoo"
+    plugins:
+    - git
+    - ssh-agent

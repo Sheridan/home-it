@@ -1,0 +1,63 @@
+---
+  - name: Устанавливаем полезные пакеты
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - app-shells/zsh
+    - app-shells/zsh-completions
+    - app-shells/gentoo-zsh-completions
+    notify:
+    - update motd
+
+  - name: Клонируем oh-my-zsh в пользователей
+    git:
+      repo: https://github.com/robbyrussell/oh-my-zsh
+      dest: ~/.oh-my-zsh
+    become: yes
+    become_user: "{{ item.name }}"
+    loop: "{{ users }}"
+    notify:
+    - update motd
+
+  - name: Конфиг zsh уже есть?
+    stat:
+      path: ~/.zshrc
+    register: zshrc_exists_result
+    become: yes
+    become_user: "{{ item.name }}"
+    loop: "{{ users }}"
+
+  - name: Копирование конфига для zsh
+    copy:
+      src: ~/.oh-my-zsh/templates/zshrc.zsh-template
+      dest: ~/.zshrc
+    become: yes
+    become_user: "{{ item.item.name }}"
+    when: not item.stat.exists
+    loop: "{{ zshrc_exists_result.results }}"
+    notify:
+    - update motd
+
+  - name: Установка темы для zsh
+    replace:
+      path: ~/.zshrc
+      regexp: 'ZSH_THEME=".+?"'
+      replace: 'ZSH_THEME="{{ zsh.theme }}"'
+    become: yes
+    become_user: "{{ item.name }}"
+    loop: "{{ users }}"
+    notify:
+    - update motd
+
+  # TODO: Регексп для матча мультилайна и сингллайна
+  - name: Установка плагинов для zsh
+    replace:
+      path: ~/.zshrc
+      regexp: 'plugins=\(\n?\s+?.+?\n?\s+?\)'
+      replace: 'plugins=({{ zsh.plugins|join(" ") }})'
+    become: yes
+    become_user: "{{ item.name }}"
+    loop: "{{ users }}"
+    notify:
+    - update motd

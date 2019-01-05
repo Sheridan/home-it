@@ -5,9 +5,11 @@
   - vars/network.yaml
   - vars/grafana.yaml
   - vars/prometheus.yaml
+  - vars/sh.yaml
 
   handlers:
   - import_tasks: handlers/systemd.yaml
+  - import_tasks: handlers/motd.yaml
 
   tasks:
 
@@ -19,6 +21,8 @@
     - app-metrics/prometheus
     - www-apps/grafana-bin
     - app-metrics/bind_exporter
+    notify:
+    - update motd
 
   - name: create dirs for prometheus
     file:
@@ -31,6 +35,8 @@
       - /etc/prometheus/file_sd_configs
       - /var/lib/prometheus
       - /var/lib/prometheus/metrics
+    notify:
+    - update motd
 
   - name: deploy prometheus configuration
     template:
@@ -47,6 +53,7 @@
     notify:
     - systemd daemon reload
     - restart prometheus
+    - update motd
 
   - name: deploy grafana configuration
     template:
@@ -55,7 +62,9 @@
       src: "templates/gate/{{ item.file }}.j2"
       dest: "/{{ item.file }}"
       mode: "{{ item.mode }}"
-    notify: restart grafana
+    notify:
+    - restart grafana
+    - update motd
     with_items:
         - { mode: 644, file: 'etc/grafana/grafana.ini' }
 
@@ -71,6 +80,7 @@
         - { name: prometheus, target: { addr: "{{ prometheus.listen.addr }}", port: "{{ prometheus.listen.port }}" } }
     notify:
     - restart nginx
+    - update motd
 
   - name: deploy bind_exporter configuration
     template:
@@ -81,6 +91,7 @@
     notify:
     - systemd daemon reload
     - restart bind_exporter
+    - update motd
 
   - name: Enabling services
     service:

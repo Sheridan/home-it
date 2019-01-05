@@ -1,11 +1,12 @@
 # Managed by ansible. Editing is useless
 # Sheridan
+
 {% set interface = network|selectattr('ifname', 'match', 'internal_.*')|first %}
 
 ddns-update-style none;
 authoritative;
 
-shared-network "sheridan-home"
+shared-network "{{ networks.home.domain }}"
 {
   subnet {{ networks.home.subnet.ipv4.net }} netmask {{ networks.home.subnet.ipv4.mask.long }}
   {
@@ -36,3 +37,10 @@ shared-network "sheridan-home"
     {% endif -%}
   {% endfor -%}
 {% endfor -%}
+
+if not known
+{
+    log (info, concat("Unknown host.",
+                      " On ", binary-to-ascii (10, 8, ".", leased-address),
+                      " at ", binary-to-ascii (16, 8, ":", substring (hardware, 1, 6))));
+}
