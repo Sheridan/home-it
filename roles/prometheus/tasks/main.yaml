@@ -1,0 +1,61 @@
+---
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - app-metrics/prometheus
+    tags:
+    - packages
+
+  - name: create dirs for prometheus
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: prometheus
+    with_items:
+      - /etc/prometheus/
+      - /etc/prometheus/rules
+      - /etc/prometheus/file_sd_configs
+      - /var/lib/prometheus
+      - /var/lib/prometheus/metrics
+
+  - name: deploy prometheus configuration
+    template:
+      owner: root
+      group: root
+      src: "{{ item.file }}.j2"
+      dest: "/{{ item.file }}"
+      mode: "{{ item.mode }}"
+    with_items:
+        - { mode: 644, file: 'etc/prometheus/prometheus.yaml' }
+        - { mode: 644, file: 'etc/systemd/system/prometheus.service' }
+    notify:
+    - systemd daemon reload
+    - restart prometheus
+
+  - name: deploy nginx configuration
+    import_role:
+      name: nginx
+      tasks_from: simple_proxy
+    vars:
+      target:
+        name: prometheus
+        addr: "{{ prometheus.listen.addr }}"
+        port: "{{ prometheus.listen.port }}"
+
+  - name: Connect prometheus exporter to prometheus
+    import_role:
+      name: prometheus
+      tasks_from: connect_exporter
+    vars:
+      target:
+        name: "{{ inventory_hostname }}_prometheus_exporter"
+        addr: "[{{ prometheus.listen.addr }}]"
+        port: "{{ prometheus.listen.port }}"
+        job: prometheus_exporter
+
+  - name: Enabling services
+    service:
+      name: prometheus
+      enabled: yes

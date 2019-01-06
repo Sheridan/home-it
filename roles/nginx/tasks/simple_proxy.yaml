@@ -1,0 +1,10 @@
+---
+  - name: deploy nginx configuration
+    template:
+      owner: nginx
+      group: nginx
+      src: etc/nginx/sites/simple_proxy.conf.j2
+      dest: "/etc/nginx/sites/{{ target.name }}.conf"
+      mode: 0644
+    notify:
+    - reload nginx

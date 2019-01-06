@@ -1,0 +1,33 @@
+---
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - www-servers/nginx
+    tags:
+    - packages
+
+  - name: create dirs for nginx
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: nginx
+    with_items:
+      - /etc/nginx/sites
+      - /var/log/nginx
+
+  - name: deploy nginx configuration
+    template:
+      owner: nginx
+      group: nginx
+      src: etc/nginx/nginx.conf.j2
+      dest: /etc/nginx/nginx.conf
+      mode: 0644
+    notify:
+    - restart nginx
+
+  - name: Enabling services
+    service:
+      name: nginx
+      enabled: yes

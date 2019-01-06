@@ -1,0 +1,25 @@
+
+;; Managed by ansible. Editing is useless
+;; Sheridan
+
+$ORIGIN {{ networks.home.domain }}.
+$TTL {{ 60*60*8 }}
+@ IN SOA ns.{{ networks.home.domain }}. root.{{ networks.home.domain }}. (
+  {{ ansible_date_time.epoch }} ; serial
+  {{ 60*60*24 }} ; refresh
+  {{ 60*15 }} ; rertry
+  {{ 60*60*24*7*2 }} ; expire
+  {{ 60*60*24*7 }} ; minimum
+)
+@ IN NS ns
+@ A {{ networks.home.gateway.ipv4.ip }}
+@ AAAA {{ networks.home.gateway.ipv6.ip }}
+
+{% for root_ns in ['ns', 'root'] -%}
+{{ root_ns }} A {{ networks.home.gateway.ipv4.ip }}
+{{ root_ns }} AAAA {{ networks.home.gateway.ipv6.ip }}
+{# -#}
+{%- endfor -%}
+
+
+$INCLUDE /etc/bind/pri/{{ networks.home.domain }}.zone.hosts

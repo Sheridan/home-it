@@ -7,63 +7,6 @@
       name: systemd-networkd
       state: restarted
 
-  - name: restart dhcpd
-    service:
-      name: "dhcpd@{{ item }}"
-      state: restarted
-    loop:
-      - 6
-      - 4
-
-  - name: restart radvd
-    service:
-      name: radvd
-      state: restarted
-
-  - name: restart named
-    service:
-      name: named
-      state: restarted
-
-  - name: update firewall
-    include_tasks: firewall.yaml
-
-  - name: restart prometheus
-    service:
-      name: prometheus
-      state: restarted
-
-  - name: restart gate prometheus
-    service:
-      name: prometheus
-      state: restarted
-    delegate_to: gate
-
-  - name: restart grafana
-    service:
-      name: grafana
-      state: restarted
-
-  - name: restart node_exporter
-    service:
-      name: node_exporter
-      state: restarted
-
-  - name: restart bind_exporter
-    service:
-      name: bind_exporter
-      state: restarted
-
-  - name: reload nginx
-    service:
-      name: nginx
-      state: reloaded
-
-  - name: restart nginx
-    service:
-      name: nginx
-      state: restarted
-
   - name: restart pppoe@rt
     service:
       name: pppoe@rt
@@ -78,4 +21,9 @@
   - name: restart sshd
     service:
       name: sshd
+      state: restarted
+
+  - name: restart journald
+    service:
+      name: systemd-journald
       state: restarted

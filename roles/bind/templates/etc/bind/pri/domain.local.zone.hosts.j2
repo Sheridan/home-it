@@ -1,0 +1,23 @@
+
+;; Managed by ansible. Editing is useless
+;; Sheridan
+
+{% for inventory_hostname in query('inventory_hostnames', 'all')|sort -%}
+  {%- for interface in hostvars[inventory_hostname].network -%}
+    {%- if 'ifname' not in interface or ( 'ifname' in interface and 'external' not in interface.ifname ) -%}
+      {%- set aliases = [] -%}
+      {%- for ip_ver in ['ipv4', 'ipv6'] -%}
+        {%- if ip_ver in interface.ip and interface.ip[ip_ver] != 'dynamic' -%}
+{{ inventory_hostname }} {% if ip_ver == 'ipv4' %} A {% else %} AAAA {% endif %} {{ interface.ip[ip_ver].ip }}
+{# -#}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if 'dns' in interface and 'aliases' in interface.dns -%}
+        {%- for alias in interface.dns.aliases|sort -%}
+{{ alias }} CNAME {{ inventory_hostname }}
+{# -#}
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}

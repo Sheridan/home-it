@@ -19,7 +19,7 @@
       url: "http://[{{ prometheus.listen.addr }}]:{{ prometheus.listen.port }}/api/v1/admin/tsdb/delete_series?match[]={{ metric }}"
       return_content: yes
       method: POST
-      status_code: "{{ [200] }}"
+      status_code: "{{ [200, 204] }}"
       timeout: "{{ timeout }}"
     register: clean_result
 

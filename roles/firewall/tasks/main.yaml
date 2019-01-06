@@ -1,0 +1,54 @@
+---
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - sys-apps/iproute2
+    - net-firewall/nftables
+    tags:
+    - packages
+
+  - name: Create conf directory
+    file:
+      path: "{{ config.location }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Install manager script
+    template:
+      src: usr/local/bin/firewall-manager.sh.j2
+      dest: /usr/local/bin/firewall-manager.sh
+      owner: root
+      group: root
+      mode: 0744
+    notify:
+    - update firewall
+
+  - name: Install firewall service
+    template:
+      src: etc/systemd/system/firewall.service.j2
+      dest: /etc/systemd/system/firewall.service
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - systemd daemon reload
+    - update firewall
+
+  - name: make configuration
+    template:
+      src: etc/nftables/nftables.rules.j2
+      dest: "{{ config.location }}/{{ config.filename }}"
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - update firewall
+
+  - name: Enabling firewall service
+    service:
+      name: firewall
+      enabled: yes

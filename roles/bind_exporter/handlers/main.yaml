@@ -1,0 +1,5 @@
+---
+  - name: restart bind_exporter
+    service:
+      name: bind_exporter
+      state: restarted

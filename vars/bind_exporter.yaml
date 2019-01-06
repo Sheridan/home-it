@@ -1,0 +1,8 @@
+---
+  bind_exporter:
+    listen:
+      addr: ::1
+      port: 9089
+    bind:
+      addr: ::1
+      port: 8053

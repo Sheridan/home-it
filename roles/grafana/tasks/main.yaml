@@ -1,0 +1,34 @@
+---
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - www-apps/grafana-bin
+    tags:
+    - packages
+
+  - name: deploy grafana configuration
+    template:
+      owner: root
+      group: root
+      src: etc/grafana/grafana.ini.j2
+      dest: /etc/grafana/grafana.ini
+      mode: 0644
+    notify:
+    - restart grafana
+
+  - name: deploy nginx configuration
+    import_role:
+      name: nginx
+      tasks_from: simple_proxy
+    vars:
+      target:
+        name: grafana
+        addr: "{{ grafana.listen.addr }}"
+        port: "{{ grafana.listen.port }}"
+
+  - name: Enabling services
+    service:
+      name: grafana
+      enabled: yes

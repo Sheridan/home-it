@@ -1,0 +1,10 @@
+---
+  - name: Deploy config to prometheus
+    template:
+      src: etc/prometheus/file_sd_configs/exporter.yaml.j2
+      dest: "/etc/prometheus/file_sd_configs/{{ target.name }}.yaml"
+      mode: 0644
+      owner: prometheus
+    delegate_to: gate
+    notify:
+    - restart gate prometheus

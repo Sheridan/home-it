@@ -1,0 +1,49 @@
+#!/bin/bash
+
+command=$1
+
+function clear()
+{
+  nft flush ruleset
+  return $?
+}
+
+function load()
+{
+  nft -f {{ config.location }}/{{ config.filename }}
+  return $?
+}
+
+function stop()
+{
+  clear
+  return $?
+}
+
+function start()
+{
+  load
+  return $?
+}
+
+function reload()
+{
+  clear
+  start
+  return $?
+}
+
+case "${command}" in
+  "reload")
+    reload
+    exit $?
+  ;;
+  "start")
+    start
+    exit $?
+  ;;
+  "stop")
+    stop
+    exit $?
+  ;;
+esac

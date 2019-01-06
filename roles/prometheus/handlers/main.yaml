@@ -1,0 +1,11 @@
+---
+  - name: restart prometheus
+    service:
+      name: prometheus
+      state: restarted
+
+  - name: restart gate prometheus
+    service:
+      name: prometheus
+      state: restarted
+    delegate_to: gate

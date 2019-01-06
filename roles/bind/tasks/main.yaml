@@ -1,0 +1,69 @@
+---
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - net-dns/bind
+    tags:
+    - packages
+
+  - name: Create log directory
+    file:
+      path: /var/log/named
+      state: directory
+      owner: named
+      group: named
+      mode: 0775
+
+  - name: Install resolv.conf
+    template:
+      src: etc/resolv.conf.j2
+      dest: /etc/resolv.conf
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Make named configuration
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dst }}"
+      owner: root
+      group: root
+      mode: 0644
+    loop:
+      - {src: etc/bind/named.conf.j2, dst: /etc/bind/named.conf }
+    notify:
+    - restart named
+
+  - name: Make named zones hosts configuration
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dst }}"
+      owner: root
+      group: root
+      mode: 0644
+    loop:
+      - {src: etc/bind/pri/domain.local.zone.hosts.j2, dst: "/etc/bind/pri/{{ networks.home.domain }}.zone.hosts" }
+    notify:
+    - restart named
+    register: zone_hosts
+
+  - name: Make named zones configuration
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dst }}"
+      owner: root
+      group: root
+      mode: 0644
+    when: zone_hosts.changed
+    loop:
+      - {src: etc/bind/pri/domain.local.zones.include.j2, dst: "/etc/bind/pri/{{ networks.home.domain }}.zones.include" }
+      - {src: etc/bind/pri/domain.local.zone.j2,          dst: "/etc/bind/pri/{{ networks.home.domain }}.zone" }
+    notify:
+    - restart named
+
+  - name: Enabling services
+    service:
+      name: named
+      enabled: yes

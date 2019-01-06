@@ -1,0 +1,35 @@
+---
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - app-metrics/bind_exporter
+    tags:
+    - packages
+
+  - name: Connect exporter to prometheus
+    import_role:
+      name: prometheus
+      tasks_from: connect_exporter
+    vars:
+      target:
+        name: "{{ inventory_hostname }}_bind_exporter"
+        addr: "[::1]"
+        port: "{{ bind_exporter.listen.port }}"
+        job: bind_exporter
+
+  - name: deploy bind_exporter service with configuration
+    template:
+      owner: bind_exporter
+      src: etc/systemd/system/bind_exporter.service.j2
+      dest: /etc/systemd/system/bind_exporter.service
+      mode: 0644
+    notify:
+    - systemd daemon reload
+    - restart bind_exporter
+
+  - name: Enabling services
+    service:
+      name: bind_exporter
+      enabled: yes

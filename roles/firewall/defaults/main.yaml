@@ -1,0 +1,4 @@
+---
+  config:
+    location: /etc/nftables
+    filename: nftables.rules

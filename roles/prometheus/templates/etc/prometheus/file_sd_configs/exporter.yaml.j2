@@ -1,0 +1,5 @@
+- targets:
+  - '{{ target.addr }}:{{ target.port }}'
+  labels:
+    job: {{ target.job }}
+    host: {{ inventory_hostname }}

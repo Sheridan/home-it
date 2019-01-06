@@ -1,0 +1,15 @@
+---
+  - name: Checking firewall ruleset
+    shell: "nft --check -f {{ config.location }}/{{ config.filename }}"
+    register: firewall_check_result
+
+  - name: Looking result
+    set_fact:
+      firewall_success: "{{ not firewall_check_result.failed and firewall_check_result.stderr_lines|length == 0 and firewall_check_result.stdout_lines|length == 0 }}"
+    when: not ansible_check_mode
+
+  - name: Reload firewall ruleset
+    service:
+      name: firewall
+      state: reloaded
+    when: not ansible_check_mode and firewall_success

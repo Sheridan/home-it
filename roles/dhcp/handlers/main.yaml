@@ -1,0 +1,13 @@
+---
+  - name: restart dhcpd
+    service:
+      name: "dhcpd@{{ item }}"
+      state: restarted
+    loop:
+      - 6
+      - 4
+
+  - name: restart radvd
+    service:
+      name: radvd
+      state: restarted

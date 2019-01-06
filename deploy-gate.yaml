@@ -1,6 +1,28 @@
 ---
-  - import_playbook: setup-gate.yaml
-  - import_playbook: deploy-firewall.yaml
-  - import_playbook: deploy-dhcpd.yaml
-  - import_playbook: deploy-bind.yaml
-  - import_playbook: deploy-monitoring.yaml
+  # - import_playbook: setup-gate.yaml
+  # - import_playbook: deploy-firewall.yaml
+  # - import_playbook: deploy-dhcpd.yaml
+  # - import_playbook: deploy-bind.yaml
+  # - import_playbook: deploy-monitoring.yaml
+- hosts: gate
+  remote_user: root
+  handlers:
+  - import_tasks: handlers/systemd.yaml
+  vars_files:
+  - vars/network.yaml
+  - vars/dhcp.yaml
+  - vars/bind.yaml
+  - vars/firewall.yaml
+  - vars/prometheus.yaml
+  - vars/grafana.yaml
+  - vars/node_exporter.yaml
+  - vars/bind_exporter.yaml
+  roles:
+  - { role: bind, tags: bind }
+  - { role: dhcp, tags: dhcp }
+  - { role: firewall, tags: firewall }
+  - { role: nginx, tags: nginx }
+  - { role: prometheus, tags: [ prometheus, monitoring ] }
+  - { role: grafana, tags: [ grafana, monitoring ] }
+  - { role: node_exporter, tags: [ node_exporter, monitoring ] }
+  - { role: bind_exporter, tags: [ bind_exporter, monitoring ] }

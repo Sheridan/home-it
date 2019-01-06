@@ -1,0 +1,45 @@
+---
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - app-metrics/node_exporter
+    tags:
+    - packages
+
+  - name: create dirs for node_exporter
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: node_exporter
+    with_items:
+      - /var/lib/node_exporter/textfile_collector
+
+  - name: deploy node_exporter service with configuration
+    template:
+      owner: node_exporter
+      src: etc/systemd/system/node_exporter.service.j2
+      dest: /etc/systemd/system/node_exporter.service
+      mode: 644
+    notify:
+    - systemd daemon reload
+    - restart node_exporter
+
+  - name: Connect exporter to prometheus
+    import_role:
+      name: prometheus
+      tasks_from: connect_exporter
+    vars:
+      target:
+        name: "{{ inventory_hostname }}_node_exporter"
+        addr: "{{ '[::1]' if inventory_hostname == 'gate' else inventory_hostname }}"
+        port: "{{ node_exporter.listen.port }}"
+        job: node_exporter
+
+  - name: Enabling services
+    service:
+      name: "{{ item }}"
+      enabled: yes
+    loop:
+      - node_exporter
