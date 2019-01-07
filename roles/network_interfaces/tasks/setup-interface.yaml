@@ -13,7 +13,7 @@
     when: target_interface.ifname is defined and target_interface.type == 'static'
     with_first_found:
       - "templates/{{ inventory_hostname }}/etc/systemd/network/{{ target_interface.ifname }}.network.j2"
-      - templates/default/etc/systemd/network/static.network.j2
+      - etc/systemd/network/static.network.j2
     notify:
     - restart networkd
 
@@ -27,7 +27,7 @@
     when: target_interface.ifname is defined and target_interface.type == 'dhcp'
     with_first_found:
       - "templates/{{ inventory_hostname }}/etc/systemd/network/{{ target_interface.ifname }}.network.j2"
-      - templates/default/etc/systemd/network/dhcp.network.j2
+      - etc/systemd/network/dhcp.network.j2
     notify:
     - restart networkd
 
@@ -42,7 +42,7 @@
           target_interface.need_netdev is defined
     with_first_found:
       - "templates/{{ inventory_hostname }}/etc/systemd/network/{{ target_interface.ifname }}.netdev.j2"
-      - templates/default/etc/systemd/network/interface.netdev.j2
+      - etc/systemd/network/interface.netdev.j2
     notify:
     - restart networkd
 
@@ -56,6 +56,6 @@
     when: target_interface.ifname is defined and target_interface.type == 'bridge'
     with_first_found:
       - "templates/{{ inventory_hostname }}/etc/systemd/network/{{ target_interface.ifname }}.netdev.j2"
-      - templates/default/etc/systemd/network/bridge.netdev.j2
+      - etc/systemd/network/bridge.netdev.j2
     notify:
     - restart networkd

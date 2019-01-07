@@ -1,18 +1,16 @@
 ---
-- hosts: gate
-  remote_user: root
-  vars_files:
-  - vars/network.yaml
-  - vars/pppoe.yaml
-
-  handlers:
-  - import_tasks: handlers/systemd.yaml
-
-  tasks:
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - net-dialup/rp-pppoe
+    tags:
+    - packages
 
   - name: Setup PPPoE passwords
     template:
-      src: "templates/gate/etc/ppp/secrets.j2"
+      src: etc/ppp/secrets.j2
       dest: "/etc/ppp/{{ item }}-secrets"
       owner: root
       group: root
@@ -25,7 +23,7 @@
 
   - name: Setup PPPoE peer options
     template:
-      src: "templates/gate/etc/ppp/peers/peer.j2"
+      src: etc/ppp/peers/peer.j2
       dest: "/etc/ppp/peers/{{ item }}"
       owner: root
       group: root
@@ -36,7 +34,7 @@
 
   - name: Setup PPPoE service
     template:
-      src: templates/default/etc/systemd/system/pppoe@.service.j2
+      src: etc/systemd/system/pppoe@.service.j2
       dest: /etc/systemd/system/pppoe@.service
       owner: root
       group: root

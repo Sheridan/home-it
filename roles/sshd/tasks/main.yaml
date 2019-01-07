@@ -1,0 +1,26 @@
+---
+  - name: Install packages
+    portage:
+      package: "{{ item }}"
+      state: present
+    with_items:
+    - net-misc/openssh
+    tags:
+    - packages
+
+  - name: Configuring ssh server
+    template:
+      src: etc/ssh/sshd_config.j2
+      dest: /etc/ssh/sshd_config
+      owner: root
+      group: root
+      mode: 0600
+    notify:
+    - restart sshd
+
+  - name: Enabling services
+    service:
+      name: "{{ item }}"
+      enabled: yes
+    loop:
+    - sshd

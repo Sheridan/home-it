@@ -1,0 +1,23 @@
+---
+  - name: Check interface name size
+    fail:
+      msg: "Name of interface {{ item.ifname }} ({{ item.name }}) longer than 15 symbols"
+    when: item.ifname is defined and
+          item.ifname | length > 15
+    loop: "{{ network }}"
+
+  - name: Setup device names
+    template:
+      src: "etc/udev/rules.d/00-network.rules.j2"
+      dest: /etc/udev/rules.d/00-network.rules
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - restart networkd
+
+  - name: Setup network interface files
+    include_tasks: setup-interface.yaml
+    loop: "{{ network }}"
+    loop_control:
+      loop_var: target_interface

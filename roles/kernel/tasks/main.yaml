@@ -1,0 +1,22 @@
+---
+  - name: Setup kernel scripts
+    template:
+      src: "{{ item }}.j2"
+      dest: "/{{ item }}"
+      owner: root
+      group: root
+      mode: 0744
+    loop:
+    - usr/src/build.sh
+    - usr/src/configure.sh
+
+  - name: Setup kernel options
+    lineinfile:
+      path: /usr/src/linux/.config
+      regexp: '^(# )?{{ item.option }}='
+      line: '{{ item.option }}={{ item.value }}'
+      backup: yes
+    loop:
+      - { option: 'CONFIG_LOCALVERSION', value: '".Sheridan.home.{{ inventory_hostname }}"' }
+      - { option: 'CONFIG_LOCALVERSION_AUTO', value: 'y' }
+      - { option: 'CONFIG_DEFAULT_HOSTNAME', value: '"{{ inventory_hostname }}"' }

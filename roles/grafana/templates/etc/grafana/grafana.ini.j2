@@ -85,19 +85,19 @@ http_port = {{ grafana.listen.port }}
 ;url =
 
 # For "postgres" only, either "disable", "require" or "verify-full"
-;ssl_mode = disable
+ssl_mode = disable
 
 # For "sqlite3" only, path relative to data_path setting
 ;path = grafana.db
 
 # Max idle conn setting default is 2
-;max_idle_conn = 2
+max_idle_conn = 16
 
 # Max conn setting default is 0 (mean not set)
 ;max_open_conn =
 
 # Connection Max Lifetime default is 14400 (means 14400 seconds or 4 hours)
-;conn_max_lifetime = 14400
+conn_max_lifetime = {{ 60 * 60 * 8 }}
 
 # Set to true to log the sql calls and execution times.
 log_queries =

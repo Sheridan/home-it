@@ -10,6 +10,7 @@
   - import_tasks: handlers/systemd.yaml
   vars_files:
   - vars/network.yaml
+  - vars/pppoe.yaml
   - vars/dhcp.yaml
   - vars/bind.yaml
   - vars/firewall.yaml
@@ -17,7 +18,15 @@
   - vars/grafana.yaml
   - vars/node_exporter.yaml
   - vars/bind_exporter.yaml
+  - vars/ssh_keys.yaml
   roles:
+  - { role: network_interfaces, tags: network_interfaces }
+  - { role: pppoe, tags: pppoe }
+  - { role: kernel, tags: kernel }
+  - { role: users, tags: users }
+  - { role: zsh, tags: zsh }
+  - { role: sshd, tags: sshd }
+  - { role: journald, tags: journald }
   - { role: bind, tags: bind }
   - { role: dhcp, tags: dhcp }
   - { role: firewall, tags: firewall }
@@ -26,3 +35,4 @@
   - { role: grafana, tags: [ grafana, monitoring ] }
   - { role: node_exporter, tags: [ node_exporter, monitoring ] }
   - { role: bind_exporter, tags: [ bind_exporter, monitoring ] }
+  - { role: packages, tags: packages }
