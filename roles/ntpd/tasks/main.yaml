@@ -1,0 +1,33 @@
+---
+  - name: Install packages
+    portage:
+      package: "{{ item.name }}"
+      state: "{{ item.state }}"
+    with_items:
+    - { name: net-misc/openntpd, state: absent }
+    - { name: net-misc/ntp, state: present }
+    tags:
+    - packages
+
+  - name: Install ntpd configuration
+    template:
+      src: etc/ntpd/ntpd.conf.j2
+      dest: /etc/ntp.conf
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - restart ntpd
+
+  - name: Stopping and disabling system ntp-related service
+    service:
+      name: "{{ item }}"
+      enabled: no
+      state: stopped
+    loop:
+    - systemd-timesyncd
+
+  - name: Enabling services
+    service:
+      name: ntpd
+      enabled: yes

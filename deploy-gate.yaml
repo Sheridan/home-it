@@ -1,8 +1,6 @@
 ---
 - hosts: gate
   remote_user: root
-  handlers:
-  - import_tasks: handlers/systemd.yaml
   vars_files:
   - vars/network.yaml
   - vars/pppoe.yaml
@@ -14,6 +12,7 @@
   - vars/node_exporter.yaml
   - vars/bind_exporter.yaml
   - vars/ssh_keys.yaml
+  - vars/ntpd.yaml
   roles:
   - { role: network_interfaces, tags: network_interfaces }
   - { role: pppoe, tags: pppoe }
@@ -25,6 +24,7 @@
   - { role: bind, tags: bind }
   - { role: dhcp, tags: dhcp }
   - { role: firewall, tags: firewall }
+  - { role: ntpd, tags: ntpd }
   - { role: nginx, tags: nginx }
   - { role: prometheus, tags: [ prometheus, monitoring ] }
   - { role: grafana, tags: [ grafana, monitoring ] }

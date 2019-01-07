@@ -1,0 +1,10 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+[Time]
+NTP=ntp.{{ networks.home.domain }}
+FallbackNTP={% for server in ntpd.servers %}{{ server }} {% endfor %}
+
+RootDistanceMaxSec=5
+PollIntervalMinSec=32
+PollIntervalMaxSec=2048

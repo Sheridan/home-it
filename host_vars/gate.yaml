@@ -6,6 +6,7 @@
       aliases:
         - grafana
         - prometheus
+        - ntp
     mac: "94:de:80:6c:66:b0"
     ip: "{{ query('ship', 'ip', 1) }}"
     network: 'home'
@@ -88,11 +89,18 @@
         - 443
         interfaces:
           - "internal"
+      ntpd:
+        name: "ntpd"
+        ports:
+        - 123
+        interfaces:
+          - "internal"
 
   node_exporter:
     collectors:
       enabled:
       - textfile
+      - ntp
 
   kernel:
     genkernel:

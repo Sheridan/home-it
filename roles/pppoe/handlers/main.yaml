@@ -1,4 +1,7 @@
 ---
+  - name: systemd daemon reload
+    shell: systemctl daemon-reload
+
   - name: restart pppoe@rt
     service:
       name: pppoe@rt

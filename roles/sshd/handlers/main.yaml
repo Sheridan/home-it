@@ -1,4 +1,7 @@
 ---
+  - name: systemd daemon reload
+    shell: systemctl daemon-reload
+
   - name: restart sshd
     service:
       name: ssh-daemon

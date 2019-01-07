@@ -1,11 +1,12 @@
 ---
   - name: Install packages
     portage:
-      package: "{{ item }}"
-      state: present
+      package: "{{ item.name }}"
+      state: "{{ item.state }}"
     with_items:
-    - sys-apps/iproute2
-    - net-firewall/nftables
+    - { name: net-firewall/iptables, state: absent }
+    - { name: net-firewall/nftables, state: present }
+    - { name: sys-apps/iproute2, state: present }
     tags:
     - packages
 

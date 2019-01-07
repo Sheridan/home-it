@@ -28,8 +28,8 @@
       dest: "/{{ item.file }}"
       mode: "{{ item.mode }}"
     with_items:
-        - { mode: 644, file: 'etc/prometheus/prometheus.yaml' }
-        - { mode: 644, file: 'etc/systemd/system/prometheus.service' }
+        - { mode: "0644", file: 'etc/prometheus/prometheus.yaml' }
+        - { mode: "0644", file: 'etc/systemd/system/prometheus.service' }
     notify:
     - systemd daemon reload
     - restart prometheus

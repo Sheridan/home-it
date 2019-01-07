@@ -1,0 +1,28 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+{% set internal_interface = network|selectattr('ifname', 'match', 'internal_.*')|first %}
+
+interface ignore all
+
+{% for ip_ver in ['ipv4', 'ipv6'] -%}
+    {%- if ip_ver in internal_interface.ip -%}
+interface listen {{ internal_interface.ip[ip_ver].ip }}
+{# -#}
+    {%- endif -%}
+{%- endfor -%}
+
+{% for server in ntpd.servers -%}
+server {{ server }}
+{# -#}
+{%- endfor -%}
+
+driftfile /var/lib/ntp/ntp.drift
+
+restrict default nomodify nopeer noquery limited kod
+restrict 127.0.0.1
+restrict [::1]
+
+restrict {{ networks.home.subnet.ipv4.net }} mask {{ networks.home.subnet.ipv4.mask.long }} nomodify nopeer notrap
+restrict -6 {{ networks.home.subnet.ipv6.net }} mask {{ networks.home.subnet.ipv6.mask.long }} nomodify nopeer notrap
+
+# disable monitor

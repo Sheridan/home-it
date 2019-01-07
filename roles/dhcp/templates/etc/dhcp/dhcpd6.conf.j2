@@ -6,6 +6,7 @@ ddns-update-style none;
 authoritative;
 option dhcp6.name-servers {{ networks.home.gateway.ipv6.ip }};
 option dhcp6.domain-search "{{ networks.home.domain }}";
+option ntp-servers ntp.{{ networks.home.domain }};
 default-lease-time {{ dhcp.lease_time }};
 max-lease-time {{ dhcp.lease_time * 4 }};
 # option client-class-information code  97 = string;

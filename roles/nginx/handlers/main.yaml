@@ -1,4 +1,7 @@
 ---
+  - name: systemd daemon reload
+    shell: systemctl daemon-reload
+
   - name: reload nginx
     service:
       name: nginx-daemon

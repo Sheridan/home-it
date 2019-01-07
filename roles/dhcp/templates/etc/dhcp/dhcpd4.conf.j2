@@ -13,6 +13,7 @@ shared-network "{{ networks.home.domain }}"
     interface {{ interface.ifname }};
     option domain-name "{{ networks.home.domain }}";
     option domain-name-servers ns.{{ networks.home.domain }};
+    option time-servers ntp.{{ networks.home.domain }};
     default-lease-time {{ dhcp.lease_time }};
     max-lease-time {{ dhcp.lease_time * 4 }};
     option subnet-mask {{ networks.home.subnet.ipv4.mask.long }};

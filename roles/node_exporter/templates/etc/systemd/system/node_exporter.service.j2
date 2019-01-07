@@ -19,8 +19,8 @@ ExecStart=/usr/bin/node_exporter \
       --no-collector.{{ collector }} \
       {% endfor -%}
       --web.listen-address=[::]:{{ node_exporter.listen.port }} \
-      --collector.diskstats.ignored-devices=^(ram|loop|fd)\d+$ \
-      --collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/) \
+      --collector.diskstats.ignored-devices="^(ram|loop|fd)\d+$" \
+      --collector.filesystem.ignored-mount-points="^/(sys|proc|dev|run)($|/)" \
       --collector.textfile.directory="{{ node_exporter.textfile_dir }}/"
 
 [Install]
