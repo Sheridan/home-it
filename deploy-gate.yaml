@@ -25,7 +25,7 @@
   - { role: bind, tags: bind }
   - { role: dhcp, tags: dhcp }
   - { role: firewall, tags: firewall }
-  # - { role: nginx, tags: nginx }
+  - { role: nginx, tags: nginx }
   - { role: prometheus, tags: [ prometheus, monitoring ] }
   - { role: grafana, tags: [ grafana, monitoring ] }
   - { role: node_exporter, tags: [ node_exporter, monitoring ] }

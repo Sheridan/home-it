@@ -1,0 +1,11 @@
+[Unit]
+Description=OpenSSH server daemon
+After=network-online.target
+
+[Service]
+ExecStartPre=/usr/bin/ssh-keygen -A
+ExecStart=/usr/sbin/sshd -D -e
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

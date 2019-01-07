@@ -1,9 +1,9 @@
-{% if 'node_exporter' in hostvars[inventory_hostname] and
-      'collectors'    in hostvars[inventory_hostname].node_exporter %}
-    {% set enabled_collectors = (node_exporter.collectors.enabled|union(hostvars[inventory_hostname].node_exporter.collectors.enabled))|sort|unique %}
-{% else %}
-    {% set enabled_collectors = node_exporter.collectors.enabled|sort|unique %}
-{% endif %}
+{%- if 'node_exporter' in hostvars[inventory_hostname] and
+      'collectors'    in hostvars[inventory_hostname].node_exporter -%}
+    {%- set enabled_collectors = (node_exporter.collectors.enabled|union(hostvars[inventory_hostname].node_exporter.collectors.enabled))|sort|unique -%}
+{%- else -%}
+    {%- set enabled_collectors = node_exporter.collectors.enabled|sort|unique -%}
+{%- endif -%}
 [Unit]
 Description=Node exporter service
 After=network.target

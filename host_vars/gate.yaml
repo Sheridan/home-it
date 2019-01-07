@@ -71,14 +71,16 @@
         - 53
         interfaces:
           - "internal"
-          - "external"
+          - "external_kis"
+          - "external_he"
       ssh:
         name: "SSH"
         ports:
         - 22
         interfaces:
           - "internal"
-          - "external"
+          - "external_kis"
+          - "external_he"
       web:
         name: "web"
         ports:

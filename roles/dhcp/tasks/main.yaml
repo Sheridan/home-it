@@ -21,7 +21,6 @@
       - 6
     notify:
     - restart dhcpd
-    - update motd
 
   - name: Touch lease files
     copy:
@@ -34,8 +33,6 @@
     loop:
       - 6
       - 4
-    notify:
-    - update motd
 
   - name: Make radvd configuration
     template:
@@ -46,7 +43,6 @@
       mode: 0444
     notify:
     - restart radvd
-    - update motd
 
   - name: Install dhcpd service
     template:
@@ -58,7 +54,6 @@
     notify:
     - systemd daemon reload
     - restart dhcpd
-    - update motd
 
   - name: Install radvd service
     template:
@@ -70,7 +65,6 @@
     notify:
     - systemd daemon reload
     - restart radvd
-    - update motd
 
   - name: Enabling dhcpd services
     service:
