@@ -15,5 +15,17 @@
     - app-admin/pydf
     - sys-process/htop
     - net-dns/bind-tools
+    - net-analyzer/nmap
+    - sys-apps/pciutils
+    - sys-apps/usbutils
+    tags:
+    - packages
+
+  - name: Удаляем ненужные пакеты
+    portage:
+      package: "{{ item }}"
+      state: absent
+    with_items:
+    - www-plugins/google-talkplugin
     tags:
     - packages

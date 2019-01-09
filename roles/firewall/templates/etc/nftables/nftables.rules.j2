@@ -5,11 +5,21 @@
 
 flush ruleset
 
-# filter, inet
+{# filter, inet -#}
 table inet filter {
   chain output {
     type filter hook output priority 0; policy accept;
-    # default global rules
+    {#
+    {% for icmp_ver in ['icmp', 'icmpv6'] -%}
+    # ip protocol {{ icmp_ver }} accept comment "accept {{ icmp_ver }}"
+    ip protocol {{ icmp_ver }} limit rate 32/second counter accept comment "accept {{ icmp_ver }}"
+    ip protocol {{ icmp_ver }} counter drop comment "drop burst {{ icmp_ver }}"
+    -#}
+    {# -#}
+    {#
+    {%- endfor -%}
+    -#}
+    {# default global rules -#}
     {% for rule_name in firewall_global.host_to_internet|list -%}
       {%- set rule = firewall_global.host_to_internet[rule_name] -%}
       {%- for external_interface in external_interfaces -%}
@@ -17,7 +27,7 @@ table inet filter {
           {%- for ip_version in ['ipv4', 'ipv6'] -%}
             {%- if ip_version in external_interface.ip -%}
             {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
-    {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ networks.home.subnet[ip_version].full }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} {{ rule.policy|default('accept') }} comment "[network->internet] {{ rule.name }} [{{ protocol }}]"
+    {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ networks.home.subnet[ip_version].full }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter {{ rule.policy|default('accept') }} comment "[network->internet] {{ rule.name }} [{{ protocol }}]"
     {# -#}
             {%- endif -%}
           {%- endfor -%}
@@ -25,7 +35,7 @@ table inet filter {
       {%- endfor -%}
     {%- endfor -%}
 
-    # output per host
+    {# output per host -#}
     {% for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
       {%- set host = hostvars[host_name] -%}
       {%- if 'firewall' in host -%}
@@ -37,7 +47,7 @@ table inet filter {
                 {%- for ip_version in ['ipv4', 'ipv6'] -%}
                   {%- if ip_version in external_interface.ip -%}
                     {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
-    {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ host_internal_interface.ip[ip_version].ip }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} {{ rule.policy|default('accept') }} comment "[{{ host_name }}->internet] {{ rule.name }} [{{ protocol }}]"
+    {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ host_internal_interface.ip[ip_version].ip }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter {{ rule.policy|default('accept') }} comment "[{{ host_name }}->internet] {{ rule.name }} [{{ protocol }}]"
     {# -#}
                   {%- endif -%}
                 {%- endfor -%}
@@ -71,26 +81,27 @@ table inet filter {
     type filter hook input priority 0; policy drop;
     ct state {established, related} counter accept comment "accept all connections related to connections made by us"
     ct state invalid counter drop comment "drop invalid packets"
-    # bad tcp -> avoid network scanning
-    tcp flags & (fin|syn) == (fin|syn) drop comment "drop invalid packets"
-    tcp flags & (syn|rst) == (syn|rst) drop comment "drop invalid packets"
-    tcp flags & (fin|syn|rst|psh|ack|urg) < (fin) drop comment "drop invalid packets"
-    tcp flags & (fin|syn|rst|psh|ack|urg) == (fin|psh|urg) drop comment "drop invalid packets"
+    {# bad tcp -> avoid network scanning -#}
+    tcp flags & (fin|syn) == (fin|syn) counter drop comment "drop invalid packets"
+    tcp flags & (syn|rst) == (syn|rst) counter drop comment "drop invalid packets"
+    tcp flags & (fin|syn|rst|psh|ack|urg) < (fin) counter drop comment "drop invalid packets"
+    tcp flags & (fin|syn|rst|psh|ack|urg) == (fin|psh|urg) counter drop comment "drop invalid packets"
     iif lo accept comment "accept loopback"
     iif != lo ip daddr 127.0.0.1/8 counter drop comment "drop connections to loopback not coming from loopback"
     iif != lo ip6 daddr ::1/128 counter drop comment "drop connections to loopback not coming from loopback"
     {% for icmp_ver in ['icmp', 'icmpv6'] -%}
-    ip protocol {{ icmp_ver }} limit rate 10/second accept comment "accept {{ icmp_ver }}"
-    ip protocol {{ icmp_ver }} drop comment "drop burst {{ icmp_ver }}"
+    # ip protocol {{ icmp_ver }} accept comment "accept {{ icmp_ver }}"
+    ip protocol {{ icmp_ver }} limit rate 32/second counter accept comment "accept {{ icmp_ver }}"
+    ip protocol {{ icmp_ver }} counter drop comment "drop burst {{ icmp_ver }}"
     {# -#}
     {%- endfor -%}
-    # to_host
+    {# to_host -#}
     {% for rule_name in firewall.to_host|list -%}
         {%- set rule = firewall.to_host[rule_name] -%}
         {%- for protocol in ['tcp', 'udp'] -%}
             {%- for rule_interface_name_part in rule.interfaces -%}
                 {%- for rule_interface in network|selectattr('ifname', 'match', '.*' + rule_interface_name_part + '.*')|list -%}
-    {{ query('nft', 'as_iif', rule_interface) }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} accept comment "[->{{ inventory_hostname }}] {{ rule.name }} [{{ protocol }}]"
+    {{ query('nft', 'as_iif', rule_interface) }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter accept comment "[->{{ inventory_hostname }}] {{ rule.name }} [{{ protocol }}]"
     {# -#}
               {%- endfor -%}
             {%- endfor -%}
@@ -100,7 +111,7 @@ table inet filter {
   }
 }
 
-# nat, ipv4
+{# nat, ipv4 -#}
 table ip nat {
   chain prerouting {
     type nat hook prerouting priority 0; policy accept;
@@ -121,7 +132,7 @@ table ip nat {
     type nat hook postrouting priority 0; policy accept;
     {% for external_interface in external_interfaces -%}
         {%- if 'ipv4' in external_interface.ip -%}
-    ip saddr {{ networks.home.subnet.ipv4.full }} {{ query('nft', 'as_oif', external_interface) }} masquerade
+    ip saddr {{ networks.home.subnet.ipv4.full }} {{ query('nft', 'as_oif', external_interface) }} counter masquerade
     {# -#}
         {%- endif -%}
     {%- endfor -%}

@@ -1,0 +1,40 @@
+telegram:
+  token: '{{ telegram.bots.logger.token }}'
+  positions_file_location: {{ loggerbot_positions_file }}
+  {% if loggerbot_proxy is defined -%}
+  proxy:
+    host: '{{ loggerbot_proxy.addr }}'
+    port: {{ loggerbot_proxy.port }}
+    type: '{{ loggerbot_proxy.proto }}'
+  {# -#}
+  {%- endif %}
+
+sources:
+{% for entry in loggerbot.entryes -%}
+- match: "{{ entry.regexp }}"
+  type: "{{ entry.type }}"
+  chat_id: {{ telegram.chats.log.id }}
+  msg_format: "{{ entry.title }}:\n```%s```"
+{# -#}
+{%- endfor -%}
+{% for interface in network -%}
+- match: "kernel.*{{ interface.ifname }}"
+  type: "journal"
+  chat_id: {{ telegram.chats.log.id }}
+  msg_format: "Interface {{ interface.ifname }}:\n```%s```"
+{# -#}
+{%- endfor -%}
+{#-
+  - match: .*Attached scsi generic.*
+    type: 'file'
+    path: /var/log/test/kernel
+    chat_id: -1001278522486
+    store_position: False
+    msg_format: "Attached scsi generic -----  :\n```%s```"
+
+  - match: .*
+    type: 'journalctl'
+    chat_id: -1001278522486
+    store_position: True
+    msg_format: "spc journalctl: ```%s```"
+-#}

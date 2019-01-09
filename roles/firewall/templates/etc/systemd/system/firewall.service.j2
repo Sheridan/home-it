@@ -1,7 +1,6 @@
 [Unit]
 Description=nftables firewall service
-Before=network-pre.target
-Wants=network-pre.target
+After=network-online.target
 
 [Service]
 Type=oneshot

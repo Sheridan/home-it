@@ -6,42 +6,52 @@
 ddns-update-style none;
 authoritative;
 
-shared-network "{{ networks.home.domain }}"
-{
-  subnet {{ networks.home.subnet.ipv4.net }} netmask {{ networks.home.subnet.ipv4.mask.long }}
-  {
-    interface {{ interface.ifname }};
-    option domain-name "{{ networks.home.domain }}";
-    option domain-name-servers ns.{{ networks.home.domain }};
-    option time-servers ntp.{{ networks.home.domain }};
-    default-lease-time {{ dhcp.lease_time }};
-    max-lease-time {{ dhcp.lease_time * 4 }};
-    option subnet-mask {{ networks.home.subnet.ipv4.mask.long }};
-    option broadcast-address {{ networks.home.subnet.ipv4.broadcast }};
-    option routers {{ networks.home.gateway.ipv4.ip }};
-    pool
-    {
-      range {{ query('ship', 'ip', 200).ipv4.ip }} {{ query('ship', 'ip', 250).ipv4.ip }};
-      allow unknown-clients;
-    } # guests
-  }
-}
-
-{% for inventory_hostname in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
-  {% for hostname_interface in hostvars[inventory_hostname].network -%}
-    {% if 'mac' in hostname_interface and 'ipv4' in hostname_interface.ip -%}
-      host {{ inventory_hostname }}_{{ hostname_interface.mac|regex_replace(':', '_') }}
-      {
-        hardware ethernet {{ hostname_interface.mac }};
-        fixed-address {{ hostname_interface.ip.ipv4.ip }};
-      } # Interface name: {% if 'ifname' in hostname_interface -%} {{ hostname_interface.ifname }} {% endif -%} ({{ hostname_interface.name }})
-    {% endif -%}
-  {% endfor -%}
-{% endfor -%}
-
 if not known
 {
     log (info, concat("Unknown host.",
                       " On ", binary-to-ascii (10, 8, ".", leased-address),
                       " at ", binary-to-ascii (16, 8, ":", substring (hardware, 1, 6))));
 }
+
+shared-network "{{ networks.home.domain }}"
+{
+  interface {{ interface.ifname }};
+  option domain-name "{{ networks.home.domain }}";
+  option domain-name-servers ns.{{ networks.home.domain }};
+  option time-servers ntp.{{ networks.home.domain }};
+  default-lease-time {{ dhcp.lease_time }};
+  max-lease-time {{ dhcp.lease_time * 4 }};
+  option subnet-mask {{ networks.home.subnet.ipv4.mask.long }};
+  option broadcast-address {{ networks.home.subnet.ipv4.broadcast }};
+  option routers {{ networks.home.gateway.ipv4.ip }};
+  allow leasequery;
+
+  subnet {{ networks.home.subnet.ipv4.net }} netmask {{ networks.home.subnet.ipv4.mask.long }}
+  {
+    {#
+    pool
+    {
+      range {{ networks.home.ranges.owned.first.ipv4.ip }} {{ networks.home.ranges.owned.last.ipv4.ip }};
+      deny all clients;
+    } # owned
+    -#}
+    pool
+    {
+      range {{ networks.home.ranges.guests.first.ipv4.ip }} {{ networks.home.ranges.guests.last.ipv4.ip }};
+      allow unknown-clients;
+    } # guests
+  }
+}
+
+{% for inventory_hostname in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
+  {%- for hostname_interface in hostvars[inventory_hostname].network -%}
+    {%- if 'mac' in hostname_interface and 'ipv4' in hostname_interface.ip -%}
+host {{ inventory_hostname }}_{{ hostname_interface.mac|regex_replace(':', '_') }}
+{
+  hardware ethernet {{ hostname_interface.mac }};
+  fixed-address {{ hostname_interface.ip.ipv4.ip }};
+} # Interface name: {% if 'ifname' in hostname_interface -%} {{ hostname_interface.ifname }} {% endif -%} ({{ hostname_interface.name }})
+{# -#}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}

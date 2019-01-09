@@ -7,6 +7,7 @@ User=bind_exporter
 Restart=on-failure
 ExecStart=/usr/bin/bind_exporter \
       -bind.stats-url="http://[{{ bind_exporter.bind.addr }}]:{{ bind_exporter.bind.port }}" \
+      -bind.stats-groups="server,view,tasks" \
       -web.listen-address=[{{ bind_exporter.listen.addr }}]:{{ bind_exporter.listen.port }}
 
 [Install]

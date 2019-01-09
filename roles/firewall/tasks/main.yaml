@@ -67,6 +67,12 @@
     notify:
     - update firewall
 
+  - name: Stopping and disabling system firewall services
+    service:
+      name: nftables-restore
+      enabled: no
+      state: stopped
+
   - name: Enabling firewall service
     service:
       name: firewall

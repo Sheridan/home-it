@@ -1,0 +1,4 @@
+---
+
+  radvd:
+    interval: 4

@@ -29,7 +29,7 @@ try:
     prepared_data = ConfigLoader().load()
 except Exception as e:
     raise AnsibleError("Error load data: %s " % e)
-# print(prepared_data['home']['ipv6'])
+# display.v(prepared_data['home'])
 
 display.v("Preparing done")
 
@@ -40,65 +40,45 @@ class LookupModule(LookupBase):
         display.v("Ship terms: %s" % terms)
         try:
             if terms[0] == 'ip':  # 1 == номер
-                return self._return(self.ip(int(terms[1])))
+                return self.ip(int(terms[1]))
             if terms[0] == 'net':  # 1 == версия ip
-                return self._return(self.net(terms[1]))
+                return self._format_net(self._home_net(terms[1]))
             if terms[0] == 'kis_ip':  # 1 == номер
-                return self._return(self.prov_ip('ipv4', 'kis', int(terms[1])))
+                return self.prov_ip('ipv4', 'kis', int(terms[1]))
             if terms[0] == 'kis_net':
-                return self._return(self.prov_net('ipv4', 'kis'))
+                return self.prov_net('ipv4', 'kis')
             if terms[0] == 'henet_ip':  # 1 == номер
-                return self._return(self.prov_ip('ipv6', 'henet', int(terms[1])))
+                return self.prov_ip('ipv6', 'henet', int(terms[1]))
             if terms[0] == 'henet_net':
-                return self._return(self.prov_net('ipv6', 'henet'))
-            if terms[0] == 'delegated_v6_net':
-                return self._return(self._format_net(self._delegated_net()))
+                return self.prov_net('ipv6', 'henet')
             raise AnsibleParserError("Непонятно что делать")
         except Exception as e:
             raise AnsibleError("Error in ship: %s (%s)" % (terms, e))
 
     def ip(self, num):
         return {
-            'ipv4': self._format_ip(self.v4_subnet(), num),
-            'ipv6': self._format_ip(self.v6_subnet(), num)
+            'ipv4': self._format_ip(num, self._home_net('ipv4')),
+            'ipv6': self._format_ip(num, self._home_net('ipv6'))
         }
-
-    def net(self, ip_ver):
-        if ip_ver == 'ipv4':
-            return self._format_net(self.v4_subnet())
-        return self._format_net(self.v6_subnet())
 
     def prov_net(self, ip_ver, name):
         return self._format_net(self._prov_net(ip_ver, name))
 
     def prov_ip(self, ip_ver, name, num):
-        return self._format_ip(self._prov_net(ip_ver, name), num)
-
-    def v4_subnet(self):
-        return self.main_subnet('ipv4')
-
-    def v6_subnet(self):
-        return self.main_subnet('ipv6')
-
-    def main_subnet(self, ip_ver):
-        return netaddr.IPNetwork(self._to_net(prepared_data['home'][ip_ver]['net'],
-                                              prepared_data['home'][ip_ver]['mask']))
+        return self._format_ip(num, self._prov_net(ip_ver, name))
 
     def _prov_net(self, ip_ver, name):
         return netaddr.IPNetwork(self._to_net(prepared_data[name][ip_ver]['net'],
                                               prepared_data[name][ip_ver]['mask']))
 
-    def _delegated_net(self):
-        return netaddr.IPNetwork(self._to_net(prepared_data['home']['ipv6']['delegated_net'],
-                                              prepared_data['home']['ipv6']['delegated_mask']))
+    def _home_net(self, ip_ver):
+        return netaddr.IPNetwork(self._to_net(prepared_data['home'][ip_ver]['net'],
+                                              prepared_data['home'][ip_ver]['mask']))
 
     def _to_net(self, addr, net):
         return '{0}/{1}'.format(addr, net)
 
-    def _return(self, what):
-        return what
-
-    def _format_ip(self, network, num):
+    def _format_ip(self, num, network):
         ip = network[num]
         return {
             'ip': ip.format(),
@@ -118,5 +98,9 @@ class LookupModule(LookupBase):
             'size': network.size,
             'broadcast': network.broadcast.format() if network.broadcast else '',
             'full': '{0}/{1}'.format(network.ip.format(), network.prefixlen),
-            'reverse': network[0].reverse_dns
+            'reverse': network[0].reverse_dns,
+            'range': {
+                'first': network[1].format(),
+                'last': network[-2].format()
+            }
         }

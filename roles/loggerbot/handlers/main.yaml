@@ -1,0 +1,8 @@
+---
+  - name: systemd daemon reload
+    shell: systemctl daemon-reload
+
+  - name: restart loggerbot
+    service:
+      name: loggerbot
+      state: restarted

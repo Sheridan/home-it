@@ -7,6 +7,8 @@
   - vars/node_exporter.yaml
   - vars/ssh_keys.yaml
   - vars/ntpd.yaml
+  - vars/dns.yaml
+  - vars/telegram.yaml
   roles:
   # - { role: firewall, tags: firewall }
   - { role: network_interfaces, tags: network_interfaces }
@@ -15,6 +17,8 @@
   - { role: zsh, tags: zsh }
   - { role: sshd, tags: sshd }
   - { role: journald, tags: journald }
+  - { role: resolved, tags: resolved }
   - { role: ntp, tags: ntp }
   - { role: node_exporter, tags: [ node_exporter, monitoring ] }
+  - { role: loggerbot, tags: loggerbot }
   - { role: packages, tags: packages }

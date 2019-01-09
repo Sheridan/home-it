@@ -1,0 +1,5 @@
+---
+  loggerbot_install_path: /opt/loggerbot
+  loggerbot_config_path: /etc/loggerbot
+  loggerbot_positions_file: /tmp/loggerbot.positions
+  loggerbot_user: loggerbot

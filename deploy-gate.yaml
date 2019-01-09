@@ -5,6 +5,7 @@
   - vars/network.yaml
   - vars/pppoe.yaml
   - vars/dhcp.yaml
+  - vars/radvd.yaml
   - vars/bind.yaml
   - vars/firewall.yaml
   - vars/prometheus.yaml
@@ -13,6 +14,7 @@
   - vars/bind_exporter.yaml
   - vars/ssh_keys.yaml
   - vars/ntpd.yaml
+  - vars/telegram.yaml
   roles:
   - { role: network_interfaces, tags: network_interfaces }
   - { role: pppoe, tags: pppoe }
@@ -30,4 +32,5 @@
   - { role: grafana, tags: [ grafana, monitoring ] }
   - { role: node_exporter, tags: [ node_exporter, monitoring ] }
   - { role: bind_exporter, tags: [ bind_exporter, monitoring ] }
+  - { role: loggerbot, tags: loggerbot }
   - { role: packages, tags: packages }

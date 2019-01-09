@@ -17,15 +17,16 @@ mtu {{ pppoe[item].mtu }}
 mru {{ pppoe[item].mru }}
 nodetach
 
-# -- compression --
+{# -- compression -- -#}
 noaccomp
 nodeflate
 nopcomp
 novj
 novjccomp
-# nobsdcomp
-# noccp
-# nodeflate
-
+{#
+nobsdcomp
+noccp
+nodeflate
+-#}
 lcp-echo-interval {{ pppoe[item].lcp_echo.interval }}
 lcp-echo-failure {{ pppoe[item].lcp_echo.failures }}

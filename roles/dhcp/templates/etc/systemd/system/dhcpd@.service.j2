@@ -4,6 +4,7 @@ After=network-online.target
 After=time-sync.target
 
 [Service]
+ExecStartPre=/usr/sbin/dhcpd -%i -t -cf /etc/dhcp/dhcpd%i.conf
 ExecStart=/usr/sbin/dhcpd -f -%i -cf /etc/dhcp/dhcpd%i.conf -lf /var/lib/dhcp/dhcpd.leases.%i -user dhcp -group dhcp --no-pid
 SyslogIdentifier=dhcpdv%i
 

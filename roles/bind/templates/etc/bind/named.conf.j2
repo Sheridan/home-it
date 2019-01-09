@@ -1,6 +1,6 @@
 
-#Managed by ansible. Editing is useless
-#Sheridan
+# Managed by ansible. Editing is useless
+# Sheridan
 
 acl "xfer" { none; };
 
@@ -12,7 +12,12 @@ acl "trusted"
   {{ networks.home.subnet.ipv6.full }};
 };
 
-acl Internal { {{ networks.home.subnet.ipv4.full }}; {{ networks.home.subnet.ipv6.full }}; localhost; };
+acl Internal
+{
+  {{ networks.home.subnet.ipv4.full }};
+  {{ networks.home.subnet.ipv6.full }};
+  localhost;
+};
 
 server ::/0      { edns yes; };
 server 0.0.0.0/0 { edns yes; };
@@ -39,20 +44,20 @@ options
   allow-transfer    { none;    };
   allow-update      { none;    };
 
-
-  # forward first;
-  # forwarders {
-  #       123.123.123.123;        /* Your ISP NS */
-  #       124.124.124.124;        /* Your ISP NS */
-  #       4.2.2.1;                /* Level3 Public DNS */
-  #       4.2.2.2;                /* Level3 Public DNS */
-  #       8.8.8.8;                /* Google Open DNS */
-  #       8.8.4.4;                /* Google Open DNS */
-  # };
-  #check-names master ignore;
-  #check-names slave ignore;
-  #check-names response ignore;
-
+  {#
+  forward first;
+  forwarders {
+        123.123.123.123;        /* Your ISP NS */
+        124.124.124.124;        /* Your ISP NS */
+        4.2.2.1;                /* Level3 Public DNS */
+        4.2.2.2;                /* Level3 Public DNS */
+        8.8.8.8;                /* Google Open DNS */
+        8.8.4.4;                /* Google Open DNS */
+  };
+  check-names master ignore;
+  check-names slave ignore;
+  check-names response ignore;
+  -#}
   dnssec-enable yes;
   dnssec-validation auto;
 };
@@ -103,11 +108,12 @@ zone "localhost" IN
         notify no;
 };
 
-# zone "127.in-addr.arpa" IN {
-#         type master;
-#         file "pri/127.zone";
-#         notify no;
-# };
-
+{#
+zone "127.in-addr.arpa" IN {
+        type master;
+        file "pri/127.zone";
+        notify no;
+};
+-#}
 
 include "/etc/bind/pri/{{ networks.home.domain }}.zones.include";

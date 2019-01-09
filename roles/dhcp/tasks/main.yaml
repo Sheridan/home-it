@@ -20,7 +20,7 @@
       - 4
       - 6
     notify:
-    - restart dhcpd
+    - "restart dhcpd@{{ item }}"
 
   - name: Touch lease files
     copy:

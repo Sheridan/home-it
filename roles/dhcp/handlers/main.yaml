@@ -10,6 +10,16 @@
       - 6
       - 4
 
+  - name: restart dhcpd@4
+    service:
+      name: dhcpd@4
+      state: restarted
+
+  - name: restart dhcpd@6
+    service:
+      name: dhcpd@6
+      state: restarted
+
   - name: restart radvd
     service:
       name: radvd

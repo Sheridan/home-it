@@ -1,0 +1,23 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+[Resolve]
+DNS=
+{%- for ip_ver in ['ipv4', 'ipv6'] -%}
+    {{ networks.home.gateway[ip_ver].ip }} {# -#}
+{%- endfor %}
+
+FallbackDNS=
+{%- for ip_ver in ['ipv4', 'ipv6'] -%}
+    {%- for ns in dns.nameservers.external[ip_ver] -%}
+        {{ ns }} {# -#}
+    {%- endfor -%}
+{%- endfor %}
+
+Domains={{ networks.home.domain }}
+LLMNR=yes
+MulticastDNS=yes
+DNSSEC=allow-downgrade
+DNSOverTLS=no
+Cache=yes
+DNSStubListener=udp
