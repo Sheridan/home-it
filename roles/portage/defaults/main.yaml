@@ -1,0 +1,15 @@
+---
+  portage_features:
+  - candy
+  - parallel-fetch
+  - splitdebug
+  - compressdebug
+  - webrsync-gpg
+  - fixlafiles
+
+  portage_mirror: "http://mirror.yandex.ru/gentoo-distfiles/"
+
+  portage_compiler_flags:
+  - '-march=native'
+  - '-O2'
+  - '-pipe'

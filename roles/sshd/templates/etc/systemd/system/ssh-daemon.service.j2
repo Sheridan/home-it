@@ -6,6 +6,8 @@ After=network-online.target
 ExecStartPre=/usr/bin/ssh-keygen -A
 ExecStart=/usr/sbin/sshd -D -e
 ExecReload=/bin/kill -HUP $MAINPID
+RestartSec=16s
+Restart=always
 
 [Install]
 WantedBy=multi-user.target

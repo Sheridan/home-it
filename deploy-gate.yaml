@@ -33,4 +33,5 @@
   - { role: node_exporter, tags: [ node_exporter, monitoring ] }
   - { role: bind_exporter, tags: [ bind_exporter, monitoring ] }
   - { role: loggerbot, tags: loggerbot }
+  - { role: portage, tags: portage }
   - { role: packages, tags: packages }
