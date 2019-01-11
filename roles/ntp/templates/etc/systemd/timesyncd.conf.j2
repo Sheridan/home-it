@@ -3,7 +3,7 @@
 
 [Time]
 NTP=ntp.{{ networks.home.domain }}
-FallbackNTP={% for server in ntpd.servers %}{{ server }} {% endfor %}
+FallbackNTP={% for server in merged_vars.ntpd.servers %}{{ server }} {% endfor %}
 
 RootDistanceMaxSec=5
 PollIntervalMinSec=32

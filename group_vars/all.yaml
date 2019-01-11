@@ -1,5 +1,5 @@
 ---
-  firewall_global:
+  firewall:
     host_to_internet:
       http:
         name: "Default http"
@@ -28,7 +28,7 @@
         - 563
         - 119
 
-  ballance_global:
+  ballance:
     mark:
       rt: 2
       kis: 3

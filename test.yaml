@@ -1,22 +1,29 @@
 ---
-- hosts: workstations-linux,gate,without-internet
+# - hosts: workstations-linux,gate,without-internet
+- hosts: spc
   gather_facts: False
   vars_files:
   - vars/network.yaml
 
   tasks:
 
-  - name: merge test
+  - name: Default test
     debug:
-      var: merged_vars
+      msg: "Default: {{ ntpd }}"
+    when: ntpd is defined
 
-  - name: ship net test
+  - name: Merge test
     debug:
-      msg: "{{ query('ship', 'ip', 65536).ipv6.ip }}"
+      msg: "Merged: {{ merged_vars.ntpd }}"
 
-  - name: merge test
-    debug:
-      var: merged_vars
+#   - name: ship net test
+#     debug:
+#       msg: "{{ query('ship', 'ip', 65536).ipv6.ip }}"
+
+  # - name: merge test
+  #   debug:
+  #     msg: "Merged: {{ hostvars[item].merged_vars.firewall }}\nDefault: {{ hostvars[item].firewall }}"
+  #   loop: "{{ hostvars|list }}"
 
   # - name: ship net test
   #   debug:

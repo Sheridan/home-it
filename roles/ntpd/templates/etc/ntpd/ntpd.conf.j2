@@ -11,7 +11,7 @@ interface listen {{ internal_interface.ip[ip_ver].ip }}
     {%- endif -%}
 {%- endfor -%}
 
-{% for server in ntpd.servers -%}
+{% for server in merged_vars.ntpd.servers -%}
 server {{ server }}
 {# -#}
 {%- endfor -%}

@@ -23,7 +23,7 @@ class Bot:
                 self._proxies={self._settings['telegram']['proxy']['type']: 'socks5://%s:%s@%s:%s'%(self._settings['telegram']['proxy']['user'], self._settings['telegram']['proxy']['pass'], self._settings['telegram']['proxy']['host'], self._settings['telegram']['proxy']['port'])}
             else:
                 self._proxies={self._settings['telegram']['proxy']['type']: 'socks5://%s:%s'%(self._settings['telegram']['proxy']['host'], self._settings['telegram']['proxy']['port'])}
-        self._debug = True
+        self._debug = False
 
     def load_config(self, file):
         with open(file, 'r') as stream:

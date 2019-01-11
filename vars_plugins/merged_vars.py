@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 import os
 import pprint
+import copy
 from ansible import constants as C
 from ansible.errors import AnsibleParserError
 from ansible.module_utils._text import to_bytes, to_native, to_text
@@ -14,7 +15,7 @@ pp = pprint.PrettyPrinter()
 __metaclass__ = type
 FOUND = {}
 VARIABLE_NAME = 'merged_vars'
-DATA = {'group': {}, 'host': {}}
+DATA = {'group': {}, 'host': {}, 'roles': None}
 
 
 class VarsModule(BaseVarsPlugin):
@@ -27,13 +28,16 @@ class VarsModule(BaseVarsPlugin):
         data = {}
         if len(entities) == 1 and isinstance(entities[0], Host):
             entity = entities[0]
-            data = self._get_entity_variables(entity, loader)
+            data = self._get_roles_vars(loader)
+            data = self._combine_dicts(self._get_entity_variables(entity, loader), data)
             for group in entity.get_groups():
+                self._display.vvvv('Host %s in group %s' % (entity.get_name(), group.get_name()))
                 data = self._combine_dicts(data, self._get_entity_variables(group, loader))
         else:
             for entity in entities:
                 data[entity.get_name()] = self._get_entity_variables(entity, loader)
-        self._display.vvvv('Prepared data: %s' % (data, ))
+        # self._display.vvvv('Prepared data: %s' % (data, ))
+        self._display.vvvv('Group all data: %s' % (DATA['group']['all'] if 'all' in DATA['group'] else {}, ))
         return {VARIABLE_NAME: data}
 
     def _check_entity(self, entity):
@@ -49,10 +53,24 @@ class VarsModule(BaseVarsPlugin):
     def _get_entity_subdir(self, entity):
         return '%s_vars' % self._get_entity_type_name(entity)
 
+    def _get_roles_vars(self, loader):
+        if not DATA['roles']:
+            DATA['roles'] = {}
+            roles_path = os.path.realpath(os.path.join(self._basedir, 'roles'))
+            for roles_entry in os.listdir(roles_path):
+                if os.path.isdir(os.path.join(roles_path, roles_entry)):
+                    defaults_path = os.path.join(roles_path, roles_entry, 'defaults/main.yaml')
+                    if os.path.isfile(defaults_path):
+                        self._display.vvvv('Loading role defaults: %s' % defaults_path)
+                        role_variables = loader.load_from_file(defaults_path, cache=True, unsafe=True)
+                        if role_variables:
+                            variables_dict = dict(role_variables)
+                            DATA['roles'] = self._combine_dicts(variables_dict, DATA['roles'])
+        return copy.deepcopy(DATA['roles'])
+
     def _find_files(self, entity, loader):
         found_files = []
-        opath = os.path.realpath(os.path.join(
-            self._basedir, self._get_entity_subdir(entity)))
+        opath = os.path.realpath(os.path.join(self._basedir, self._get_entity_subdir(entity)))
         key = '%s.%s' % (entity.name, opath)
         if key in FOUND:
             found_files = FOUND[key]
@@ -74,16 +92,17 @@ class VarsModule(BaseVarsPlugin):
         entity_type_name = self._get_entity_type_name(entity)
         if entity.get_name() not in DATA[entity_type_name]:
             DATA[entity_type_name][entity.get_name()] = {}
-            self._display.vvv('Mining variables of %s' % entity.get_name())
+            self._display.vvv('Mining variables of %s (%s)' % (entity.get_name(), entity_type_name))
             if not entity.name.startswith(os.path.sep):  # avoid 'chroot' type inventory hostnames /path/to/chroot
                 for found in self._find_files(entity, loader):
                     DATA[entity_type_name][entity.get_name()] = self._process_variables(entity, entity_type_name, loader.load_from_file(found, cache=True, unsafe=True))
-        return DATA[entity_type_name][entity.get_name()]
+            self._display.vvvv('Mined data: %s' % (DATA[entity_type_name][entity.get_name()], ))
+        return copy.deepcopy(DATA[entity_type_name][entity.get_name()])
 
     def _process_variables(self, entity, entity_type_name, variables):
         if variables:  # ignore empty files
             variables_dict = dict(variables)
-            return self._combine_dicts(DATA[entity_type_name][entity.get_name()], variables_dict)
+            return self._combine_dicts(variables_dict, DATA[entity_type_name][entity.get_name()])
         return {}
 
     def _combine_dicts(self, left, right):

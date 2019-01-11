@@ -3,7 +3,6 @@
   remote_user: root
   vars_files:
   - vars/dns.yaml
-  - vars/firewall.yaml
   - vars/network.yaml
   - vars/ssh_keys.yaml
   - vars/telegram.yaml

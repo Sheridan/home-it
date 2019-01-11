@@ -34,7 +34,7 @@
       target:
         name: "{{ inventory_hostname }}_node_exporter"
         addr: "{{ '[::1]' if inventory_hostname == 'gate' else inventory_hostname }}"
-        port: "{{ node_exporter.listen.port }}"
+        port: "{{ merged_vars.node_exporter.listen.port }}"
         job: node_exporter
 
   - name: Enabling services
