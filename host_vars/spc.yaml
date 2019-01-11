@@ -8,28 +8,28 @@
     network: 'home'
     type: 'dhcp'
 
-  # firewall:
-  #   to_host:
-  #     ssh:
-  #       name: "SSH"
-  #       ports:
-  #       - 22
-  #       interfaces:
-  #       - "internal"
-  #     web:
-  #       name: "web"
-  #       ports:
-  #       - 80
-  #       - 443
-  #       interfaces:
-  #       - "internal"
-  #     dhcpc:
-  #       name: "DHCPc"
-  #       ports:
-  #       - 68
-  #       - 546
-  #       interfaces:
-  #       - "internal"
+  firewall:
+    to_host:
+      ssh:
+        name: "SSH"
+        ports:
+        - 22
+        interfaces:
+        - "internal"
+      web:
+        name: "web"
+        ports:
+        - 80
+        - 443
+        interfaces:
+        - "internal"
+      dhcpc:
+        name: "DHCPc"
+        ports:
+        - 68
+        - 546
+        interfaces:
+        - "internal"
 
   kernel:
     genkernel:

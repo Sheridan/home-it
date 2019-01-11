@@ -1,14 +1,22 @@
 ---
-- hosts: gate
+- hosts: workstations-linux,gate,without-internet
   gather_facts: False
   vars_files:
   - vars/network.yaml
 
   tasks:
 
+  - name: merge test
+    debug:
+      var: merged_vars
+
   - name: ship net test
     debug:
       msg: "{{ query('ship', 'ip', 65536).ipv6.ip }}"
+
+  - name: merge test
+    debug:
+      var: merged_vars
 
   # - name: ship net test
   #   debug:

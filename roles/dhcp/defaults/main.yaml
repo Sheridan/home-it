@@ -1,4 +1,6 @@
 ---
+  dhcp:
+    lease_time: 3600
 
   radvd:
     interval: 4

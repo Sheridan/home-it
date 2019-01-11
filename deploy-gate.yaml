@@ -2,18 +2,10 @@
 - hosts: gate
   remote_user: root
   vars_files:
-  - vars/network.yaml
-  - vars/pppoe.yaml
-  - vars/dhcp.yaml
-  - vars/radvd.yaml
-  - vars/bind.yaml
+  - vars/dns.yaml
   - vars/firewall.yaml
-  - vars/prometheus.yaml
-  - vars/grafana.yaml
-  - vars/node_exporter.yaml
-  - vars/bind_exporter.yaml
+  - vars/network.yaml
   - vars/ssh_keys.yaml
-  - vars/ntpd.yaml
   - vars/telegram.yaml
   roles:
   - { role: network_interfaces, tags: network_interfaces }
