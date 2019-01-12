@@ -41,7 +41,7 @@ http_addr = [{{ grafana.listen.addr }}]
 http_port = {{ grafana.listen.port }}
 
 # The public facing domain name used to access grafana from a browser
-;domain = localhost
+domain = grafana.{{ networks.home.domain }}
 
 # Redirect to correct domain if host header does not match domain
 # Prevents DNS rebinding attacks
@@ -49,7 +49,7 @@ http_port = {{ grafana.listen.port }}
 
 # The full public facing url you use in browser, used for redirects and emails
 # If you use reverse proxy and sub path specify full url (with sub path)
-;root_url = http://localhost:3000
+root_url = http://grafana.{{ networks.home.domain }}
 
 # Log web requests
 ;router_logging = false
