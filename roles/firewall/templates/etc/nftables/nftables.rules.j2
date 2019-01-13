@@ -73,6 +73,8 @@ table inet filter {
     iif lo accept comment "accept loopback"
     iif != lo ip daddr 127.0.0.1/8 counter drop comment "drop connections to loopback not coming from loopback"
     iif != lo ip6 daddr ::1/128 counter drop comment "drop connections to loopback not coming from loopback"
+    {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr fe80::/64 counter accept comment "accept from fe80::/64"
+    {{ query('nft', 'as_iif', internal_interface) }} ip6 daddr fe80::/64 counter accept comment "accept to fe80::/64"
     {% for icmp_ver in ['icmp', 'icmpv6'] -%}
     # ip protocol {{ icmp_ver }} accept comment "accept {{ icmp_ver }}"
     ip protocol {{ icmp_ver }} limit rate 32/second counter accept comment "accept {{ icmp_ver }}"

@@ -5,14 +5,15 @@ interface {{ interface.ifname }}
     AdvSendAdvert on;
     AdvManagedFlag on;
     AdvOtherConfigFlag on;
+    AdvHomeAgentFlag on;
     MinRtrAdvInterval {{ radvd.interval }};
     MaxRtrAdvInterval {{ radvd.interval * 10 }};
 
     prefix {{ networks.home.subnet.ipv6.full }}
     {
         AdvOnLink on;
-        AdvRouterAddr off;
         AdvAutonomous off;
+        AdvRouterAddr on;
     };
 
     RDNSS {{ networks.home.gateway.ipv6.ip }} {};

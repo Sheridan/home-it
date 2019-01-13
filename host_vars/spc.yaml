@@ -3,7 +3,7 @@
   - name: "Internal"
     ifname: "internal_0"
     mac: "94:de:80:7c:8b:ee"
-    duid: "00:01:00:01:23:c7:61:09:7e:4d:21:ce:70:ec"
+    duid: "00:02:00:00:ab:11:7a:1c:61:eb:ac:c3:f0:f3"
     ip: "{{ query('ship', 'ip', 10) }}"
     network: 'home'
     type: 'dhcp'

@@ -16,6 +16,8 @@
     - sys-process/htop
     - net-dns/bind-tools
     - net-analyzer/nmap
+    - net-analyzer/tcpdump
+    - net-misc/telnet-bsd
     - sys-apps/pciutils
     - sys-apps/usbutils
     tags:
