@@ -32,3 +32,9 @@
     mark:
       rt: 2
       kis: 3
+
+  loggerbot:
+    entryes:
+    - type: journal
+      regexp: 'systemd.*((Stopp|Start)(ing|ed)|scheduling)'
+      title: Services

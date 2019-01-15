@@ -1,0 +1,11 @@
+---
+  - hosts: workstations-linux,gate
+    remote_user: root
+
+    tasks:
+    - name: Sync
+      portage:
+        sync: yes
+
+    - name: Layman sync
+      shell: layman -fS

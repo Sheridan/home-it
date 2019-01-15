@@ -139,9 +139,10 @@ def journal_reader(bot):
                 continue
             for entry in j:
                 if entry['MESSAGE']:
+                    idnt = entry['SYSLOG_IDENTIFIER'] if entry['SYSLOG_IDENTIFIER'] is not None else 'Unknown'
+                    match_text = '%s %s' % (idnt, entry['MESSAGE'])
                     for source in sources:
-                        if source['pattern'].match(entry['MESSAGE']):
-                            idnt = entry['SYSLOG_IDENTIFIER'] if entry['SYSLOG_IDENTIFIER'] is not None else 'Unknown'
+                        if source['pattern'].match(match_text):
                             msg = 'dummy [%s][%s][%s] %s'%(entry['__REALTIME_TIMESTAMP'].strftime("%Y.%m.%d %H:%M:%S"), entry['_HOSTNAME'], idnt , entry['MESSAGE'])
                             bot.send_message(source['chat_id'], source['msg_format'] % (msg,))
         time.sleep(1)

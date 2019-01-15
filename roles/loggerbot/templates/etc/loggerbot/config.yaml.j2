@@ -10,20 +10,24 @@ telegram:
   {%- endif %}
 
 sources:
-{% for entry in loggerbot.entryes -%}
+{% for entry in merged_vars.loggerbot.entryes -%}
 - match: "{{ entry.regexp }}"
   type: "{{ entry.type }}"
   chat_id: {{ telegram.chats.log.id }}
   msg_format: "{{ entry.title }}:\n```%s```"
 {# -#}
 {%- endfor -%}
-{% for interface in network -%}
-- match: "kernel.*{{ interface.ifname }}"
+- match: "kernel.*({%- for interface in network -%}{{ interface.ifname }}{{ '|' if not loop.last else '' }}{%- endfor -%})"
   type: "journal"
   chat_id: {{ telegram.chats.log.id }}
-  msg_format: "Interface {{ interface.ifname }}:\n```%s```"
-{# -#}
-{%- endfor -%}
+  msg_format: "Interface status:\n```%s```"
+- match: "(>>> Downloading|saved)"
+  type: 'file'
+  path: /var/log/emerge-fetch.log
+  chat_id: {{ telegram.chats.log.id }}
+  store_position: False
+  msg_format: "Portage fetch:\n```%s```"
+
 {#-
   - match: .*Attached scsi generic.*
     type: 'file'
@@ -37,4 +41,5 @@ sources:
     chat_id: -1001278522486
     store_position: True
     msg_format: "spc journalctl: ```%s```"
+
 -#}

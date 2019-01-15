@@ -12,6 +12,7 @@
     - app-portage/gentoolkit
     - app-portage/euses
     - app-portage/cpuid2cpuflags
+    - app-portage/layman
     - app-admin/pydf
     - sys-process/htop
     - net-dns/bind-tools

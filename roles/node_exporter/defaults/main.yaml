@@ -6,6 +6,7 @@
     collectors:
       enabled:
       - arp
+      - buddyinfo
       - conntrack
       - cpu
       - diskstats
@@ -14,16 +15,18 @@
       - filesystem
       - hwmon
       - loadavg
+      - logind
       - meminfo
       - meminfo_numa
       - mountstats
       - netdev
       - netstat
       - sockstat
-      - systemd
       - stat
+      - systemd
       - time
       - uname
+      - vmstat
 
   node_exporter_all_collectors:
   - arp
@@ -63,9 +66,9 @@
   - tcpstat
   - textfile
   - time
+  - timex
   - uname
   - vmstat
   - wifi
   - xfs
   - zfs
-  - timex

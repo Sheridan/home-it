@@ -25,7 +25,7 @@ shared-network "{{ networks.home.domain }}"
   {# No wait other dhcp servers -#}
   option dhcp6.preference 255;
   default-lease-time {{ dhcp.lease_time }};
-  max-lease-time {{ dhcp.lease_time * 4 }};
+  max-lease-time {{ dhcp.lease_time|int * 4 }};
   deny duplicates;
   ping-check true;
   update-optimization false;
@@ -34,7 +34,7 @@ shared-network "{{ networks.home.domain }}"
   subnet6 {{ networks.home.subnet.ipv6.full }}
   {
     {# Prefix range for delegation to sub-routers -#}
-    prefix6 {{ networks.home.subnet.ipv6.net }} {{ networks.home.subnet.ipv6.net }} / 64;
+    prefix6 {{ networks.home.subnet.ipv6.net }} {{ networks.home.subnet.ipv6.net }} / 96;
 
     pool6
     {

@@ -19,7 +19,7 @@
   # firewall:
   #   to_host:
   #     ssh:
-  #       name: "SSH"
+  #       name: "SSH"wifi
   #       ports:
   #       - 22
   #       interfaces:
@@ -74,5 +74,10 @@
   loggerbot:
     entryes:
     - type: journal
-      regexp: '(device detected|Attached|new.*device )'
+      regexp: '(device detected|Attached)'
       title: Devices
+
+  node_exporter:
+    collectors:
+      enabled:
+      - wifi

@@ -69,5 +69,5 @@
   loggerbot:
     entryes:
     - type: journal
-      regexp: '(device detected|Attached|new.*device )'
+      regexp: '(device detected|Attached)'
       title: Devices

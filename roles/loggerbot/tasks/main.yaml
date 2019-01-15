@@ -18,6 +18,7 @@
       comment: Logger Bot
       shell: /bin/false
       group: systemd-journal
+      groups: portage
       create_home: no
 
   - name: create dirs for loggerbot

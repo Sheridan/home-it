@@ -16,6 +16,13 @@ interface {{ interface.ifname }}
         AdvRouterAddr on;
     };
 
+    # AdvRASrcAddress
+    # {
+    #     {{ interface.ip.ipv6.ip }};
+    # }
+
+    # route {{ networks.home.subnet.ipv6.full }} {};
+
     RDNSS {{ networks.home.gateway.ipv6.ip }} {};
 
     DNSSL {{ networks.home.domain }} {};
