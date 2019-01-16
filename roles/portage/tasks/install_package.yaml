@@ -15,12 +15,14 @@
             flags: "{{ package.use.disabled|default([]) if package.use is defined and package.use.disabled is defined else [] }}"
             defined: "{{ package.use is defined and package.use.disabled is defined }}"
         x86_as_amd64: "{{ package.x86_as_amd64 is defined and package.x86_as_amd64 }}"
+        match_regexp: '^{{ package.name }}\s.*$'
 
 
   - name: "Установка use флагов пакета {{ pkg.name }}"
     lineinfile:
       path: "/etc/portage/package.use/{{ pkg.category }}"
       line: "{{ pkg.name }} {{'-' if pkg.use.disabled.defined else ''}}{{ pkg.use.disabled.flags | join(' -') }} {{ pkg.use.enabled.flags | join(' ') }}"
+      regexp: '{{ pkg.match_regexp }}'
       create: yes
       owner: portage
     when: pkg.state == 'present' and
@@ -32,7 +34,7 @@
   - name: "Удаление use флагов пакета {{ pkg.name }}"
     lineinfile:
       path: "/etc/portage/package.use/{{ pkg.category }}"
-      regexp: '^{{ pkg.name }}\s.*$'
+      regexp: '{{ pkg.match_regexp }}'
       state: absent
     when: pkg.state == 'absent' or
           (
@@ -44,6 +46,7 @@
     lineinfile:
       path: "/etc/portage/package.accept_keywords/{{ pkg.category }}"
       line: "{{ pkg.name }} {{ '~' if pkg.unstable else '' }}{{ 'amd64' if pkg.x86_as_amd64 and pkg.arch == 'x86' else ( pkg.arch if pkg.unstable else '' ) }}"
+      regexp: '{{ pkg.match_regexp }}'
       create: yes
       owner: portage
     when: pkg.state == 'present' and
@@ -58,7 +61,7 @@
   - name: "Удаление флага нестабильной версии пакета {{ pkg.name }}"
     lineinfile:
       path: "/etc/portage/package.accept_keywords/{{ pkg.category }}"
-      regexp: '^{{ pkg.name }}\s.*$'
+      regexp: '{{ pkg.match_regexp }}'
       state: absent
     when: pkg.state == 'absent' or
           (

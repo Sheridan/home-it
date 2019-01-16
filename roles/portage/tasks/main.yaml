@@ -7,6 +7,8 @@
     with_items:
       - /etc/portage/package.use
       - /etc/portage/package.accept_keywords
+      - /etc/portage/package.mask
+      - /etc/portage/package.unmask
 
   - name: Устанавливаем необходимые пакеты
     include_role:
@@ -29,32 +31,38 @@
       path: /etc/portage/make.conf
       regexp: 'CPU_FLAGS_X86=".+?"'
       replace: 'CPU_FLAGS_X86="{{ cpu_flags.stdout }}"'
+      owner: portage
 
   - name: Установка флагов компилятора
     replace:
       path: /etc/portage/make.conf
       regexp: 'COMMON_FLAGS=".+?"'
       replace: 'COMMON_FLAGS="{{ portage_compiler_flags|join(" ") }}"'
+      owner: portage
 
   - name: Установка количества потоков при сборке
     replace:
       path: /etc/portage/make.conf
       regexp: 'MAKEOPTS=".+?"'
       replace: 'MAKEOPTS="-j{{ ansible_processor_vcpus }}"'
+      owner: portage
 
   - name: Установка расширений при сборке
     replace:
       path: /etc/portage/make.conf
       regexp: 'FEATURES=".+?"'
       replace: 'FEATURES="{{ portage_features|join(" ") }}"'
+      owner: portage
 
   - name: Установка зеркала
     replace:
       path: /etc/portage/make.conf
       regexp: 'GENTOO_MIRRORS=".+?"'
       replace: 'GENTOO_MIRRORS="{{ portage_mirror }}"'
+      owner: portage
 
   - name: Принимаем все лицензии
     copy:
       content: "*/* *\n"
       dest: /etc/portage/package.license
+      owner: portage
