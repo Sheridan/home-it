@@ -1,12 +1,14 @@
 ---
-  - name: Устанавливаем полезные пакеты
-    portage:
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
       package: "{{ item }}"
-      state: present
-    with_items:
-    - app-shells/zsh
-    - app-shells/zsh-completions
-    - app-shells/gentoo-zsh-completions
+    loop:
+    - { name: app-shells/zsh }
+    - { name: app-shells/zsh-completions }
+    - { name: app-shells/gentoo-zsh-completions }
     tags:
     - packages
 

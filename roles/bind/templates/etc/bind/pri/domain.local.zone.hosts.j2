@@ -6,7 +6,7 @@
   {%- for interface in hostvars[inventory_hostname].network -%}
     {%- if 'ifname' not in interface or ( 'ifname' in interface and 'external' not in interface.ifname ) -%}
       {%- set aliases = [] -%}
-      {%- for ip_ver in ['ipv4', 'ipv6'] -%}
+      {%- for ip_ver in ['ipv6', 'ipv4'] -%}
         {%- if ip_ver in interface.ip and interface.ip[ip_ver] != 'dynamic' -%}
 {{ inventory_hostname }} {% if ip_ver == 'ipv4' %} A {% else %} AAAA {% endif %} {{ interface.ip[ip_ver].ip }}
 {# -#}

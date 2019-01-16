@@ -21,7 +21,7 @@ shared-network "{{ networks.home.domain }}"
   option domain-name-servers ns.{{ networks.home.domain }};
   option dhcp6.domain-search "{{ networks.home.domain }}";
   option ntp-servers ntp.{{ networks.home.domain }};
-  option dhcp6.rapid-commit;
+  {# option dhcp6.rapid-commit; -#}
   {# No wait other dhcp servers -#}
   option dhcp6.preference 255;
   default-lease-time {{ dhcp.lease_time }};
@@ -31,10 +31,10 @@ shared-network "{{ networks.home.domain }}"
   update-optimization false;
   allow leasequery;
 
-  subnet6 {{ networks.home.subnet.ipv6.full }}
+  subnet6 {{ networks.home.delegated.full }}
   {
     {# Prefix range for delegation to sub-routers -#}
-    prefix6 {{ networks.home.subnet.ipv6.net }} {{ networks.home.subnet.ipv6.net }} / 96;
+    prefix6 {{ networks.home.delegated.net }} {{ networks.home.delegated.net }} / 64;
 
     pool6
     {
@@ -65,7 +65,7 @@ host {{ inventory_hostname }}_{{ hostname_interface.mac|regex_replace(':', '_') 
   {# -#}
   {%- endif -%}
   fixed-address6 {{ hostname_interface.ip.ipv6.ip }};
-  # fixed-prefix6 {{ hostname_interface.ip.ipv6.network.full }};
+  {# fixed-prefix6 {{ hostname_interface.ip.ipv6.network.full }}; -#}
 } # Interface name: {% if 'ifname' in hostname_interface -%} {{ hostname_interface.ifname }} {% endif -%} ({{ hostname_interface.name }})
 {# -#}
     {%- endif -%}

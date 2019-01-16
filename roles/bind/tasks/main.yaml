@@ -1,12 +1,14 @@
 ---
-  - name: Install packages
-    portage:
-      package: "{{ item }}"
-      state: present
-    with_items:
-    - net-dns/bind
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: net-dns/bind, use: { enabled: [dlz, geoip, json, xml] } }
     tags:
     - packages
+    notify:
+    - restart named
 
   - name: Create log directory
     file:
@@ -34,7 +36,7 @@
     loop:
       - {src: etc/bind/named.conf.j2, dst: /etc/bind/named.conf }
     notify:
-    - restart named
+    - reload named
 
   - name: Make named zones hosts configuration
     template:
@@ -46,7 +48,7 @@
     loop:
       - {src: etc/bind/pri/domain.local.zone.hosts.j2, dst: "/etc/bind/pri/{{ networks.home.domain }}.zone.hosts" }
     notify:
-    - restart named
+    - reload named
     register: zone_hosts
 
   - name: Make named zones configuration
@@ -61,7 +63,7 @@
       - {src: etc/bind/pri/domain.local.zones.include.j2, dst: "/etc/bind/pri/{{ networks.home.domain }}.zones.include" }
       - {src: etc/bind/pri/domain.local.zone.j2,          dst: "/etc/bind/pri/{{ networks.home.domain }}.zone" }
     notify:
-    - restart named
+    - reload named
 
   - name: Enabling services
     service:

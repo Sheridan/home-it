@@ -31,7 +31,7 @@ options
   listen-on { 127.0.0.1; };
   listen-on-v6 { ::1; };
   {% for interface in network -%}
-    {%- for ip_ver in ['ipv4', 'ipv6'] -%}
+    {%- for ip_ver in ['ipv6', 'ipv4'] -%}
       {%- if ip_ver in interface.ip and ( ( interface.type is defined and ( interface.type != 'pppoe' and interface.type != 'bridge' ) ) or interface.type is not defined ) -%}
   listen-on {%- if ip_ver == 'ipv6' -%} -v6 {%- endif %} { {{ interface.ip[ip_ver].ip }}; }; /* {% if 'ifname' in interface -%} {{ interface.ifname }} {% endif -%} ({{ interface.name }}) */
   {# -#}

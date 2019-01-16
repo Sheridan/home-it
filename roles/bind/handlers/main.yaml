@@ -3,3 +3,8 @@
     service:
       name: named
       state: restarted
+
+  - name: reload named
+    service:
+      name: named
+      state: reloaded

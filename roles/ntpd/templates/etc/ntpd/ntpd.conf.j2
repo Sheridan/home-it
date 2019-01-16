@@ -4,7 +4,7 @@
 
 interface ignore all
 
-{% for ip_ver in ['ipv4', 'ipv6'] -%}
+{% for ip_ver in ['ipv6', 'ipv4'] -%}
     {%- if ip_ver in internal_interface.ip -%}
 interface listen {{ internal_interface.ip[ip_ver].ip }}
 {# -#}

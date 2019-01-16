@@ -28,7 +28,7 @@
   # - name: ship net test
   #   debug:
   #     msg: "{{ query('ship', 'delegated_net', item).net }} {{ query('ship', 'delegated_net', item).size }}"
-  #   loop: "{{ ['ipv4', 'ipv6'] }}"
+  #   loop: "{{ ['ipv6', 'ipv4'] }}"
 
   # - name: ship net test
   #   debug:

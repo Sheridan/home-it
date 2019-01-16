@@ -9,16 +9,11 @@ flush ruleset
 table inet filter {
   chain output {
     type filter hook output priority 0; policy accept;
-    {#
-    {% for icmp_ver in ['icmp', 'icmpv6'] -%}
-    # ip protocol {{ icmp_ver }} accept comment "accept {{ icmp_ver }}"
-    ip protocol {{ icmp_ver }} limit rate 32/second counter accept comment "accept {{ icmp_ver }}"
-    ip protocol {{ icmp_ver }} counter drop comment "drop burst {{ icmp_ver }}"
-    -#}
-    {# -#}
-    {#
-    {%- endfor -%}
-    -#}
+    oif lo accept comment "accept loopback"
+    {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { fe80::/10, ff02::/16 } counter accept comment "accept from link-local"
+    {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { fe80::/10, ff02::/16 } counter accept comment "accept to link-local"
+    ip protocol icmp limit rate 32/second counter accept comment "accept icmp"
+    ip protocol icmp counter drop comment "drop burst icmp"
     {# output per host -#}
     {% for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
       {%- set host = hostvars[host_name].merged_vars -%}
@@ -28,7 +23,7 @@ table inet filter {
             {%- set rule = host.firewall.host_to_internet[rule_name] -%}
             {%- for external_interface in external_interfaces -%}
               {%- for protocol in ['tcp', 'udp'] -%}
-                {%- for ip_version in ['ipv4', 'ipv6'] -%}
+                {%- for ip_version in ['ipv6', 'ipv4'] -%}
                   {%- if ip_version in external_interface.ip -%}
                     {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
     {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ host_internal_interface.ip[ip_version].ip }} {% if 'ports' in rule -%} {{ protocol }} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter {{ rule.policy|default('accept') }} comment "[{{ host_name }}->internet] {{ rule.name }} [{{ protocol }}]"
@@ -46,9 +41,15 @@ table inet filter {
 
   chain forward {
     type filter hook forward priority 0; policy drop;
+    # {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { fe80::/10, ff02::/16 } counter accept comment "accept from link-local"
+    # {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { fe80::/10, ff02::/16 } counter accept comment "accept to link-local"
+    # {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr {{ networks.home.delegated.full }} counter accept comment "accept from delegate"
+    # {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr {{ networks.home.delegated.full }} counter accept comment "accept to delegate"
+    ip protocol icmp limit rate 32/second counter accept comment "accept icmp"
+    ip protocol icmp counter drop comment "drop burst icmp"
     # Masquerading forwards
     {% for external_interface in external_interfaces -%}
-      {%- for ip_version in ['ipv4', 'ipv6'] -%}
+      {%- for ip_version in ['ipv6', 'ipv4'] -%}
         {%- if ip_version in external_interface.ip -%}
         {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
     {{ query('nft', 'as_iif', internal_interface) }} {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ networks.home.subnet[ip_version].full }} counter accept comment "Forwarding net->internet for {{ external_interface.name }} ({{ external_interface.ifname }})"
@@ -58,7 +59,7 @@ table inet filter {
       {%- endfor -%}
     {%- endfor -%}
 
-    counter comment "count dropped packets"
+    counter comment "count output accepted packets"
   }
 
   chain input {
@@ -73,14 +74,12 @@ table inet filter {
     iif lo accept comment "accept loopback"
     iif != lo ip daddr 127.0.0.1/8 counter drop comment "drop connections to loopback not coming from loopback"
     iif != lo ip6 daddr ::1/128 counter drop comment "drop connections to loopback not coming from loopback"
-    {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr fe80::/64 counter accept comment "accept from fe80::/64"
-    {{ query('nft', 'as_iif', internal_interface) }} ip6 daddr fe80::/64 counter accept comment "accept to fe80::/64"
-    {% for icmp_ver in ['icmp', 'icmpv6'] -%}
-    # ip protocol {{ icmp_ver }} accept comment "accept {{ icmp_ver }}"
-    ip protocol {{ icmp_ver }} limit rate 32/second counter accept comment "accept {{ icmp_ver }}"
-    ip protocol {{ icmp_ver }} counter drop comment "drop burst {{ icmp_ver }}"
-    {# -#}
-    {%- endfor -%}
+    {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { fe80::/10, ff02::/16 } counter accept comment "accept from link-local"
+    {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { fe80::/10, ff02::/16 } counter accept comment "accept to link-local"
+
+    ip protocol icmp limit rate 32/second counter accept comment "accept icmp"
+    ip protocol icmp counter drop comment "drop burst icmp"
+
     {# to_host -#}
     {% for rule_name in merged_vars.firewall.to_host|list -%}
         {%- set rule = merged_vars.firewall.to_host[rule_name] -%}
@@ -93,7 +92,7 @@ table inet filter {
             {%- endfor -%}
         {%- endfor -%}
     {%- endfor -%}
-    counter comment "count dropped packets"
+    counter comment "count input dropped packets"
   }
 }
 

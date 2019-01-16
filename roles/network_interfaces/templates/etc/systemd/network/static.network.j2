@@ -7,7 +7,7 @@ MACAddress={{ target_interface.mac }}
 [Network]
 Description={{ target_interface.name }}
 DHCP=no
-{% for ip_ver in ['ipv4', 'ipv6'] %}
+{% for ip_ver in ['ipv6', 'ipv4'] %}
 {% if ip_ver in target_interface.ip %}
 Address={{ target_interface.ip[ip_ver].prefixed }}
 {% if ip_ver in networks[target_interface.network].gateway and

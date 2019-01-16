@@ -1,11 +1,13 @@
 ---
-  - name: Install packages
-    portage:
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
       package: "{{ item }}"
-      state: present
-    with_items:
-    - net-misc/dhcp
-    - net-misc/radvd
+    loop:
+    - { name: net-misc/dhcp }
+    - { name: net-misc/radvd }
     tags:
     - packages
 

@@ -1,0 +1,8 @@
+---
+  - name: Пишем nsswitch.conf
+    template:
+      src: etc/nsswitch.conf.j2
+      dest: /etc/nsswitch.conf
+      mode: 0644
+    tags:
+    - nsswitch

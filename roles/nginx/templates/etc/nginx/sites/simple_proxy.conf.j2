@@ -1,3 +1,6 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
 {% set interface = network|selectattr('ifname', 'match', 'internal_.*')|first %}
 upstream {{ target.name }}_upstream
 {

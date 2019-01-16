@@ -3,12 +3,12 @@
 
 [Resolve]
 DNS=
-{%- for ip_ver in ['ipv4', 'ipv6'] -%}
+{%- for ip_ver in ['ipv6', 'ipv4'] -%}
     {{ networks.home.gateway[ip_ver].ip }} {# -#}
 {%- endfor %}
 
 FallbackDNS=
-{%- for ip_ver in ['ipv4', 'ipv6'] -%}
+{%- for ip_ver in ['ipv6', 'ipv4'] -%}
     {%- for ns in dns.nameservers.external[ip_ver] -%}
         {{ ns }} {# -#}
     {%- endfor -%}

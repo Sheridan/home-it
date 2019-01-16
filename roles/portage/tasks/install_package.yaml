@@ -1,0 +1,74 @@
+---
+  - name: Определение параметров пакета
+    set_fact:
+      pkg:
+        name: "{{ package.name }}"
+        category: "{{ package.name.split('/')[0] }}"
+        arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else 'x86' }}"
+        unstable: "{{ package.unstable is defined and package.unstable }}"
+        state: "{{ package.state|default('present') }}"
+        use:
+          enabled:
+            flags: "{{ package.use.enabled|default([]) if package.use is defined and package.use.enabled is defined else [] }}"
+            defined: "{{ package.use is defined and package.use.enabled is defined }}"
+          disabled:
+            flags: "{{ package.use.disabled|default([]) if package.use is defined and package.use.disabled is defined else [] }}"
+            defined: "{{ package.use is defined and package.use.disabled is defined }}"
+        x86_as_amd64: "{{ package.x86_as_amd64 is defined and package.x86_as_amd64 }}"
+
+
+  - name: "Установка use флагов пакета {{ pkg.name }}"
+    lineinfile:
+      path: "/etc/portage/package.use/{{ pkg.category }}"
+      line: "{{ pkg.name }} {{'-' if pkg.use.disabled.defined else ''}}{{ pkg.use.disabled.flags | join(' -') }} {{ pkg.use.enabled.flags | join(' ') }}"
+      create: yes
+      owner: portage
+    when: pkg.state == 'present' and
+          (
+            pkg.use.disabled.defined or
+            pkg.use.enabled.defined
+          )
+
+  - name: "Удаление use флагов пакета {{ pkg.name }}"
+    lineinfile:
+      path: "/etc/portage/package.use/{{ pkg.category }}"
+      regexp: '^{{ pkg.name }}\s.*$'
+      state: absent
+    when: pkg.state == 'absent' or
+          (
+            not pkg.use.disabled.defined and
+            not pkg.use.enabled.defined
+          )
+
+  - name: "Установка флага нестабильной версии пакета {{ pkg.name }}"
+    lineinfile:
+      path: "/etc/portage/package.accept_keywords/{{ pkg.category }}"
+      line: "{{ pkg.name }} {{ '~' if pkg.unstable else '' }}{{ 'amd64' if pkg.x86_as_amd64 and pkg.arch == 'x86' else ( pkg.arch if pkg.unstable else '' ) }}"
+      create: yes
+      owner: portage
+    when: pkg.state == 'present' and
+          (
+            pkg.unstable or
+            (
+              pkg.x86_as_amd64 and
+              pkg.arch == 'x86'
+            )
+          )
+
+  - name: "Удаление флага нестабильной версии пакета {{ pkg.name }}"
+    lineinfile:
+      path: "/etc/portage/package.accept_keywords/{{ pkg.category }}"
+      regexp: '^{{ pkg.name }}\s.*$'
+      state: absent
+    when: pkg.state == 'absent' or
+          (
+            not pkg.unstable and
+            not pkg.x86_as_amd64
+          )
+
+  - name: "Установка пакета {{ pkg.name }}"
+    portage:
+      package: "{{ pkg.name }}"
+      state: "{{ pkg.state }}"
+      newuse: yes
+      update: yes

@@ -1,34 +1,10 @@
 ---
   - name: Устанавливаем полезные пакеты
-    portage:
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
       package: "{{ item }}"
-      state: present
-    with_items:
-    - app-misc/jq
-    - app-admin/sudo
-    - app-portage/genlop
-    - app-portage/portage-utils
-    - app-portage/smart-live-rebuild
-    - app-portage/gentoolkit
-    - app-portage/euses
-    - app-portage/cpuid2cpuflags
-    - app-portage/layman
-    - app-admin/pydf
-    - sys-process/htop
-    - net-dns/bind-tools
-    - net-analyzer/nmap
-    - net-analyzer/tcpdump
-    - net-misc/telnet-bsd
-    - sys-apps/pciutils
-    - sys-apps/usbutils
-    tags:
-    - packages
-
-  - name: Удаляем ненужные пакеты
-    portage:
-      package: "{{ item }}"
-      state: absent
-    with_items:
-    - www-plugins/google-talkplugin
+    loop: "{{ portage.packages }}"
     tags:
     - packages

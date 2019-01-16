@@ -6,7 +6,7 @@ Port 22
 AddressFamily any
 {% for interface in network -%}
     {%- if interface.type in ['static', 'dhcp'] -%}
-        {%- for ip_ver in ['ipv4', 'ipv6'] -%}
+        {%- for ip_ver in ['ipv6', 'ipv4'] -%}
             {%- if ip_ver in interface.ip -%}
 ListenAddress {{ interface.ip[ip_ver].ip }}
 {# -#}

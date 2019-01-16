@@ -13,3 +13,13 @@
   - '-march=native'
   - '-O2'
   - '-pipe'
+
+  portage:
+    packages:
+    - { name: app-portage/cpuid2cpuflags }
+    - { name: app-portage/genlop }
+    - { name: app-portage/portage-utils }
+    - { name: app-portage/smart-live-rebuild }
+    - { name: app-portage/gentoolkit }
+    - { name: app-portage/euses }
+    - { name: app-portage/layman }

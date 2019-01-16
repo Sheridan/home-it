@@ -1,0 +1,15 @@
+---
+portage:
+  packages:
+  - { name: app-misc/jq, unstable: yes }
+  - { name: app-admin/sudo }
+  - { name: app-admin/pydf }
+  - { name: sys-process/htop }
+  - { name: net-dns/bind-tools }
+  - { name: net-analyzer/nmap }
+  - { name: net-analyzer/tcpdump }
+  - { name: net-misc/netkit-telnetd, state: absent }
+  - { name: net-misc/telnet-bsd }
+  - { name: sys-apps/pciutils, use: { enabled: [ dns ] } }
+  - { name: sys-apps/usbutils }
+  - { name: www-plugins/google-talkplugin, state: absent }

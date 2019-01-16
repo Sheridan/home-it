@@ -43,6 +43,8 @@ class LookupModule(LookupBase):
                 return self.ip(int(terms[1]))
             if terms[0] == 'net':  # 1 == версия ip
                 return self._format_net(self._home_net(terms[1]))
+            if terms[0] == 'delegated_net':
+                return self._format_net(self._delegated_net())
             if terms[0] == 'kis_ip':  # 1 == номер
                 return self.prov_ip('ipv4', 'kis', int(terms[1]))
             if terms[0] == 'kis_net':
@@ -70,6 +72,10 @@ class LookupModule(LookupBase):
     def _prov_net(self, ip_ver, name):
         return netaddr.IPNetwork(self._to_net(prepared_data[name][ip_ver]['net'],
                                               prepared_data[name][ip_ver]['mask']))
+
+    def _delegated_net(self):
+        return netaddr.IPNetwork(self._to_net(prepared_data['home']['delegated']['net'],
+                                              prepared_data['home']['delegated']['mask']))
 
     def _home_net(self, ip_ver):
         return netaddr.IPNetwork(self._to_net(prepared_data['home'][ip_ver]['net'],

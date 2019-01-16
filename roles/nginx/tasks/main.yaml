@@ -1,10 +1,10 @@
 ---
-  - name: Install packages
-    portage:
-      package: "{{ item }}"
-      state: present
-    with_items:
-    - www-servers/nginx
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: www-servers/nginx }
     tags:
     - packages
 

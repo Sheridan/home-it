@@ -1,10 +1,20 @@
 ---
-  - name: Устанавливаем нужные пакеты
-    portage:
-      package: "{{ item }}"
-      state: present
+  - name: Создаём каталоги для нужд portage
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: portage
     with_items:
-    - app-portage/cpuid2cpuflags
+      - /etc/portage/package.use
+      - /etc/portage/package.accept_keywords
+
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop: "{{ portage.packages }}"
     tags:
     - packages
 

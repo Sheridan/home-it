@@ -1,9 +1,11 @@
 ---
-  - name: Install packages
-    portage:
-      package: "{{ item.name }}"
-      state: "{{ item.state }}"
-    with_items:
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop:
     - { name: net-misc/openntpd, state: absent }
     - { name: net-misc/ntp, state: present }
     tags:

@@ -9,20 +9,20 @@ interface {{ interface.ifname }}
     MinRtrAdvInterval {{ radvd.interval }};
     MaxRtrAdvInterval {{ radvd.interval * 10 }};
 
-    prefix {{ networks.home.subnet.ipv6.full }}
+    prefix {{ networks.home.delegated.full }}
     {
         AdvOnLink on;
         AdvAutonomous off;
         AdvRouterAddr on;
     };
-
+    {#
     # AdvRASrcAddress
     # {
     #     {{ interface.ip.ipv6.ip }};
     # }
 
     # route {{ networks.home.subnet.ipv6.full }} {};
-
+    -#}
     RDNSS {{ networks.home.gateway.ipv6.ip }} {};
 
     DNSSL {{ networks.home.domain }} {};
