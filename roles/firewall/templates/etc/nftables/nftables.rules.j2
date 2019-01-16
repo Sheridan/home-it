@@ -7,13 +7,33 @@ flush ruleset
 
 {# filter, inet -#}
 table inet filter {
-  chain output {
-    type filter hook output priority 0; policy accept;
-    oif lo accept comment "accept loopback"
-    {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { fe80::/10, ff02::/16 } counter accept comment "accept from link-local"
-    {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { fe80::/10, ff02::/16 } counter accept comment "accept to link-local"
+  chain netscan_drop {
+    {# bad tcp -> avoid network scanning -#}
+    tcp flags & (fin|syn) == (fin|syn) counter drop comment "drop invalid packets"
+    tcp flags & (syn|rst) == (syn|rst) counter drop comment "drop invalid packets"
+    tcp flags & (fin|syn|rst|psh|ack|urg) < (fin) counter drop comment "drop invalid packets"
+    tcp flags & (fin|syn|rst|psh|ack|urg) == (fin|psh|urg) counter drop comment "drop invalid packets"
+  }
+
+  chain global {
+    ct state {established, related} counter accept comment "accept all connections related to connections made by us"
+    ct state invalid counter drop comment "drop invalid packets"
+    jump netscan_drop
     ip protocol icmp limit rate 32/second counter accept comment "accept icmp"
     ip protocol icmp counter drop comment "drop burst icmp"
+    ip6 nexthdr icmpv6 limit rate 32/second counter accept comment "accept icmp"
+    ip6 nexthdr icmpv6 counter drop comment "drop burst icmp"
+    iif != lo ip daddr 127.0.0.1/8 counter drop comment "drop connections to loopback not coming from loopback"
+    iif != lo ip6 daddr ::1/128 counter drop comment "drop connections to loopback not coming from loopback"
+    oif lo counter accept comment "accept loopback"
+    iif lo counter accept comment "accept loopback"
+    {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { fe80::/16 } counter accept comment "accept from link-local"
+    {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { fe80::/16 } counter accept comment "accept to link-local"
+    {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { ff02::/16 } counter accept comment "accept from spetial"
+    {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { ff02::/16 } counter accept comment "accept to spetial"
+  }
+
+  chain network_hosts {
     {# output per host -#}
     {% for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
       {%- set host = hostvars[host_name].merged_vars -%}
@@ -36,17 +56,19 @@ table inet filter {
         {%- endfor -%}
       {%- endif -%}
     {%- endfor -%}
+  }
+
+  chain output {
+    type filter hook output priority 0; policy accept;
+    jump global
+    jump network_hosts
     counter comment "count accepted packets"
   }
 
   chain forward {
-    type filter hook forward priority 0; policy drop;
-    # {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { fe80::/10, ff02::/16 } counter accept comment "accept from link-local"
-    # {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { fe80::/10, ff02::/16 } counter accept comment "accept to link-local"
-    # {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr {{ networks.home.delegated.full }} counter accept comment "accept from delegate"
-    # {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr {{ networks.home.delegated.full }} counter accept comment "accept to delegate"
-    ip protocol icmp limit rate 32/second counter accept comment "accept icmp"
-    ip protocol icmp counter drop comment "drop burst icmp"
+    type filter hook forward priority 0; policy accept;
+    jump global
+    {#
     # Masquerading forwards
     {% for external_interface in external_interfaces -%}
       {%- for ip_version in ['ipv6', 'ipv4'] -%}
@@ -54,32 +76,15 @@ table inet filter {
         {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
     {{ query('nft', 'as_iif', internal_interface) }} {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ networks.home.subnet[ip_version].full }} counter accept comment "Forwarding net->internet for {{ external_interface.name }} ({{ external_interface.ifname }})"
     {{ query('nft', 'as_iif', external_interface) }} {{ query('nft', 'as_oif', internal_interface) }} {{ nfipv }} daddr {{ networks.home.subnet[ip_version].full }} counter accept comment "Forwarding net<-internet for {{ external_interface.name }} ({{ external_interface.ifname }})"
-    {# -#}
+    {# -}
         {%- endif -%}
       {%- endfor -%}
     {%- endfor -%}
-
+    -#}
     counter comment "count output accepted packets"
   }
 
-  chain input {
-    type filter hook input priority 0; policy drop;
-    ct state {established, related} counter accept comment "accept all connections related to connections made by us"
-    ct state invalid counter drop comment "drop invalid packets"
-    {# bad tcp -> avoid network scanning -#}
-    tcp flags & (fin|syn) == (fin|syn) counter drop comment "drop invalid packets"
-    tcp flags & (syn|rst) == (syn|rst) counter drop comment "drop invalid packets"
-    tcp flags & (fin|syn|rst|psh|ack|urg) < (fin) counter drop comment "drop invalid packets"
-    tcp flags & (fin|syn|rst|psh|ack|urg) == (fin|psh|urg) counter drop comment "drop invalid packets"
-    iif lo accept comment "accept loopback"
-    iif != lo ip daddr 127.0.0.1/8 counter drop comment "drop connections to loopback not coming from loopback"
-    iif != lo ip6 daddr ::1/128 counter drop comment "drop connections to loopback not coming from loopback"
-    {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { fe80::/10, ff02::/16 } counter accept comment "accept from link-local"
-    {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { fe80::/10, ff02::/16 } counter accept comment "accept to link-local"
-
-    ip protocol icmp limit rate 32/second counter accept comment "accept icmp"
-    ip protocol icmp counter drop comment "drop burst icmp"
-
+  chain to_self {
     {# to_host -#}
     {% for rule_name in merged_vars.firewall.to_host|list -%}
         {%- set rule = merged_vars.firewall.to_host[rule_name] -%}
@@ -92,6 +97,12 @@ table inet filter {
             {%- endfor -%}
         {%- endfor -%}
     {%- endfor -%}
+  }
+
+  chain input {
+    type filter hook input priority 0; policy drop;
+    jump global
+    jump to_self
     counter comment "count input dropped packets"
   }
 }
