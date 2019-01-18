@@ -7,6 +7,7 @@
   - vars/ssh_keys.yaml
   - vars/telegram.yaml
   roles:
+  - { role: apcupsd, tags: apcupsd }
   - { role: network_interfaces, tags: network_interfaces }
   - { role: pppoe, tags: pppoe }
   - { role: kernel, tags: kernel }
@@ -23,6 +24,7 @@
   - { role: grafana, tags: [ grafana, monitoring ] }
   - { role: node_exporter, tags: [ node_exporter, monitoring ] }
   - { role: bind_exporter, tags: [ bind_exporter, monitoring ] }
+  - { role: telegraf, tags: [ telegraf, monitoring ] }
   - { role: loggerbot, tags: loggerbot }
   - { role: portage, tags: portage }
   - { role: packages, tags: packages }

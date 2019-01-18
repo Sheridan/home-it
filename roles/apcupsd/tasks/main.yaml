@@ -1,0 +1,36 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: sys-power/apcupsd }
+    tags:
+    - packages
+    notify:
+    - restart apcupsd
+
+  - name: Установка конфига apcupsd
+    template:
+      src: etc/apcupsd/apcupsd.conf.j2
+      dest: /etc/apcupsd/apcupsd.conf
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - restart apcupsd
+
+  - name: Установка сервиса apcupsd
+    template:
+      owner: bind_exporter
+      src: etc/systemd/system/apcupsd-daemon.service.j2
+      dest: /etc/systemd/system/apcupsd-daemon.service
+      mode: 0644
+    notify:
+    - systemd daemon reload
+    - restart apcupsd
+
+  - name: Разрешение apcupsd сервиса
+    service:
+      name: apcupsd-daemon
+      enabled: yes

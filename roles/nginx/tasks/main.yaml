@@ -16,6 +16,8 @@
     with_items:
       - /etc/nginx/sites
       - /var/log/nginx
+      - /var/www
+      - /var/www/files
 
   - name: deploy nginx configuration
     template:
@@ -25,7 +27,17 @@
       dest: /etc/nginx/nginx.conf
       mode: 0644
     notify:
-    - restart nginx
+    - reload nginx
+
+  - name: deploy simple fileshare
+    template:
+      owner: nginx
+      group: nginx
+      src: etc/nginx/sites/simple_filesharing.conf.j2
+      dest: /etc/nginx/sites/simple_filesharing.conf
+      mode: 0644
+    notify:
+    - reload nginx
 
   - name: Install nginx daemon service
     template:

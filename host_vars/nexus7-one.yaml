@@ -1,8 +1,9 @@
 ---
   network:
   - name: "Internal"
+    ifname: "wifi_0"
     mac: "50:46:5d:7b:50:6f"
-    duid: "00:04:0a:f4:c4:36:e8:59:5a:99:4a:14:b7:6a:8d:9a:9f:0c"
+    duid: "00:04:8f:e1:a3:89:b3:b6:9b:4f:50:89:97:48:32:18:8a:57"
     ip: "{{ query('ship', 'ip', 100) }}"
     network: 'home'
     type: 'dhcp'

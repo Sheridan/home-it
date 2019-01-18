@@ -1,0 +1,8 @@
+---
+  apcupsd:
+    power:
+      voltages:
+        transfer_to_battery:
+          low: 180
+          high: 250
+        output: 220

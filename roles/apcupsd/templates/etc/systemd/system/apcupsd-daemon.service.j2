@@ -1,0 +1,10 @@
+[Unit]
+Description=APC UPS Monitor
+
+[Service]
+ExecStart=/sbin/apcupsd -b --pid-file /run/apcupsd.pid --config-file /etc/apcupsd/apcupsd.conf
+SyslogIdentifier=apcupsd
+PIDFile=/run/apcupsd.pid
+
+[Install]
+WantedBy=multi-user.target

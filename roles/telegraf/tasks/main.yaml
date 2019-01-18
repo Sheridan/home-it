@@ -1,0 +1,36 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: net-analyzer/telegraf, unstable: yes, x86_as_amd64: yes }
+    tags:
+    - packages
+    notify:
+    - restart telegraf
+
+  - name: Устанавливаем основной конфиг
+    template:
+      owner: telegraf
+      src: etc/telegraf/telegraf.conf.j2
+      dest: /etc/telegraf/telegraf.conf
+      mode: 0644
+    notify:
+    - restart telegraf
+
+  - name: Подключаем к прометею
+    import_role:
+      name: prometheus
+      tasks_from: connect_exporter
+    vars:
+      target:
+        name: "{{ inventory_hostname }}_telegraf"
+        addr: "{{ '[::1]' if inventory_hostname == 'gate' else inventory_hostname }}"
+        port: "{{ merged_vars.telegraf.listen.port }}"
+        job: telegraf
+
+  - name: Enabling services
+    service:
+      name: telegraf
+      enabled: yes

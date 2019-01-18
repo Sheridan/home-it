@@ -17,6 +17,7 @@
   - { role: resolved, tags: resolved }
   - { role: ntp, tags: ntp }
   - { role: node_exporter, tags: [ node_exporter, monitoring ] }
+  - { role: telegraf, tags: [ telegraf, monitoring ] }
   - { role: loggerbot, tags: loggerbot }
   - { role: portage, tags: portage }
   - { role: packages, tags: packages }

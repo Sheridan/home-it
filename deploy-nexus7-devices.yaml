@@ -1,0 +1,41 @@
+- hosts: nexus7
+  remote_user: root
+  vars_files:
+  - vars/network.yaml
+
+  tasks:
+
+  - name: Настройки сети
+    template:
+      src: templates/nexus7/etc/network/interfaces.j2
+      dest: /etc/network/interfaces
+      mode: 0644
+
+  - name: Настройки репозиториев
+    template:
+      src: templates/nexus7/etc/apt/sources.list.j2
+      dest: /etc/apt/sources.list
+      mode: 0644
+
+  - name: Установка пакетов
+    apt:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+      - htop
+      - pydf
+      - dhcpcd5
+      - dhcpcd
+
+  - name: Удаление пакетов
+    apt:
+      name: "{{ packages }}"
+      state: absent
+      autoremove: yes
+      autoclean: yes
+    vars:
+      packages:
+      - apparmor
+
+# https://forum.xda-developers.com/showthread.php?t=2368304&page=3

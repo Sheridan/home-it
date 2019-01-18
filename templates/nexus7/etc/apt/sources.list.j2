@@ -1,0 +1,39 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+{% set root = 'mirror.yandex.ru' %}
+{# 'trusty-proposed', #}
+{% for branch in
+  [
+    'trusty-backports',
+    'trusty-security',
+    'trusty-updates',
+    'trusty'
+  ]
+-%}
+  {%- for leaf in
+    [
+      'main',
+      'restricted',
+      'universe',
+      'multiverse'
+    ]
+  -%}
+    {%- for uri in
+      [
+        'http://'+root+'/',
+        'http://'+root+'/ubuntu-ports/'
+      ]
+    -%}
+      {%- for type in
+        [
+          'deb',
+          'deb-src'
+        ]
+      -%}
+{{ type }} {{ uri }} {{ branch }} {{ leaf }}
+{# -#}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endfor -%}
+{%- endfor -%}

@@ -1,0 +1,19 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+{% set interface = network|selectattr('ifname', 'match', 'external_kis_.*')|first %}
+
+server
+{
+  listen {{ interface.ip.ipv4.ip }}:80;
+  server_name          _;
+  access_log           /var/log/nginx/files.access.log;
+  error_log            /var/log/nginx/files.error.log;
+  client_max_body_size 1024g;
+
+location / {
+   root /var/www/files/;
+   index index.html;
+   autoindex on;
+}
+}

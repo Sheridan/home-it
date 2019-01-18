@@ -1,0 +1,11 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+auto lo
+iface lo inet loopback
+
+auto wlan0
+# iface wlan0 inet6 auto
+iface wlan0 inet dhcp
+  wpa-ssid "{{ wireless.wifi.trusted.ssid }}"
+  wpa-psk "{{ wireless.wifi.trusted.psk }}"

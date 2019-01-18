@@ -1,7 +1,7 @@
 ---
 - hosts: gate
   vars_files:
-  - vars/prometheus.yaml
+  - roles/prometheus/defaults/main.yaml
   vars_prompt:
     - name: "metric"
       prompt: "metric name (example: curl_touching_http_code)"
