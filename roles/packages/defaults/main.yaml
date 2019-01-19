@@ -2,7 +2,6 @@
 portage:
   packages:
   - { name: app-misc/jq, unstable: yes }
-  - { name: app-admin/sudo }
   - { name: app-admin/pydf }
   - { name: sys-process/htop }
   - { name: net-dns/bind-tools }

@@ -5,25 +5,23 @@
 dc = "{{ networks.home.domain }}"
 
 [agent]
-  interval = "15s"
-  round_interval = true
-  metric_batch_size = 1000
-  metric_buffer_limit = 10000
-  collection_jitter = "0s"
-  flush_interval = "10s"
-  flush_jitter = "0s"
-  precision = ""
-  debug = false
-  quiet = false
-  logfile = "{{ telegraf.log_file_location }}"
-  hostname = "{{ inventory_hostname }}"
-  ## If set to true, do no set the "host" tag in the telegraf agent.
-  omit_hostname = false
+interval = "15s"
+round_interval = true
+metric_batch_size = 1000
+metric_buffer_limit = 10000
+collection_jitter = "0s"
+flush_interval = "10s"
+flush_jitter = "0s"
+precision = ""
+debug = false
+quiet = false
+hostname = "{{ inventory_hostname }}"
+omit_hostname = false
 
 [[outputs.prometheus_client]]
 listen = "[::]:{{ merged_vars.telegraf.listen.port }}"
 path = "/metrics"
-expiration_interval = "60s"
+expiration_interval = "30s"
 
 [[inputs.processes]]
 

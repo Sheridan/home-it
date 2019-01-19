@@ -1,0 +1,22 @@
+---
+  - name: Устанавливаем sudo
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: app-admin/sudo }
+    tags:
+    - packages
+
+  - name: Убеждаемся что группа 'wheel' есть
+    group:
+      name: wheel
+      state: present
+
+  - name: Разрешаем группе 'wheel' жить без запроса пароля
+    lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: '^%wheel'
+      line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+      validate: 'visudo -cf %s'

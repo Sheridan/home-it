@@ -1,0 +1,14 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: sys-apps/smartmontools, use: { enabled: [update_drivedb], disabled: [daemon] } }
+    tags:
+    - packages
+
+  - name: Подключаем к телеграфу
+    import_role:
+      name: telegraf
+      tasks_from: deploy_smart_plugin

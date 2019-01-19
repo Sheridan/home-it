@@ -1,5 +1,4 @@
 ---
   telegraf:
-    log_file_location: /var/log/telegraf.log
     listen:
       port: 9101

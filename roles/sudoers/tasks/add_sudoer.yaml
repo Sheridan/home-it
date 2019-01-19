@@ -1,0 +1,12 @@
+---
+  - name: Проверяем sudo
+    include_role:
+      name: sudoers
+      tasks_from: main
+
+  - name: Привелигелируем пользователя
+    user:
+      name: "{{ user }}"
+      groups: wheel
+      append: yes
+      state: present
