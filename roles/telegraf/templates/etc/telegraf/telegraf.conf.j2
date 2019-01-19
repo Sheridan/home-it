@@ -5,23 +5,22 @@
 dc = "{{ networks.home.domain }}"
 
 [agent]
-interval = "15s"
+interval = "{{ merged_vars.monitoring.collect.interval }}s"
 round_interval = true
-metric_batch_size = 1000
-metric_buffer_limit = 10000
-collection_jitter = "0s"
-flush_interval = "10s"
-flush_jitter = "0s"
-precision = ""
+metric_batch_size = {{ 2 | pow(10) | int }}
+metric_buffer_limit = {{ 2 | pow(12) | int }}
+collection_jitter = "{{ merged_vars.monitoring.collect.jitter }}s"
+flush_interval = "{{ merged_vars.monitoring.collect.interval + merged_vars.monitoring.collect.jitter * 2 }}s"
+flush_jitter = "{{ merged_vars.monitoring.collect.jitter }}s"
 debug = false
-quiet = false
+quiet = true
 hostname = "{{ inventory_hostname }}"
 omit_hostname = false
 
 [[outputs.prometheus_client]]
 listen = "[::]:{{ merged_vars.telegraf.listen.port }}"
 path = "/metrics"
-expiration_interval = "30s"
+expiration_interval = "{{ merged_vars.monitoring.collect.interval * 2 }}s"
 
 [[inputs.processes]]
 

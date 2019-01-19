@@ -33,6 +33,11 @@
       rt: 2
       kis: 3
 
+  monitoring:
+    collect:
+      interval: 15
+      jitter: 4
+
   # loggerbot:
   #   entryes:
   #   - type: journal

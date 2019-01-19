@@ -39,7 +39,5 @@
 
   - name: Enabling services
     service:
-      name: "{{ item }}"
+      name: node_exporter
       enabled: yes
-    loop:
-      - node_exporter

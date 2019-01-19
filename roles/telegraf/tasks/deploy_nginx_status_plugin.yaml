@@ -1,0 +1,18 @@
+---
+  - name: Устанавливаем телеграфу конфиг для nginx sub_status
+    template:
+      owner: telegraf
+      src: etc/telegraf/telegraf.d/nginx.conf.j2
+      dest: /etc/telegraf/telegraf.d/nginx.conf
+      mode: 0644
+    notify:
+    - restart telegraf
+
+  - name: Деплоим нужное в nginx
+    include_role:
+      name: nginx
+      tasks_from: status
+    vars:
+      user: telegraf
+    notify:
+    - restart telegraf

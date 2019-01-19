@@ -1,0 +1,10 @@
+---
+  - name: Деплоим статус для nginx
+    template:
+      owner: nginx
+      group: nginx
+      src: etc/nginx/sites/status.conf.j2
+      dest: /etc/nginx/sites/status.conf
+      mode: 0644
+    notify:
+    - reload nginx

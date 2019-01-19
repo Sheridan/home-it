@@ -8,6 +8,9 @@
     tags:
     - packages
 
+  - name: Обновляем БД
+    shell: update-smart-drivedb
+
   - name: Подключаем к телеграфу
     import_role:
       name: telegraf

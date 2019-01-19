@@ -1,0 +1,22 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+server
+{
+  listen 127.0.0.1:80;
+  listen [::1]:80;
+  server_name          _;
+  access_log           off;
+  error_log            /var/log/nginx/stub_status.error.log;
+  client_max_body_size {{ 2 | pow(4) | int }}m;
+
+  location = /nginx_status
+  {
+    stub_status;
+    allow 127.0.0.1/8;
+    allow ::1/128;
+    allow {{ networks.home.subnet.ipv4.full }};
+    allow {{ networks.home.subnet.ipv6.full }};
+    deny all;
+  }
+
+}

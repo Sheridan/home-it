@@ -1,10 +1,11 @@
 ---
   global:
-    scrape_interval: 15s
+    scrape_interval: {{ merged_vars.monitoring.collect.interval }}s
+    evaluation_interval: {{ merged_vars.monitoring.collect.interval * 2 }}s
 
   scrape_configs:
   - job_name: 'prometheus'
-    scrape_interval: 15s
+    scrape_interval: {{ merged_vars.monitoring.collect.interval }}s
     file_sd_configs:
     - files:
       - '/etc/prometheus/file_sd_configs/*.yaml'
