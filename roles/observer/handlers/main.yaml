@@ -2,7 +2,7 @@
   - name: systemd daemon reload
     shell: systemctl daemon-reload
 
-  - name: restart loggerbot
+  - name: restart observer
     service:
-      name: loggerbot
+      name: observer
       state: restarted

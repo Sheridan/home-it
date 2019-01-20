@@ -26,6 +26,6 @@
   - { role: node_exporter, tags: [ node_exporter, monitoring ] }
   - { role: bind_exporter, tags: [ bind_exporter, monitoring ] }
   - { role: telegraf, tags: [ telegraf, monitoring ] }
-  - { role: loggerbot, tags: loggerbot }
+  - { role: observer, tags: observer }
   - { role: portage, tags: portage }
   - { role: packages, tags: packages }

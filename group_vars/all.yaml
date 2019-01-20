@@ -38,7 +38,7 @@
       interval: 15
       jitter: 4
 
-  # loggerbot:
+  # observer:
   #   entryes:
   #   - type: journal
   #     regexp: 'systemd.*((Stopp|Start)(ing|ed)|scheduling)'

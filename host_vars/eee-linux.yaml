@@ -71,11 +71,13 @@
     - git
     - ssh-agent
 
-  loggerbot:
+  observer:
     entryes:
-    - type: journal
-      regexp: '(device detected|Attached)'
-      title: Devices
+      journald:
+      - name: device_found
+        match:
+          positive: '(device detected|Attached)'
+        title: Devices
 
   node_exporter:
     collectors:

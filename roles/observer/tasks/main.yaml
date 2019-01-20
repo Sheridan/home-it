@@ -1,0 +1,89 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop:
+    - { name: dev-python/requests }
+    - { name: dev-python/python-systemd }
+    - { name: dev-python/pyyaml }
+    tags:
+    - packages
+
+  - name: Add observer user
+    user:
+      name: "{{ observer_user }}"
+      comment: Observer and alerter
+      shell: /bin/false
+      group: systemd-journal
+      groups: portage
+      create_home: no
+
+  - name: create dirs for observer
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ observer_user }}"
+    with_items:
+      - "{{ observer_install_path }}"
+      - "{{ observer_config_path }}"
+      - "{{ observer_templates_path }}"
+
+  - name: Copy observer code
+    synchronize:
+      src: opt/observer/
+      dest: "{{ observer_install_path }}/"
+    notify:
+    - restart observer
+
+  - name: deploy observer configuration
+    template:
+      src: etc/observer/config.yaml.j2
+      dest: /etc/observer/config.yaml
+      owner: "{{ observer_user }}"
+      mode: 0644
+    notify:
+    - restart observer
+
+  # - name: дебаг
+  #   debug:
+  #     var: item
+  #   with_filetree: templates/etc/observer/
+  #   when: item.state == 'directory'
+
+
+  - name: Проверка наличия директорий шаблонов
+    file:
+      path: "{{ observer_templates_path }}/{{ item.path }}"
+      state: directory
+      mode: 0644
+      owner: "{{ observer_user }}"
+    with_filetree: templates/etc/observer/templates/
+    when: item.state == 'directory'
+
+  - name: Копируем шаблоны
+    template:
+      src: '{{ item.src }}'
+      dest: "{{ observer_templates_path }}/{{ item.path }}"
+      mode: 0644
+      owner: "{{ observer_user }}"
+    with_filetree: templates/etc/observer/templates/
+    when: item.state == 'file'
+
+  - name: Install observer daemon service
+    template:
+      src: etc/systemd/system/observer.service.j2
+      dest: /etc/systemd/system/observer.service
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - systemd daemon reload
+    - restart observer
+
+  - name: Enabling services
+    service:
+      name: observer
+      enabled: yes

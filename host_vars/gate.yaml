@@ -136,7 +136,7 @@
     plugins:
     - git
 
-  loggerbot:
+  observer:
     entryes:
     - type: journal
       regexp: "sshd.*(Invalid user|maximum authentication attempts|Authentication failure)"

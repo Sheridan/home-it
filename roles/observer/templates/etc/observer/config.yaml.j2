@@ -1,0 +1,53 @@
+---
+  debug: no
+
+  formatter:
+    templates_path: /ets/observer/templates
+
+  output:
+    telegram:
+      token: '{{ telegram.bots.logger.token }}'
+      targets:
+      - name: Observers
+        destination:
+          rooms:
+          - '{{ telegram.chats.log.id }}'
+
+  input:
+    journald:
+      rules:
+      - name: interface_status
+        match:
+          positive: '^.*kernel: .+? (?P<interface>({%- for interface in network -%}{{ interface.ifname }}{{ '|' if not loop.last else '' }}{%- endfor -%})): (?P<event>.+?)$'
+          negative: ''
+        outputs:
+        - Observers
+    logfile:
+      positions_file: {{ observer_positions_file }}
+      rules:
+      - name: emerge_download_start
+        identifier: {{ inventory_hostname }}
+        match:
+          positive: "^>>> Downloading '(?P<url>.+?)'.*$"
+          negative: ''
+        path: /var/log/emerge-fetch.log
+        store_position: False
+        outputs:
+        - Observers
+      - name: emerge_download_done
+        identifier: sometest
+        match:
+          positive: '^.+?\((?P<avg_speed>.+?)\) - ‘(?P<file_location>.+?)’ saved \[(?P<file_size>.+?)/.+$'
+          negative: ''
+        path: /var/log/emerge-fetch.log
+        store_position: False
+        outputs:
+        - Observers
+
+  {% if observer_proxy is defined -%}
+  proxy:
+    host: '{{ observer_proxy.addr }}'
+    port: {{ observer_proxy.port }}
+    type: '{{ observer_proxy.proto }}'
+  {# -#}
+  {%- endif %}

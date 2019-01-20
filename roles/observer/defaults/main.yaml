@@ -1,0 +1,6 @@
+---
+  observer_install_path: /opt/observer
+  observer_config_path: /etc/observer
+  observer_templates_path: /etc/observer/templates
+  observer_positions_file: /tmp/observer.positions
+  observer_user: observer

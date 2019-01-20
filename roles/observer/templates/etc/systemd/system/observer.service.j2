@@ -1,0 +1,16 @@
+[Unit]
+Description=Observer service for pushing alerts from many to many
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 {{ observer_install_path }}/observer.py {{ observer_config_path }}/config.yaml
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=observer
+User={{ observer_user }}
+
+[Install]
+WantedBy=multi-user.target
