@@ -21,11 +21,12 @@
       groups: portage
       create_home: no
 
-  - name: create dirs for observer
+  - name: Создаём каталоги для наблюдателя
     file:
       dest: "{{ item }}"
       state: directory
       owner: "{{ observer_user }}"
+      mode: 0755
     with_items:
       - "{{ observer_install_path }}"
       - "{{ observer_config_path }}"
@@ -58,7 +59,7 @@
     file:
       path: "{{ observer_templates_path }}/{{ item.path }}"
       state: directory
-      mode: 0644
+      mode: 0755
       owner: "{{ observer_user }}"
     with_filetree: templates/etc/observer/templates/
     when: item.state == 'directory'

@@ -17,7 +17,7 @@ class InputLogfile(InputPlugin):
     def gen_position_id(self, rule):
         return '{0}:{1}:{2}'.format(rule['path'],
                                     rule['match']['positive'],
-                                    rule['match']['negative'])
+                                    rule['match']['negative'] if 'negative' in rule['match'] else 'none')
 
     def load_positions(self):
         positions = None

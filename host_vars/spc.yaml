@@ -66,8 +66,8 @@
     - git
     - ssh-agent
 
-  observer:
-    entryes:
-    - type: journal
-      regexp: '(device detected|Attached)'
-      title: Devices
+  # observer:
+  #   entryes:
+  #   - type: journal
+  #     regexp: '(device detected|Attached)'
+  #     title: Devices

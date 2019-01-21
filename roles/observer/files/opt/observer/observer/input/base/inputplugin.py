@@ -12,14 +12,21 @@ class InputPlugin(ObserverPlugin):
         for rule in self._options['rules']:
             rule['pattern'] = {
                 'positive': re.compile(rule['match']['positive']),
-                'negative': re.compile(rule['match']['negative']) if 'negative' in rule['match'] and rule['match']['negative'] else None
+                'negative': re.compile(rule['match']['negative']) if 'negative' in rule['match'] and isinstance(rule['match']['negative'], str) and rule['match']['negative'] != '' else None
             }
             rules.append(rule)
         return rules
 
+    def match_negative(self, rule, text):
+        return rule['pattern']['negative'] and rule['pattern']['negative'].search(text)
+
     def match(self, text):
+        if self._debug:
+            print('Match text --------------------=> ', text)
         for rule in self._rules:
-            if ((rule['pattern']['negative'] and not rule['pattern']['negative'].match(text)) or not rule['pattern']['negative']):
+            if self._debug:
+                print('Rule --------------------=> positive: [{0}]:[{1}], negative: [{2}]:[{3}]'.format(rule['pattern']['positive'], rule['pattern']['positive'].match(text), rule['pattern']['negative'], self.match_negative(rule, text)))
+            if not self.match_negative(rule, text):
                 match_result = rule['pattern']['positive'].match(text)
                 if match_result:
                     data = match_result.groupdict()

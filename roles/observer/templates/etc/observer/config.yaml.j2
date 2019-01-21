@@ -2,7 +2,7 @@
   debug: no
 
   formatter:
-    templates_path: /ets/observer/templates
+    templates_path: /etc/observer/templates
 
   output:
     telegram:
@@ -18,18 +18,26 @@
       rules:
       - name: interface_status
         match:
-          positive: '^.*kernel: .+? (?P<interface>({%- for interface in network -%}{{ interface.ifname }}{{ '|' if not loop.last else '' }}{%- endfor -%})): (?P<event>.+?)$'
-          negative: ''
+          positive: 'kernel: .+? (?P<interface>({%- for interface in network -%}{{ interface.ifname }}{{ '|' if not loop.last else '' }}{%- endfor -%})): (?P<event>.*)'
         outputs:
         - Observers
+{% for entry in merged_vars.observer.entryes.journald %}
+      - name: "{{ entry.name }}"
+        outputs:
+        - Observers
+        match:
+          positive: "{{ entry.match.positive }}"
+          {% if 'negative' in entry.match -%} negative: "{{ entry.match.negative }}" {%- endif %}
+
+{% endfor %}
+
     logfile:
       positions_file: {{ observer_positions_file }}
       rules:
       - name: emerge_download_start
         identifier: {{ inventory_hostname }}
         match:
-          positive: "^>>> Downloading '(?P<url>.+?)'.*$"
-          negative: ''
+          positive: ">>> Downloading '(?P<url>.+?)'"
         path: /var/log/emerge-fetch.log
         store_position: False
         outputs:
@@ -37,8 +45,7 @@
       - name: emerge_download_done
         identifier: sometest
         match:
-          positive: '^.+?\((?P<avg_speed>.+?)\) - ‘(?P<file_location>.+?)’ saved \[(?P<file_size>.+?)/.+$'
-          negative: ''
+          positive: '.+? .+? \((?P<avg_speed>.+?)\) - ‘(?P<file_location>.+?)’ saved \[(?P<file_size>.+?)/'
         path: /var/log/emerge-fetch.log
         store_position: False
         outputs:

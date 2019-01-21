@@ -138,12 +138,16 @@
 
   observer:
     entryes:
-    - type: journal
-      regexp: "sshd.*(Invalid user|maximum authentication attempts|Authentication failure)"
-      title: SSH break attempt
-    - type: journal
-      regexp: "dhcp.*duid"
-      title: dhcpd duid
-    - type: journal
-      regexp: "dhcp.*DHCPACK"
-      title: dhcpd mac
+      journald:
+      - name: dhcpd4_dhcpack_to
+        match:
+          positive: 'dhcpd.*: DHCPACK to (?P<address>.+?) \\((?P<mac>.+?)\\) via (?P<interface>.*)'
+      - name: dhcpd4_dhcpack_to_guest
+        match:
+          positive: 'dhcpd.*: DHCPACK on (?P<address>.+?) to (?P<mac>.+?) \\((?P<hostname>.+?)\\) via (?P<interface>.*)'
+      - name: dhcpd6_na_to
+        match:
+          positive: 'dhcpd.*: Reply NA: address (?P<address>.+?) to client with duid (?P<duid>.+?) iaid = (?P<iaid>.+?) static'
+      - name: dhcpd6_na_to_guest
+        match:
+          positive: 'dhcpd.*: Reply NA: address (?P<address>.+?) to client with duid (?P<duid>.+?) iaid = (?P<iaid>.+?) valid for (?P<valid_period_seconds>.+?) seconds'

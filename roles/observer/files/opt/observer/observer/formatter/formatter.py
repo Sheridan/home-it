@@ -26,17 +26,30 @@ class Formatter:
         return template
 
     def get_template_content(self, message):
-        filename = self.construct_template_filename(message['output_plugin_name'], message['rule_name'])
-        if os.path.isfile(filename):
-            return self.load_template_content(filename)
-        filename = self.construct_template_filename(message['output_plugin_name'], 'default')
-        if os.path.isfile(filename):
-            return self.load_template_content(filename)
-        filename = self.construct_template_filename('default', 'default')
-        if os.path.isfile(filename):
-            return self.load_template_content(filename)
-        print("Can not find any template!")
+        try:
+            return self.try_get_template_content(message['output_plugin_name'], message['rule_name'])
+        except Exception:
+            pass
+        try:
+            return self.try_get_template_content(message['output_plugin_name'], 'default')
+        except Exception:
+            pass
+        try:
+            return self.try_get_template_content('', 'default')
+        except Exception:
+            pass
+        print("Can not find any template! Tryed: ")
+        print(self.construct_template_filename(message['output_plugin_name'], message['rule_name']))
+        print(self.construct_template_filename(message['output_plugin_name'], 'default'))
+        print(self.construct_template_filename('', 'default'))
         sys.exit()
+
+    def try_get_template_content(self, folder, file):
+        filename = self.construct_template_filename(folder, file)
+        if os.path.isfile(filename):
+            return self.load_template_content(filename)
+        print('Template not exists: ', filename)
+        raise Exception('File not found')
 
     def construct_template_filename(self, output_plugin_name, rule_name):
         return '{0}/{1}/{2}.html'.format(self._options['templates_path'], output_plugin_name, rule_name)

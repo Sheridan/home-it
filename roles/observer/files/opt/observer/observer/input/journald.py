@@ -34,7 +34,6 @@ class InputJournald(InputPlugin):
         match_text = '{0}: {1}'.format(idnt, entry['MESSAGE'])
         match_result = self.match(match_text)
         if match_result:
-            # print(entry)
             msg = match_result['data']
             msg['full_message'] = entry['MESSAGE']
             msg['input_plugin_name'] = self.plugin_name()

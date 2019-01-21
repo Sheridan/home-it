@@ -71,13 +71,13 @@
     - git
     - ssh-agent
 
-  observer:
-    entryes:
-      journald:
-      - name: device_found
-        match:
-          positive: '(device detected|Attached)'
-        title: Devices
+  # observer:
+  #   entryes:
+  #     journald:
+  #     - name: device_found
+  #       match:
+  #         positive: '(device detected|Attached)'
+  #       title: Devices
 
   node_exporter:
     collectors:

@@ -7,8 +7,8 @@ Type=simple
 ExecStart=/usr/bin/python3 {{ observer_install_path }}/observer.py {{ observer_config_path }}/config.yaml
 Restart=always
 RestartSec=30
-StandardOutput=journal
-StandardError=journal
+StandardOutput=syslog
+StandardError=syslog
 SyslogIdentifier=observer
 User={{ observer_user }}
 

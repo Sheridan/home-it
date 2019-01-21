@@ -1,10 +1,10 @@
 from observer import ObserverPlugin
 import sys
 
+
 class OutputPlugin(ObserverPlugin):
     def __init__(self, options, debug, plugin_name):
         super(OutputPlugin, self).__init__(options, debug, plugin_name)
-
 
     def send_message(self, message):
         print("You forgot to implement the send_message method")
@@ -15,3 +15,9 @@ class OutputPlugin(ObserverPlugin):
             if target_name == target['name']:
                 return True
         return False
+
+    def targets(self):
+        targets = []
+        for target in self._options['targets']:
+            targets.append(target['name'])
+        return targets
