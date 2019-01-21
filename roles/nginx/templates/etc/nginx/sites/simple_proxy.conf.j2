@@ -12,8 +12,8 @@ server
   listen {{ interface.ip.ipv4.ip }}:80;
   listen [{{ interface.ip.ipv6.ip }}]:80;
   server_name          {{ target.name }}.{{ networks.home.domain }};
-  access_log           /var/log/nginx/{{ target.name }}.access.log;
-  error_log            /var/log/nginx/{{ target.name }}.error.log;
+  access_log           /var/log/nginx/{{ target.name }}.access.log combined gzip=9;
+  error_log            /var/log/nginx/{{ target.name }}.error.log warn;
   client_max_body_size 50m;
 
   location /

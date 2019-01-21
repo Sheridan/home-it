@@ -6,7 +6,7 @@ server
   listen [::1]:80;
   server_name          _;
   access_log           off;
-  error_log            /var/log/nginx/stub_status.error.log;
+  error_log            /var/log/nginx/stub_status.error.log warn;
   client_max_body_size {{ 2 | pow(4) | int }}m;
 
   location = /nginx_status

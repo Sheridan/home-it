@@ -31,11 +31,12 @@
       - "{{ observer_install_path }}"
       - "{{ observer_config_path }}"
       - "{{ observer_templates_path }}"
+      - "{{ storage_folder }}"
 
-  - name: Copy observer code
-    synchronize:
-      src: opt/observer/
-      dest: "{{ observer_install_path }}/"
+  - name: Клонируем observer
+    git:
+      repo: https://github.com/Sheridan/observer.git
+      dest: '{{ observer_install_path }}'
     notify:
     - restart observer
 
@@ -43,33 +44,26 @@
     template:
       src: etc/observer/config.yaml.j2
       dest: /etc/observer/config.yaml
-      owner: "{{ observer_user }}"
+      owner: '{{ observer_user }}'
       mode: 0644
     notify:
     - restart observer
 
-  # - name: дебаг
-  #   debug:
-  #     var: item
-  #   with_filetree: templates/etc/observer/
-  #   when: item.state == 'directory'
-
-
   - name: Проверка наличия директорий шаблонов
     file:
-      path: "{{ observer_templates_path }}/{{ item.path }}"
+      path: '{{ observer_templates_path }}/{{ item.path }}'
       state: directory
       mode: 0755
-      owner: "{{ observer_user }}"
+      owner: '{{ observer_user }}'
     with_filetree: templates/etc/observer/templates/
     when: item.state == 'directory'
 
   - name: Копируем шаблоны
     template:
       src: '{{ item.src }}'
-      dest: "{{ observer_templates_path }}/{{ item.path }}"
+      dest: '{{ observer_templates_path }}/{{ item.path }}'
       mode: 0644
-      owner: "{{ observer_user }}"
+      owner: '{{ observer_user }}'
     with_filetree: templates/etc/observer/templates/
     when: item.state == 'file'
 
