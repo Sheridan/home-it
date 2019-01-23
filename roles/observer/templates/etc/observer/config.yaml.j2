@@ -37,22 +37,19 @@
     logfile:
       positions_file: {{ observer_positions_file }}
       rules:
-      - name: emerge_download_start
-        identifier: {{ inventory_hostname }}
-        match:
-          positive: ">>> Downloading '(?P<url>.+?)'"
-        path: /var/log/emerge-fetch.log
-        store_position: False
+{% for entry in merged_vars.observer.entryes.logfile %}
+      - name: "{{ entry.name }}"
+        identifier: "{{ inventory_hostname }}"
+        path: "{{ entry.path }}"
+        store_position: {{ entry.store_position }}
         outputs:
         - Observers
-      - name: emerge_download_done
-        identifier: sometest
         match:
-          positive: '.+? .+? \((?P<avg_speed>.+?)\) - ‘(?P<file_location>.+?)’ saved \[(?P<file_size>.+?)/'
-        path: /var/log/emerge-fetch.log
-        store_position: False
-        outputs:
-        - Observers
+          positive: "{{ entry.match.positive }}"
+          {% if 'negative' in entry.match -%} negative: "{{ entry.match.negative }}" {%- endif %}
+
+{% endfor %}
+
 
   {% if observer_proxy is defined -%}
   proxy:
