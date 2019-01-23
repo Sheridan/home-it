@@ -1,0 +1,18 @@
+---
+  journald:
+    storage:
+      compress: yes
+      type: persistent
+      seal: yes
+      split_mode: none
+    sizes:
+      system:
+        max_filesystem_usage: 512M
+        keep_filesystem_free: 128M
+        max_file_size: 32M
+        max_files: 16
+      runtime:
+        max_filesystem_usage: 8M
+        keep_filesystem_free: 64M
+        max_file_size: 2M
+        max_files: 2

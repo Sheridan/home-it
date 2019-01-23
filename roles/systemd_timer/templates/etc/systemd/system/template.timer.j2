@@ -1,0 +1,10 @@
+[Unit]
+Description=Timer: {{ timer.description }} (sheduled as timer)
+
+[Timer]
+OnBootSec={{ timer.interval_sec }}
+OnUnitActiveSec={{ timer.interval_sec }}
+Unit={{ timer.name }}.service
+
+[Install]
+WantedBy=timers.target

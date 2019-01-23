@@ -9,7 +9,17 @@
     notify:
     - restart journald
 
-  - name: Enabling systemd resolved service
+  - name: Создание каталогов для journald
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: root
+      group: systemd-journal
+      mode: 02755
+    with_items:
+      - /var/log/journal
+
+  - name: Enabling journald service
     service:
       name: "{{ item }}"
       enabled: yes

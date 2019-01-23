@@ -12,6 +12,7 @@ metric_buffer_limit = {{ 2 | pow(12) | int }}
 collection_jitter = "{{ merged_vars.monitoring.collect.jitter }}s"
 flush_interval = "{{ merged_vars.monitoring.collect.interval + merged_vars.monitoring.collect.jitter * 2 }}s"
 flush_jitter = "{{ merged_vars.monitoring.collect.jitter }}s"
+flush_buffer_when_full = true
 debug = false
 quiet = true
 hostname = "{{ inventory_hostname }}"
@@ -20,7 +21,7 @@ omit_hostname = false
 [[outputs.prometheus_client]]
 listen = "[::]:{{ merged_vars.telegraf.listen.port }}"
 path = "/metrics"
-expiration_interval = "{{ merged_vars.monitoring.collect.interval * 2 }}s"
+expiration_interval = "{{ merged_vars.monitoring.collect.interval + merged_vars.monitoring.collect.jitter * 2 }}s"
 
 [[inputs.processes]]
 

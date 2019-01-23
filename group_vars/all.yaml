@@ -49,23 +49,23 @@
           positive: 'sshd.*: Unable to negotiate with (?P<client_address>.+?) port (?P<client_port>.+?): no matching host key type found. Their offer: (?P<client_keys_offer>.+?) \\[(?P<step>.+?)\\]'
       - name: sshd_no_negotiation
         match:
-          positive: 'sshd.*: Did not receive identification string from (?P<client_address>.+?) port (?P<client_port>.+?)'
+          positive: 'sshd.*: Did not receive identification string from (?P<client_address>.+?) port (?P<client_port>.*)'
       - name: sshd_invalid_user
         match:
-          positive: 'sshd.*: Invalid user (?P<user>.+?) from (?P<client_address>.+?) port (?P<client_port>.+?)'
+          positive: 'sshd.*: Invalid user (?P<user>.+?) from (?P<client_address>.+?) port (?P<client_port>.*)'
       - name: sshd_port_bind_failed
         match:
-          positive: 'sshd.*: Bind to port (?P<listen_port>.+?) on (?P<listen_address>.+?) failed: (?P<cause>.+?).'
+          positive: 'sshd.*: Bind to port (?P<listen_port>.+?) on (?P<listen_address>.+?) failed: (?P<cause>.+?)\\.'
       - name: sshd_bad_config
         match:
-          positive: 'sshd.*: /etc/ssh/sshd_config: (?P<cause>.+?)'
+          positive: 'sshd.*: /etc/ssh/sshd_config: (?P<cause>.*)'
       - name: sshd_bad_protocol
         match:
-          positive: "sshd.*: Bad protocol version identification '(?P<protocol_string>.+?)' from (?P<client_address>.+?) port (?P<client_port>.+?)"
+          positive: "sshd.*: Bad protocol version identification '(?P<protocol_string>.+?)' from (?P<client_address>.+?) port (?P<client_port>.*)"
       - name: sshd_user_not_allowed
         match:
           positive: 'sshd.*: User (?P<user>.+?) from (?P<client_address>.+?) not allowed because not listed in AllowUsers'
       - name: systemd_service_start_stop
         match:
           positive: 'systemd.*: (?P<action>(Stopped|Started)) (?P<service_description>.*)'
-          negative: '(Session.*user|(Reached|Stopped) target|mount wrapper|User Manager)'
+          negative: '(Session.*user|(Reached|Stopped) target|mount wrapper|User Manager|sheduled as timer)'

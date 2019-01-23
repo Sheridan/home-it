@@ -1,0 +1,20 @@
+---
+  - name: Устанавливаем файлы таймера
+    template:
+      src: "etc/systemd/system/template.{{ item }}.j2"
+      dest: "/etc/systemd/system/{{ timer.name }}.{{ item }}"
+      owner: root
+      group: root
+      mode: 0644
+    loop:
+    - service
+    - timer
+    register: ts
+
+  - name: Включаем таймер
+    service:
+      name: "{{ timer.name }}.timer"
+      state: restarted
+      daemon_reload: yes
+      enabled: yes
+    when: ts.changed

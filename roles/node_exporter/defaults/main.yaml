@@ -24,6 +24,7 @@
       - sockstat
       - stat
       - systemd
+      - textfile
       - time
       - uname
       - vmstat

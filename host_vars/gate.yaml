@@ -98,7 +98,6 @@
   node_exporter:
     collectors:
       enabled:
-      - textfile
       - ntp
 
   kernel:

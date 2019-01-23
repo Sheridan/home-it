@@ -13,7 +13,22 @@
     tags:
     - packages
 
-  - name: Подключаем к телеграфу
+  - name: Устанавливаем скрипт - сборщик метрик
+    copy:
+      src: usr/local/bin/smartctl-exporter.sh
+      dest: /usr/local/bin/smartctl-exporter.sh
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Подключаем к нода экспортеру
     import_role:
-      name: telegraf
-      tasks_from: deploy_smart_plugin
+      name: node_exporter
+      tasks_from: setup_textfile_script
+    vars:
+      script:
+        name: "smartctl"
+        description: "S.M.A.R.T. metrics collector"
+        interval_sec: "{{ 60 * 3 }}"
+        command: /usr/local/bin/smartctl-exporter.sh
+        user: root
