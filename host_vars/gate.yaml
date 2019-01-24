@@ -137,6 +137,10 @@
 
   observer:
     entryes:
+      grafana:
+        listen:
+          port: 3214
+          interface: '::1'
       journald:
       - name: dhcpd4_dhcpack_to
         match:

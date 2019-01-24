@@ -11,6 +11,7 @@
     - { name: dev-python/requests }
     - { name: dev-python/python-systemd }
     - { name: dev-python/pyyaml }
+    - { name: dev-python/bottle }
     tags:
     - packages
 

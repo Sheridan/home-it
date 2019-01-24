@@ -50,6 +50,14 @@
 
 {% endfor %}
 
+{% if merged_vars.observer.entryes.grafana is defined %}
+    grafana:
+      listen:
+        interface: "{{ merged_vars.observer.entryes.grafana.listen.interface }}"
+        port: {{ merged_vars.observer.entryes.grafana.listen.port }}
+      outputs:
+        - Observers
+{% endif %}
 
   {% if observer_proxy is defined -%}
   proxy:
