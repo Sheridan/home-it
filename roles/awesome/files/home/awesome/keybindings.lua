@@ -41,13 +41,6 @@ function bind_keyboard(modkey, mainmenu, switcher)
         awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
         awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
         awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
-        -- awful.key({ modkey,           }, "Tab",
-        --     function ()
-        --         awful.client.focus.history.previous()
-        --         if client.focus then
-        --             client.focus:raise()
-        --         end
-        --     end),
         awful.key({ modkey,           }, "Tab",
             function ()
                 awful.client.focus.byidx(-1)
@@ -84,21 +77,6 @@ function bind_keyboard(modkey, mainmenu, switcher)
         awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
 
         awful.key({ modkey, "Control" }, "n", awful.client.restore),
-
-        -- awful.key({ modkey,           }, "Tab",   function () switcher.switch( 1, modkey, "Alt_L", "Shift", "Tab") end),
-        -- awful.key({ modkey, "Shift"   }, "Tab",   function () switcher.switch(-1, modkey, "Alt_L", "Shift", "Tab") end),
-
-        -- Prompt
-        --awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
-
-        --awful.key({ modkey }, "x",
-        --        function ()
-        --            awful.prompt.run({ prompt = "Run Lua code: " },
-        --            mypromptbox[mouse.screen].widget,
-        --            awful.util.eval, nil,
-        --            awful.util.getdir("cache") .. "/history_eval")
-        --        end),
-        -- Menubar
         awful.key({ modkey }, "p", function() menubar.show() end)
     )
 

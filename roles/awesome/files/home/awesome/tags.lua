@@ -6,14 +6,6 @@ local taglist = {
     { icon = "⏳", name="Other"    }
 }
 
--- local taglist = {
---     { icon = "w" , name="Work"     },
---     { icon = "h", name="Home"     },
---     { icon = "m", name="Media"    },
---     { icon = "b", name="Browsers" },
---     { icon = "o", name="Other"    }
--- }
-
 function decorate(e)
     return " " .. e .. " "
 end
@@ -34,6 +26,3 @@ function get_tag(name)
     end
     return nil
 end
-
--- print(get_tags()[1])
--- print(get_tag('Work'))

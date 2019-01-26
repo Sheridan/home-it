@@ -1,8 +1,3 @@
--- require("screen_layout")
--- require("internet_avialable")
--- require("cpu")
--- require("memory")
-
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
@@ -38,7 +33,6 @@ function make_toolbars()
         bar:set_widget(middle_layout)
         -- print(s)
     end
-    -- make_sensorbar(screen_layout.right, "right")
 end
 
 function set_toolbar(screen, left_layout, middle_layout, right_layout)
@@ -127,9 +121,6 @@ function make_tasklist_widgets()
                     instance:hide()
                     instance = nil
                 else
-                     -- instance = awful.menu.clients({
-                     --       theme = { width = dpi(250) }
-                     -- })
                     instance = context_menu(c)
                 end
             end
@@ -149,7 +140,6 @@ function make_tasklist_widgets()
     )
     for s = 1, screen.count() do
         toolbar_layouts[s].middle:set_middle(awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist.buttons))
-        -- add_widget_to_toolbar(s, "left", awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist.buttons))
     end
 end
 
@@ -170,32 +160,8 @@ end
 
 function make_clock()
     local textclock = wibox.widget.textclock("%A, %Y.%m.%d %H:%M:%S", 1)
-    --local month_calendar = wibox.widget.calendar.month(os.date('*t'))
-    --month_calendar:attach( textclock, "tr" )
     add_widget_to_toolbar(screen_layout.left, "right", textclock)
 end
-
--- function make_cpu_widgets(layout, side)
---     init_cpu_stat()
---     for cpu = 0, cpu_count()-1 do
---         add_widget_to_toolbar(layout, side, get_cpu_meter_widget(cpu))
---     end
---     gears.timer {
---         timeout   = 5,
---         autostart = true,
---         callback  = update_cpu_stat
---     }
--- end
-
--- function make_memory_widgets(layout, side)
---     add_widget_to_toolbar(layout, side, get_memory_meter_widget('memory'))
---     add_widget_to_toolbar(layout, side, get_memory_meter_widget('swap'))
---     gears.timer {
---         timeout   = 5,
---         autostart = true,
---         callback  = update_memory_stat
---     }
--- end
 
 function make_widgets()
     add_widget_to_toolbar(screen_layout.left, "left", awful.widget.launcher({ image = beautiful.awesome_icon, menu = mainmenu }))
@@ -204,10 +170,5 @@ function make_widgets()
     make_clock()
     add_widget_to_toolbar(screen_layout.right , "right", awful.widget.keyboardlayout())
     add_widget_to_toolbar(screen_layout.center, "right", wibox.widget.systray())
-    -- add_widget_to_toolbar(screen_layout.right , "right", get_internet_avialable_widget())
-    -- make_cpu_widgets(screen_layout.right , "right")
-    -- make_memory_widgets(screen_layout.left , "right")
     make_layout_widgets()
-
-    -- init_internet_avialable()
 end

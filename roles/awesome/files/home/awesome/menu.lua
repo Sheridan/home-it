@@ -6,7 +6,6 @@ function make_menu(terminal)
         { "Usefull",
             {
                 { "Chrome"               , "google-chrome-stable --no-proxy-server" },
-                -- { "Chrome tor"           , "google-chrome-stable --proxy-server='socks5://10.100.100.1:9050'" },
                 { "Skype"                , "skypeforlinux" },
                 { "Telegram"             , "telegram-desktop"},
                 { "VSCode"               , "visual-studio-code --new-window"},
