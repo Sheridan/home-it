@@ -1,0 +1,56 @@
+---
+  - name: "Создаём каталог для конфигурации [{{ user.name }}]"
+    file:
+      dest: "/home/{{ user.name }}/{{ item }}"
+      state: directory
+      owner: "{{ user.name }}"
+    become_user: "{{ user.name }}"
+    loop:
+    - .config/awesome
+    - .config/awesome/icons
+    - .config/awesome/sounds
+    - .config/awesome/autostart
+    - .config/awesome/awesome-switcher
+    - .config/awesome/cyclefocus
+    - .config/awesome/freedesktop
+
+  - name: Определяем переменные
+    set_fact:
+      awesome_home: "/home/{{ user.name }}/.config/awesome"
+
+  - name: "Устанавливаем конфигурацию для [{{ user.name }}]"
+    copy:
+      src: "home/awesome/{{ item }}.lua"
+      dest: "{{ awesome_home }}/{{ item }}.lua"
+      mode: 0644
+      owner: "{{ user.name }}"
+    loop: "{{ awesome_default_configs }}"
+    become_user: "{{ user.name }}"
+
+  - name: "Устанавливаем переменные для [{{ user.name }}]"
+    template:
+      src: "home/awesome/defines.j2.lua"
+      dest: "{{ awesome_home }}/defines.lua"
+      mode: 0644
+      owner: "{{ user.name }}"
+    become_user: "{{ user.name }}"
+
+  - name: Копируем иконки
+    synchronize:
+      src: "{{ tmp_workdir }}/awesome/fatcow/FatCow_Icons16x16/"
+      dest: "{{ awesome_home }}/icons/FatCow"
+      delete: yes
+      recursive: yes
+      owner: no
+    become_user: "{{ user.name }}"
+
+  - name: Клонируем внешние плагины
+    git:
+      repo: "{{ item.repo }}"
+      dest: "{{ awesome_home }}/{{ item.dest }}"
+    loop:
+    - { repo: "https://github.com/warptozero/awesome-autostart", dest: autostart }
+    - { repo: "https://github.com/berlam/awesome-switcher", dest: awesome-switcher }
+    - { repo: "https://github.com/blueyed/awesome-cyclefocus", dest: cyclefocus }
+    - { repo: "https://github.com/lcpz/awesome-freedesktop", dest: freedesktop }
+    become_user: "{{ user.name }}"

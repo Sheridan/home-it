@@ -4,26 +4,26 @@
       logfile:
       - name: emerge_download_start
         path: /var/log/emerge-fetch.log
-        store_position: no
+        identifier: portage
         match:
           positive: ">>> Downloading '(?P<url>.+?)'"
       - name: emerge_download_done
         path: /var/log/emerge-fetch.log
-        store_position: no
+        identifier: portage
         match:
           positive: '.+? .+? \\((?P<avg_speed>.+?)\\) - ‘(?P<file_location>.+?)’ saved \\[(?P<file_size>.+?)/'
       - name: emerge_rsync_start
         path: /var/log/emerge.log
-        store_position: no
+        identifier: portage
         match:
-          positive: ".+?: >>> Starting rsync with (?P<rsync_url>.+?)"
+          positive: ".+?: >>> Starting rsync with (?P<rsync_url>.*)"
       - name: emerge_start
         path: /var/log/emerge.log
-        store_position: no
+        identifier: portage
         match:
           positive: '.+?:  >>> emerge \\((?P<package_num>.+?) of (?P<queue_size>.+?)\\) (?P<package>.+?) to (?P<destination>.*)'
       - name: emerge_done
         path: /var/log/emerge.log
-        store_position: no
+        identifier: portage
         match:
           positive: '.+?:  ::: completed emerge \\((?P<package_num>.+?) of (?P<queue_size>.+?)\\) (?P<package>.+?) to (?P<destination>.*)'

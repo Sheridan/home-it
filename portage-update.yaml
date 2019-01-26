@@ -1,5 +1,5 @@
 ---
-  - hosts: workstations-linux,gate
+  - hosts: gentoo
     remote_user: root
 
     tasks:

@@ -1,0 +1,50 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop:
+    # - { name: x11-wm/awesome, state: absent }
+    - { name: x11-wm/awesome, state: present, use: { enabled: [dbus, luajit], disabled: [gnome, test] } }
+    tags:
+    - packages
+
+  - name: Создаём временные каталоги
+    file:
+      dest: "{{ tmp_workdir }}/{{item}}"
+      state: directory
+    loop:
+    - awesome
+    - awesome/fatcow
+    delegate_to: localhost
+
+  - name: Скачиваем иконки
+    get_url:
+      url: https://www.fatcow.com/images/fatcow-icons/fatcow-hosting-icons-3.9.2-all.zip
+      dest: "{{ tmp_workdir }}/awesome/fatcow.zip"
+    delegate_to: localhost
+
+  - name: Распаковываем иконки
+    unarchive:
+      src: "{{ item }}"
+      dest: "{{ tmp_workdir }}/awesome/fatcow"
+    loop:
+    - "{{ tmp_workdir }}/awesome/fatcow.zip"
+    - "{{ tmp_workdir }}/awesome/fatcow/fatcow-hosting-icons-3.9.2.zip"
+    delegate_to: localhost
+
+  - name: Устанавливаем xrandr скрипт
+    template:
+      src: usr/local/bin/xrandrapply.j2.sh
+      dest: /usr/local/bin/xrandrapply.sh
+      mode: 0755
+    when: merged_vars.Xorg.monitors | length > 1
+
+  - name: Деплоим в юзера
+    include_tasks: user_part.yaml
+    loop: "{{ users }}"
+    loop_control:
+      loop_var: user
+    when: user.name != 'root'

@@ -39,9 +39,8 @@
       rules:
 {% for entry in merged_vars.observer.entryes.logfile %}
       - name: "{{ entry.name }}"
-        identifier: "{{ inventory_hostname }}"
+        identifier: "{{ entry.identifier }}"
         path: "{{ entry.path }}"
-        store_position: {{ entry.store_position }}
         outputs:
         - Observers
         match:

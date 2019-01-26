@@ -23,6 +23,7 @@
   - { role: portage, tags: portage }
   - { role: packages, tags: packages }
   - { role: nsswitch, tags: nsswitch }
+  - { role: awesome, tags: awesome }
 
   # tasks:
   # - name: Sysctl setup

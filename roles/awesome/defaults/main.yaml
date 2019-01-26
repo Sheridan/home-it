@@ -1,0 +1,10 @@
+---
+  awesome_default_configs:
+  - rc
+  - menu
+  - helpers
+  - keybindings
+  - toolbars
+  - wallpapers
+  - tags
+  - set
