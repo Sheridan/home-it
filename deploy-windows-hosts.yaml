@@ -1,0 +1,46 @@
+---
+- hosts: workstations-windows
+  vars_files:
+  - vars/dns.yaml
+  - vars/network.yaml
+  roles:
+  - { role: wmi_exporter, tags: [ wmi_exporter, monitoring ] }
+  - { role: ntp, tags: ntp }
+  - { role: windows_tune, tags: windows_tune }
+  - { role: windows_oem, tags: windows_oem }
+  tasks:
+  - name: Установка софта шоколадом
+    win_chocolatey:
+      name: "{{ item }}"
+      state: latest
+    loop:
+    - powershell
+    - sysinternals
+    - 7zip
+    - googlechrome
+    - jre8
+    - vlc
+    - putty
+    - totalcommander
+    - foxitreader
+    - notepadplusplus
+    - steam
+    - gimp
+    - silverlight
+    - cdburnerxp
+    - classic-shell
+    - whatsapp
+    - telegram
+    - directx
+    - gpu-z
+    - cpu-z
+    - hwinfo
+    - speedfan
+    - oldcalc
+    - speedcrunch
+    tags:
+      - packages
+
+
+
+# https://github.com/crombeen/ansible

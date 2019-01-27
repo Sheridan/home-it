@@ -1,0 +1,37 @@
+---
+  - name: Определяем некоторые переменные
+    set_fact:
+      mem_one_percent: "{{ (ansible_memtotal_mb/100)|int }}"
+
+  - name: Устанавливаем хостнейм на правильный
+    win_hostname:
+      name: "{{ inventory_hostname }}"
+
+  - name: Запрещаем автоматичесткое управление подкчакой
+    win_pagefile:
+      automatic: no
+
+  - name: Установка файлов подкачки
+    win_pagefile:
+      drive: "{{ item.win_letter }}"
+      initial_size: "{{ mem_one_percent * windows.pagefile.initial }}"
+      maximum_size: "{{ mem_one_percent * windows.pagefile.maximum }}"
+      override: yes
+      state: present
+    loop: "{{ merged_vars.hard_disks }}"
+
+  - name: Тюним разное в реестре
+    win_regedit:
+      path: '{{ item.path }}'
+      name: '{{ item.name }}'
+      data: '{{ item.data|default(None) }}'
+      type: '{{ item.type|default("dword") }}'
+      state: '{{ item.state|default("present") }}'
+    loop: "{{ merged_vars.windows.tune.registry }}"
+
+  - name: Останавливаем и запрещаем ненужные сервисы
+    win_service:
+      name: "{{ item }}"
+      state: stopped
+      start_mode: disabled
+    loop: "{{ merged_vars.windows.tune.services.disabled }}"

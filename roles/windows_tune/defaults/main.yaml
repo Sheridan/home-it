@@ -1,0 +1,31 @@
+---
+  windows:
+    pagefile: # v в процентах от объема памяти
+      initial: 5
+      maximum: 200
+
+    tune:
+      registry:
+      - { path: 'HKLM:\Software\Policies\Microsoft\WindowsStore', name: DisableStoreApps, data: 1 } # Disable all apps from Windows Store
+      - { path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent', name: DisableWindowsConsumerFeatures, data: 1} # Prevent "Suggested Applications" to return
+      - { path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search', name: AllowCortana, data: 0 } # Disable Cortana (Windows 10 Anniversary+)
+      - { path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection', name: AllowTelemetry, data: 0 } # Disable Microsoft Telemetry
+      - { path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR', name: AllowgameDVR, data: 0 } # Disable Game DVR and Game Bar
+
+      services:
+        disabled:
+        - diagnosticshub.standardcollector.service # Microsoft (R) Diagnostics Hub Standard Collector Service
+        - DiagTrack                                # Diagnostics Tracking Service
+        - dmwappushservice                         # WAP Push Message Routing Service (see known issues)
+        - HomeGroupListener                        # HomeGroup Listener
+        - HomeGroupProvider                        # HomeGroup Provider
+        - lfsvc                                    # Geolocation Service
+        - MapsBroker                               # Downloaded Maps Manager
+        - RemoteAccess                             # Routing and Remote Access
+        - RemoteRegistry                           # Remote Registry
+        - SharedAccess                             # Internet Connection Sharing (ICS)
+        - TrkWks                                   # Distributed Link Tracking Client
+        - WbioSrvc                                 # Windows Biometric Service
+        - WMPNetworkSvc                            # Windows Media Player Network Sharing Service
+        - XblAuthManager                           # Xbox Live Auth Manager
+        - XblGameSave                              # Xbox Live Game Save Service

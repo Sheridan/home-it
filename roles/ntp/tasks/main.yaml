@@ -1,10 +1,8 @@
 ---
-  - name: Install timesyncd config
-    template:
-      src: etc/systemd/timesyncd.conf.j2
-      dest: /etc/systemd/timesyncd.conf
-      owner: root
-      group: root
-      mode: 0644
-    notify:
-    - restart timesync
+  - name: Linux OS
+    include_tasks: linux.yaml
+    when: ansible_os_family == 'Gentoo'
+
+  - name: Windows OS
+    include_tasks: windows.yaml
+    when: ansible_os_family == 'Windows'

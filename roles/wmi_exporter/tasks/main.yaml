@@ -1,0 +1,43 @@
+---
+  # - name: Установка wmi_exporter
+  #   win_chocolatey:
+  #     name: prometheus-wmi-exporter
+  #     state: latest
+  #   tags:
+  #     - packages
+
+  - name: Скачиваем пакет
+    win_get_url:
+      url: https://github.com/martinlindhe/wmi_exporter/releases/download/v0.5.0/wmi_exporter-0.5.0-amd64.msi
+      dest: C:\Windows\Temp\wmi_exporter.msi
+
+  # - name: Запускаем скрипт удаления
+  #   win_shell: |
+  #     msiexec /x C:\Windows\Temp\wmi_exporter.msi
+
+  # - name: Запускаем скрипт установки
+  #   win_shell: |
+  #     msiexec /i C:\Windows\Temp\wmi_exporter.msi \
+  #     ENABLED_COLLECTORS={{ merged_vars.wmi_exporter.plugins|join(",") }} \
+  #     LISTEN_PORT={{ merged_vars.wmi_exporter.listen.port }}
+
+  - name: Устанавливаем
+    win_package:
+      path: C:\Windows\Temp\wmi_exporter.msi
+      creates_service: wmi_exporter
+      arguments:
+      - /install
+      - /passive
+      - ENABLED_COLLECTORS={{ merged_vars.wmi_exporter.plugins|join(",") }} \
+      - LISTEN_PORT={{ merged_vars.wmi_exporter.listen.port }}
+
+  - name: Connect exporter to prometheus
+    import_role:
+      name: prometheus
+      tasks_from: connect_exporter
+    vars:
+      target:
+        name: "{{ inventory_hostname }}_wmi_exporter"
+        addr: "{{ '[::1]' if inventory_hostname == 'gate' else inventory_hostname }}"
+        port: "{{ merged_vars.wmi_exporter.listen.port }}"
+        job: wmi_exporter

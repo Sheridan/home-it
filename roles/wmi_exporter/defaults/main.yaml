@@ -1,0 +1,13 @@
+wmi_exporter:
+  listen:
+    port: 9182
+  plugins:
+  - cpu
+  - cs
+  - logical_disk
+  - net
+  - os
+  - service
+  - system
+  - tcp
+  - memory

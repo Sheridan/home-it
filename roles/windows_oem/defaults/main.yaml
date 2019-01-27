@@ -1,0 +1,12 @@
+---
+  windows:
+    oem:
+      manufacturer: Sheridan
+      model: 'Lenovo Ideapad 330-15ikb'
+      support:
+        phone: '+79289716667'
+        url: 'https://www.sheridan-home.ru/'
+        hours: '24x7'
+      logo:
+        name: windows_support_logo
+        location: 'C:\Windows\System32\OEMLogo.bmp'
