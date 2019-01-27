@@ -1,0 +1,18 @@
+---
+  - name: Установка софта шоколадом
+    win_chocolatey:
+      name: "{{ item }}"
+      state: latest
+    loop: "{{ merged_vars.windows.packages.wide }}"
+    tags:
+      - packages
+
+  - name: Установка софта шоколадом в пользователей
+    win_chocolatey:
+      name: "{{ item.0 }}"
+      state: latest
+    become_user: "{{ item.1.name }}"
+    become_method: runas
+    loop: "{{ merged_vars.windows.packages.user|product(merged_vars.windows.users)|list }}"
+    tags:
+      - packages

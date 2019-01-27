@@ -1,0 +1,10 @@
+---
+  - name: Устанавливаем полезные пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop: "{{ portage.packages }}"
+    tags:
+    - packages

@@ -6,7 +6,7 @@
 
     tune:
       registry:
-      - { path: 'HKLM:\Software\Policies\Microsoft\WindowsStore', name: DisableStoreApps, data: 1 } # Disable all apps from Windows Store
+      - { path: 'HKLM:\Software\Policies\Microsoft\WindowsStore', name: DisableStoreApps, data: 0 } # Disable all apps from Windows Store
       - { path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent', name: DisableWindowsConsumerFeatures, data: 1} # Prevent "Suggested Applications" to return
       - { path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search', name: AllowCortana, data: 0 } # Disable Cortana (Windows 10 Anniversary+)
       - { path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection', name: AllowTelemetry, data: 0 } # Disable Microsoft Telemetry

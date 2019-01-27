@@ -1,14 +1,43 @@
 ---
-portage:
-  packages:
-  - { name: app-misc/jq, unstable: yes }
-  - { name: app-admin/pydf }
-  - { name: sys-process/htop }
-  - { name: net-dns/bind-tools }
-  - { name: net-analyzer/nmap }
-  - { name: net-analyzer/tcpdump }
-  - { name: net-misc/netkit-telnetd, state: absent }
-  - { name: net-misc/telnet-bsd }
-  - { name: sys-apps/pciutils, use: { enabled: [ dns ] } }
-  - { name: sys-apps/usbutils }
-  - { name: www-plugins/google-talkplugin, state: absent }
+  portage:
+    packages:
+    - { name: app-misc/jq, unstable: yes }
+    - { name: app-admin/pydf }
+    - { name: sys-process/htop }
+    - { name: net-dns/bind-tools }
+    - { name: net-analyzer/nmap }
+    - { name: net-analyzer/tcpdump }
+    - { name: net-misc/netkit-telnetd, state: absent }
+    - { name: net-misc/telnet-bsd }
+    - { name: sys-apps/pciutils, use: { enabled: [ dns ] } }
+    - { name: sys-apps/usbutils }
+    - { name: www-plugins/google-talkplugin, state: absent }
+
+  windows:
+    packages:
+      wide:
+      - powershell
+      - sysinternals
+      - 7zip
+      - googlechrome
+      - jre8
+      - vlc
+      - putty
+      - totalcommander
+      - foxitreader
+      - notepadplusplus
+      - steam
+      - gimp
+      - silverlight
+      - cdburnerxp
+      - classic-shell
+      - directx
+      - gpu-z
+      - cpu-z
+      - hwinfo
+      - speedfan
+      # - oldcalc
+      - speedcrunch
+      user:
+      - whatsapp
+      - telegram

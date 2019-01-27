@@ -2,7 +2,7 @@
   windows:
     oem:
       manufacturer: Sheridan
-      model: 'Lenovo Ideapad 330-15ikb'
+      model: 'Custom'
       support:
         phone: '+79289716667'
         url: 'https://www.sheridan-home.ru/'

@@ -1,8 +1,8 @@
 ---
   - name: Выливаем лого
     win_copy:
-      src: "logo/{{ windows.oem.logo.name }}.bmp"
-      dest: "{{ windows.oem.logo.location }}"
+      src: "logo/{{ merged_vars.windows.oem.logo.name }}.bmp"
+      dest: "{{ merged_vars.windows.oem.logo.location }}"
 
   - name: Применяем OEM
     win_regedit:
@@ -11,9 +11,9 @@
       data: '{{ item.data }}'
       state: present
     loop:
-    - { name: 'Logo'        , data: "{{ windows.oem.logo.location }}" }
-    - { name: 'Manufacturer', data: "{{ windows.oem.manufacturer }}"  }
-    - { name: 'Model'       , data: "{{ windows.oem.model }}"         }
-    - { name: 'SupportHours', data: "{{ windows.oem.support.hours }}" }
-    - { name: 'SupportPhone', data: "{{ windows.oem.support.phone }}" }
-    - { name: 'SupportURL'  , data: "{{ windows.oem.support.url }}"   }
+    - { name: 'Logo'        , data: "{{ merged_vars.windows.oem.logo.location }}" }
+    - { name: 'Manufacturer', data: "{{ merged_vars.windows.oem.manufacturer }}"  }
+    - { name: 'Model'       , data: "{{ merged_vars.windows.oem.model }}"         }
+    - { name: 'SupportHours', data: "{{ merged_vars.windows.oem.support.hours }}" }
+    - { name: 'SupportPhone', data: "{{ merged_vars.windows.oem.support.phone }}" }
+    - { name: 'SupportURL'  , data: "{{ merged_vars.windows.oem.support.url }}"   }
