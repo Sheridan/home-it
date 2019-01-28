@@ -173,37 +173,6 @@ awful.rules.rules = {
             c:geometry({x=scr_area.x, y=scr_area.y, width=cl_width})
         end
     end }
-    -- { rule_any =
-    --     {
-    --         class =
-    --         {
-    --             "DockApp",
-    --             "wmcube",
-    --             "wmfire",
-    --             "wmload",
-    --             "wmcalc",
-    --             "wmforkplop",
-    --             "wmcpuwatch",
-    --             "wmifs",
-    --             "WMLoad",
-    --             "wmmemload",
-    --             "wmbinclock",
-    --             "wmping",
-    --             "wmcpuload",
-    --             "gkrellm"
-    --         }
-    --     },
-    --     properties = {
-    --         border_width = 0,
-    --         floating = true,
-    --         sticky = true,
-    --         ontop = true,
-    --         focusable = false,
-    --         below = true,
-    --         screen = screen_layout.right,
-    --         skip_taskbar = true
-    --     }
-    -- }
 }
 -- }}}
 

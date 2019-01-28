@@ -17,6 +17,7 @@
     packages:
       wide:
       - powershell
+      - chocolatey
       - sysinternals
       - 7zip
       - googlechrome

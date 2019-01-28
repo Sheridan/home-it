@@ -11,8 +11,12 @@
     win_chocolatey:
       name: "{{ item.0 }}"
       state: latest
-    become_user: "{{ item.1.name }}"
-    become_method: runas
+    become: yes
+    vars:
+      ansible_become_user: "{{ item.1.name }}"
+      ansible_become_pass: "{{ item.1.password }}"
+      ansible_become_method: runas
+      # ansible_become_flags: logon_type=batch
     loop: "{{ merged_vars.windows.packages.user|product(merged_vars.windows.users)|list }}"
     tags:
       - packages
