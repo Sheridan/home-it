@@ -1,0 +1,21 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop:
+    - { name: net-wireless/bluez, use: { enabled: [alsa, obex, readline, systemd, udev, test-programs], disabled: [mesh] } }
+    - { name: net-wireless/bluez-hcidump }
+    - { name: net-wireless/bluez-tools, unstable: yes }
+    - { name: sys-firmware/bluez-firmware }
+    tags:
+    - packages
+    notify:
+    - restart bluetooth
+
+  - name: Enabling services
+    service:
+      name: bluetooth
+      enabled: yes

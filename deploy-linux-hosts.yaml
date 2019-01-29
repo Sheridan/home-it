@@ -10,6 +10,7 @@
   # - { role: firewall, tags: firewall }
   - { role: network_interfaces, tags: network_interfaces }
   - { role: smartctl, tags: smartctl }
+  - { role: bluetooth, tags: bluetooth }
   - { role: kernel, tags: kernel }
   - { role: users, tags: users }
   - { role: zsh, tags: zsh }
