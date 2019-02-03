@@ -24,6 +24,7 @@
   - { role: portage, tags: portage }
   - { role: packages, tags: packages }
   - { role: nsswitch, tags: nsswitch }
+  - { role: pulseaudio, tags: pulseaudio }
   - { role: awesome, tags: awesome }
 
   # tasks:
