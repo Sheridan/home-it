@@ -1,4 +1,4 @@
-require("defines")
+require("defines-global")
 awful = require("awful")
 if monitors_count > 1 then
     awful.spawn("xrandrapply.sh")

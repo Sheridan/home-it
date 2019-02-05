@@ -160,15 +160,15 @@ end
 
 function make_clock()
     local textclock = wibox.widget.textclock("%A, %Y.%m.%d %H:%M:%S", 1)
-    add_widget_to_toolbar(screen_layout.left, "right", textclock)
+    add_widget_to_toolbar(widgets_layouts.clock, "right", textclock)
 end
 
 function make_widgets()
-    add_widget_to_toolbar(screen_layout.left, "left", awful.widget.launcher({ image = beautiful.awesome_icon, menu = mainmenu }))
+    add_widget_to_toolbar(widgets_layouts.launch_button, "left", awful.widget.launcher({ image = beautiful.awesome_icon, menu = mainmenu }))
     make_taglist_widgets()
     make_tasklist_widgets()
     make_clock()
-    add_widget_to_toolbar(screen_layout.right , "right", awful.widget.keyboardlayout())
-    add_widget_to_toolbar(screen_layout.center, "right", wibox.widget.systray())
+    add_widget_to_toolbar(widgets_layouts.keyboard_indicator , "right", awful.widget.keyboardlayout())
+    add_widget_to_toolbar(widgets_layouts.systray, "right", wibox.widget.systray())
     make_layout_widgets()
 end
