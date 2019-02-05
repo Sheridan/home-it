@@ -7,8 +7,14 @@
       package: "{{ item }}"
     loop:
     - { name: x11-wm/awesome, unstable: yes, use: { enabled: [dbus, luajit], disabled: [gnome, test] } }
+    - { name: x11-misc/lightdm, use: { enabled: [gtk, introspection, qt5, vala], disabled: [gnome, audit] }}
     - { name: media-fonts/emojione-color-font }
     - { name: media-fonts/twemoji-color-font }
+    - { name: sci-calculators/speedcrunch }
+    - { name: app-admin/keepassxc, use: { enabled: [autotype, browser, network, yubikey], disabled: [debug, test] } }
+    - { name: x11-misc/qtfm }
+    - { name: media-gfx/flameshot, unstable: yes }
+    - { name: x11-terms/kitty, unstable: yes, use: { enabled: [imagemagick], disabled: [debug, doc] } }
     tags:
     - packages
 

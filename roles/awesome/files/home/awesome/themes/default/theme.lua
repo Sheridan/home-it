@@ -65,7 +65,7 @@ theme.menu_submenu_icon = themes_path.."default/submenu.png"
 theme.menu_height = dpi(15)
 theme.menu_width  = dpi(200)
 theme.menu_border_width = dpi(1)
-theme.menu_font = "Ubuntu 12"
+theme.menu_font = "Ubuntu 10"
 theme.notification_font = "Ubuntu 8"
 theme.taglist_font = "Roboto Bold 8"
 

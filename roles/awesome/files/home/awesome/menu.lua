@@ -9,26 +9,19 @@ function make_menu(terminal)
                 { "Skype"                , "skypeforlinux" },
                 { "Telegram"             , "telegram-desktop"},
                 { "VSCode"               , "visual-studio-code --new-window"},
-                { "Скриншотер"           , "flameshot"},
+                { "Скриншотер"           , "flameshot gui"},
                 { "File manager"         , "qtfm"},
                 { "Passwords"            , "keepassxc"},
                 { "Калькулятор"          , "speedcrunch"}
             },
         },
-        { "Рабочее",
-            {
-                { "GitInSky Chrome"      , "google-chrome-stable --user-data-dir = /home/sheridan/.gitinsky/google-chrome" }
-            },
-        },
         { "My",
             {
-                { "Cam", "ffplay -loglevel panic rtsp://viewer:viewer@91.210.98.62/h264Preview_01_main" }
+                { "Cam", "ffplay -loglevel panic rtsp://viewer:viewer@ip-camera-garage.sheridan-home.local/h264Preview_01_main" }
             },
         },
         { "Awesome",
             {
-                { "manual"     , terminal .. " -e man awesome" },
-                { "edit config", "visual-studio-code -n /home/sheridan/.config/awesome" },
                 { "restart"    , awesome.restart },
                 { "quit"       , function() awesome.quit() end }
             }, beautiful.awesome_icon
