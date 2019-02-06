@@ -25,6 +25,7 @@
   - { role: packages, tags: packages }
   - { role: nsswitch, tags: nsswitch }
   - { role: pulseaudio, tags: pulseaudio }
+  - { role: htop, tags: htop }
   - { role: awesome, tags: awesome }
 
   # tasks:

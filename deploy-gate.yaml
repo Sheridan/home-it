@@ -27,5 +27,6 @@
   - { role: bind_exporter, tags: [ bind_exporter, monitoring ] }
   - { role: telegraf, tags: [ telegraf, monitoring ] }
   - { role: observer, tags: observer }
+  - { role: htop, tags: htop }
   - { role: portage, tags: portage }
   - { role: packages, tags: packages }

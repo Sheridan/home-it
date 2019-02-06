@@ -1,0 +1,39 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: sys-process/htop }
+    tags:
+    - packages
+
+  - name: Создаём каталоги руту
+    file:
+      dest: /root/.config/htop
+      state: directory
+      owner: root
+
+  - name: Устанавливаем конфиг в рута
+    template:
+      src: templates/home/htop/htoprc.j2
+      dest: /root/.config/htop/htoprc
+      owner: root
+      mode: 0644
+
+  - name: Создаём каталоги пользователям
+    file:
+      dest: "/home/{{ item.name }}/.config/htop"
+      state: directory
+      owner: "{{ item.name }}"
+    when: item.name != 'root'
+    loop: "{{ users }}"
+
+  - name: Устанавливаем конфиг в юзеров
+    template:
+      src: templates/home/htop/htoprc.j2
+      dest: "/home/{{ item.name }}/.config/htop/htoprc"
+      mode: 0644
+      owner: "{{ item.name }}"
+    when: item.name != 'root'
+    loop: "{{ users }}"

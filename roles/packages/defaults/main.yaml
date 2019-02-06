@@ -3,7 +3,6 @@
     packages:
     - { name: app-misc/jq, unstable: yes }
     - { name: app-admin/pydf }
-    - { name: sys-process/htop }
     - { name: net-dns/bind-tools }
     - { name: net-analyzer/nmap }
     - { name: net-analyzer/tcpdump }
