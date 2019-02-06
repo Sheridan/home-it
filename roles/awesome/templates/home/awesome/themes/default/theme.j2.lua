@@ -65,9 +65,9 @@ theme.menu_submenu_icon = themes_path.."default/submenu.png"
 theme.menu_height = dpi(15)
 theme.menu_width  = dpi(200)
 theme.menu_border_width = dpi(1)
-theme.menu_font = "Ubuntu 10"
-theme.notification_font = "Ubuntu 8"
-theme.taglist_font = "Roboto Bold 8"
+theme.menu_font = "{{ merged_vars.X.font.name }} {{ merged_vars.X.font.size }}"
+theme.notification_font = "{{ merged_vars.X.font.name }} 8"
+theme.taglist_font = "{{ merged_vars.X.font.name }} 8"
 
 -- You can add as many variables as
 -- you wish and access them by using
@@ -128,7 +128,8 @@ theme.awesome_icon = theme_assets.awesome_icon(
 
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
-theme.icon_theme = nil
+-- theme.icon_theme = "nimbus"
+theme.icon_theme = "{{ merged_vars.X.icons.name }}"
 
 return theme
 

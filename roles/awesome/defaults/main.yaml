@@ -8,3 +8,15 @@
   - wallpapers
   - tags
   - set
+
+  X:
+    cursor:
+      name: redglass
+      size: 16
+    font:
+      name: Ubuntu
+      size: 10
+    theme:
+      name: QtCurve
+    icons:
+      name: Adwaita

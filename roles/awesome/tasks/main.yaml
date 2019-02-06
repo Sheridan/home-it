@@ -15,6 +15,13 @@
     - { name: x11-misc/qtfm }
     - { name: media-gfx/flameshot, unstable: yes }
     - { name: x11-terms/kitty, unstable: yes, use: { enabled: [imagemagick], disabled: [debug, doc] } }
+    # - { name: x11-themes/adwaita-icon-theme }
+    # - { name: x11-themes/adwaita-qt }
+    # - { name: x11-themes/gtk-engines-adwaita }
+    - { name: x11-themes/qtcurve, use: { enabled: [gtk, nls, qt5] } }
+    - { name: media-fonts/ubuntu-font-family }
+    - { name: x11-misc/qt5ct }
+    - { name: x11-themes/gtk-chtheme }
     tags:
     - packages
 
