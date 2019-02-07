@@ -1,21 +1,31 @@
 ---
-  awesome_default_configs:
-  - rc
-  - menu
-  - helpers
-  - keybindings
-  - toolbars
-  - wallpapers
-  - tags
-  - set
+  awesomewm:
+    notify:
+      icon_size: 32
+    code:
+    - rc
+    - menu
+    - helpers
+    - keybindings
+    - toolbars
+    - wallpapers
+    - tags
+    - set
 
   X:
     cursor:
       name: ComixCursors-Opaque-Red
       size: 16
-    font:
-      name: Ubuntu
-      size: 10
+    fonts:
+      regular:
+        name: Ubuntu
+        size: 10
+      small:
+        name: Ubuntu
+        size: 8
+      mono:
+        name: Ubuntu Mono
+        size: 10
     theme:
       name: QtCurve
     icons:

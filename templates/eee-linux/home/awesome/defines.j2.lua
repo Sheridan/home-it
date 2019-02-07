@@ -8,3 +8,6 @@ widgets_layouts = {
   keyboard_indicator=screen_layout.center,
   systray=screen_layout.center
 }
+
+notify_icon_size = 64
+terminal = "qterminal"

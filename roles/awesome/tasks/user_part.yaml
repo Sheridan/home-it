@@ -25,7 +25,7 @@
       dest: "{{ awesome_home }}/{{ item }}.lua"
       mode: 0644
       owner: "{{ user.name }}"
-    loop: "{{ awesome_default_configs }}"
+    loop: "{{ awesomewm.code }}"
     become_user: "{{ user.name }}"
 
   - name: "Устанавливаем переменные для [{{ user.name }}]"

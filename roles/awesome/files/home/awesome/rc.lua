@@ -4,13 +4,11 @@ if monitors_count > 1 then
     awful.spawn("xrandrapply.sh")
 end
 
-
 gears = require("gears")
 wibox = require("wibox")
 beautiful = require("beautiful")
 naughty = require("naughty")
 menubar = require("menubar")
--- switcher = require("switcher")
 
 awful.rules = require("awful.rules")
 require("awful.autofocus")
@@ -48,24 +46,12 @@ do
 end
 -- }}}
 
--- {{{ Variable definitions
--- Themes define colours, icons, font and wallpapers.
--- beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 beautiful.init(string.format("%s/.config/awesome/themes/default/theme.lua", os.getenv("HOME")))
--- beautiful.font = "Ubuntu Bold 8"
-beautiful.notification_icon_size = 64
+beautiful.notification_icon_size = notify_icon_size
 
--- This is used later as the default terminal and editor to run.
-terminal = "kitty"
--- terminal = "qterminal"
 editor = "mcedit"
 editor_cmd = terminal .. " -e " .. editor
 
--- Default modkey.
--- Usually, Mod4 is the key with a logo between Control and Alt.
--- If you do not like this or do not have such a key,
--- I suggest you to remap Mod4 to another key using xmodmap or other tools.
--- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
@@ -95,28 +81,20 @@ end
 -- }}}
 
 -- {{{ Tags
--- Define a tag table which hold all screen tags.
 tags = {}
 for s = 1, screen.count() do
-    -- Each screen has its own tag table.
     tags[s] = awful.tag(get_tags(), s, layouts[10])
 end
 -- }}}
 
 -- {{{ Menu
-
 mainmenu = make_menu(terminal)
-
--- mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = mainmenu })
-
--- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
 make_toolbars()
 make_widgets()
 bind_mouse(mainmenu)
--- make_switcher()
 bind_keyboard(modkey, mainmenu, switcher)
 
 -- {{{ Rules
@@ -159,7 +137,7 @@ awful.rules.rules = {
     properties = {floating=true,
                   maximized_vertical=true, maximized_horizontal=false },
     callback = function (c)
-        local cl_width = 250    -- width of buddy list window
+        local cl_width = dpi(250)    -- width of buddy list window
 
         local scr_area = screen[c.screen].workarea
         local cl_strut = c:struts()

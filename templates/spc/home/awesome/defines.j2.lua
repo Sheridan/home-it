@@ -11,3 +11,6 @@ widgets_layouts = {
   keyboard_indicator=screen_layout.right,
   systray=screen_layout.center
 }
+
+notify_icon_size = 96
+terminal = "kitty"

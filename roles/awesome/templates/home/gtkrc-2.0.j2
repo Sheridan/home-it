@@ -1,7 +1,7 @@
 include "/usr/share/themes/{{ merged_vars.X.theme.name }}/gtk-2.0/gtkrc"
 style "user-font"
 {
-  font_name="{{ merged_vars.X.font.name }} {{ merged_vars.X.font.size }}"
+  font_name="{{ merged_vars.X.fonts.regular.name }} {{ merged_vars.X.fonts.regular.size }}"
 }
 widget_class "*" style "user-font"
 

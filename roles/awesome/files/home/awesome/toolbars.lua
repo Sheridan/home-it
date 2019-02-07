@@ -63,7 +63,7 @@ function make_taglist_widgets()
     )
     for s = 1, screen.count() do
         w = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist.buttons)
-        w.font = "Ubuntu 8"
+        w.font = font.mono.name .. " " .. font.mono.size
         add_widget_to_toolbar(s, "left", w)
     end
 end
@@ -71,15 +71,15 @@ end
 function context_menu(c)
     cli_min = "Minimized"
     if c.minimized then
-        cli_min = "★ " .. cli_min
+        cli_min = "✔ " .. cli_min
     end
     cli_top = "On top"
     if c.ontop then
-        cli_top = "★ " .. cli_top
+        cli_top = "✔ " .. cli_top
     end
     cli_float = "Floating"
     if awful.client.floating.get(c) then
-        cli_float = "★ " .. cli_float
+        cli_float = "✔ " .. cli_float
     end
     menu_items = {
             { cli_min     , function() c.minimized = not c.minimized end   , beautiful.titlebar_minimize_button_focus},
