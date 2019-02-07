@@ -19,6 +19,7 @@
     # - { name: x11-themes/adwaita-qt }
     # - { name: x11-themes/gtk-engines-adwaita }
     - { name: x11-themes/qtcurve, use: { enabled: [gtk, nls, qt5] } }
+    - { name: x11-themes/comix-xcursors, use: { enabled: [opaque], disabled: [lefthanded] } }
     - { name: media-fonts/ubuntu-font-family }
     - { name: x11-misc/qt5ct }
     - { name: x11-themes/gtk-chtheme }

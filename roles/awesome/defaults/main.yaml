@@ -11,7 +11,7 @@
 
   X:
     cursor:
-      name: redglass
+      name: ComixCursors-Opaque-Red
       size: 16
     font:
       name: Ubuntu

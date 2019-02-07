@@ -9,7 +9,7 @@ function make_menu(terminal)
                 { "Skype"                , "skypeforlinux" },
                 { "Telegram"             , "telegram-desktop"},
                 { "VSCode"               , "visual-studio-code --new-window"},
-                { "Скриншотер"           , "flameshot gui"},
+                { "Скриншотер"           , "flameshot"},
                 { "File manager"         , "qtfm"},
                 { "Passwords"            , "keepassxc"},
                 { "Калькулятор"          , "speedcrunch"}
