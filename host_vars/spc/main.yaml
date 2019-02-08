@@ -1,0 +1,10 @@
+---
+  kernel:
+    genkernel:
+      enabled: no
+
+  zsh:
+    theme: "gentoo"
+    plugins:
+    - git
+    - ssh-agent

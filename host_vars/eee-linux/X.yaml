@@ -1,0 +1,16 @@
+---
+  Xorg:
+    videocards:
+      first:
+        name: "Intel Corporation Mobile 945GSE Express Integrated Graphics Controller"
+        pci: "00:02.0"
+    monitors:
+      main:
+        name: "LG 22MP55"
+        video_out: "LVDS1"
+        position:
+          base: yes
+        mode:
+          width: 1024
+          height: 600
+          rate: 60

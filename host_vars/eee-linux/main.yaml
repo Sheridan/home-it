@@ -1,0 +1,15 @@
+---
+  kernel:
+    genkernel:
+      enabled: no
+
+  zsh:
+    theme: "gentoo"
+    plugins:
+    - git
+    - ssh-agent
+
+  node_exporter:
+    collectors:
+      enabled:
+      - wifi

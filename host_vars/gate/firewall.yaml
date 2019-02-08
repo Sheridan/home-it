@@ -1,0 +1,46 @@
+---
+  firewall:
+    to_host:
+      proxy:
+        name: "Proxy"
+        ports:
+        - 3128-3129
+        interfaces:
+        - "internal"
+      dhcpd:
+        name: "DHCPd"
+        ports:
+        - 67-68
+        - 546-547
+        interfaces:
+        - "internal"
+      dns:
+        name: "Domain"
+        ports:
+        - 53
+        interfaces:
+        - "internal"
+        - "external_kis"
+        - "external_he"
+      ssh:
+        name: "SSH"
+        ports:
+        - 22
+        interfaces:
+        - "internal"
+        - "external_kis"
+        - "external_he"
+      web:
+        name: "web"
+        ports:
+        - 80
+        - 443
+        interfaces:
+        - "internal"
+        - "external_kis"
+      ntpd:
+        name: "ntpd"
+        ports:
+        - 123
+        interfaces:
+        - "internal"

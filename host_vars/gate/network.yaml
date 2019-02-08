@@ -1,0 +1,50 @@
+---
+  network:
+  - name: "Internal"
+    ifname: "internal_0"
+    dns:
+      aliases:
+        - grafana
+        - prometheus
+        - ntp
+    mac: "94:de:80:6c:66:b0"
+    ip: "{{ query('ship', 'ip', 1) }}"
+    network: 'home'
+    type: 'static'
+
+  - name: "External KIS"
+    ifname: "external_kis_0"
+    tunnel: "external_he_0"
+    dns:
+      aliases:
+        - www
+    mac: "50:3e:aa:04:8f:b0"
+    ip:
+      ipv4: "{{ query('ship', 'kis_ip', 2) }}"
+    network: 'kis'
+    type: 'static'
+
+  - name: "External RT"
+    ifname: "external_rt_0"
+    type: "pppoe"
+    bridge: "bridge_rt_0"
+    ip:
+      ipv4: 'dynamic'
+
+  - name: "Bridge RT"
+    ifname: "bridge_rt_0"
+    mac: "50:3e:aa:04:cb:21"
+    type: "bridge"
+    ip:
+      ipv4: 'dynamic'
+
+  - name: "External HeNet"
+    dns:
+      aliases:
+        - www
+    ifname: "external_he_0"
+    need_netdev: yes
+    ip:
+      ipv6: "{{ query('ship', 'henet_ip', 2) }}"
+    network: 'henet'
+    type: 'static'

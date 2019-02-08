@@ -1,0 +1,21 @@
+---
+  node_exporter:
+    collectors:
+      enabled:
+      - ntp
+
+  kernel:
+    genkernel:
+      enabled: yes
+      options:
+      - btrfs
+      - no-zfs
+      - no-lvm
+      - no-mdadm
+      - no-dmraid
+      - no-luks
+
+  zsh:
+    theme: "gentoo"
+    plugins:
+    - git
