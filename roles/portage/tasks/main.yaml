@@ -1,68 +1,56 @@
 ---
+  - name: Определяем флаги cpu
+    shell: "cpuid2cpuflags | sed -e 's/CPU_FLAGS_X86: //'"
+    register: cpu_flags_out
+    check_mode: no
+    changed_when: false
+
+  - name: Собираем факты
+    set_fact:
+      cpu_flags: "{{ cpu_flags_out.stdout  }}"
+      portage_fact:
+        directoryes:
+          portdir: "{{ merged_vars.portage.directoryes.portdir | default('/usr/portage') }}"
+          distdir: "{{ merged_vars.portage.directoryes.distdir | default('/usr/portage/distfiles') }}"
+          pkgdir: "{{ merged_vars.portage.directoryes.pkgdir | default('/usr/portage/packages') }}"
+          tmp: "{{ merged_vars.portage.directoryes.tmp | default('/var/tmp/portage') }}"
+
   - name: Создаём каталоги для нужд portage
     file:
       dest: "{{ item }}"
       state: directory
       owner: portage
+      group: root
     with_items:
       - /etc/portage/package.use
       - /etc/portage/package.accept_keywords
       - /etc/portage/package.mask
       - /etc/portage/package.unmask
+      - "{{ portage_fact.directoryes.portdir }}"
+      - "{{ portage_fact.directoryes.distdir }}"
+      - "{{ portage_fact.directoryes.pkgdir }}"
+      - "{{ portage_fact.directoryes.tmp }}"
 
-  - name: Устанавливаем необходимые пакеты
-    include_role:
-      name: portage
-      tasks_from: install_package
-    vars:
-      package: "{{ item }}"
-    loop: "{{ portage.packages }}"
-    tags:
-    - packages
-
-  - name: Определяем флаги cpu
-    shell: "cpuid2cpuflags | sed -e 's/CPU_FLAGS_X86: //'"
-    register: cpu_flags
-    check_mode: no
-    changed_when: false
-
-  - name: Установка флагов cpu
-    replace:
-      path: /etc/portage/make.conf
-      regexp: 'CPU_FLAGS_X86=".+?"'
-      replace: 'CPU_FLAGS_X86="{{ cpu_flags.stdout }}"'
+  - name: Генерируем make.conf
+    template:
+      src: templates/etc/portage/make.conf.j2
+      dest: /etc/portage/make.conf
       owner: portage
-
-  - name: Установка флагов компилятора
-    replace:
-      path: /etc/portage/make.conf
-      regexp: 'COMMON_FLAGS=".+?"'
-      replace: 'COMMON_FLAGS="{{ portage_compiler_flags|join(" ") }}"'
-      owner: portage
-
-  - name: Установка количества потоков при сборке
-    replace:
-      path: /etc/portage/make.conf
-      regexp: 'MAKEOPTS=".+?"'
-      replace: 'MAKEOPTS="-j{{ ansible_processor_vcpus }}"'
-      owner: portage
-
-  - name: Установка расширений при сборке
-    replace:
-      path: /etc/portage/make.conf
-      regexp: 'FEATURES=".+?"'
-      replace: 'FEATURES="{{ portage_features|join(" ") }}"'
-      owner: portage
-
-  - name: Установка зеркала
-    replace:
-      path: /etc/portage/make.conf
-      regexp: 'GENTOO_MIRRORS=".+?"'
-      replace: 'GENTOO_MIRRORS="{{ portage_mirror }}"'
-      owner: portage
+      group: root
+      mode: 0644
 
   - name: Принимаем все лицензии
     copy:
       content: "*/* *\n"
       dest: /etc/portage/package.license
       owner: portage
+
+  - name: Устанавливаем внеролевые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop: "{{ merged_vars.portage.packages }}"
+    tags:
+    - packages

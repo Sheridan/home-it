@@ -6,7 +6,7 @@
     vars:
       package: "{{ item }}"
     loop:
-    - { name: net-misc/dhcp }
+    - { name: net-misc/dhcp, use: { enabled: [server], disabled: [client] } }
     - { name: net-misc/radvd }
     tags:
     - packages

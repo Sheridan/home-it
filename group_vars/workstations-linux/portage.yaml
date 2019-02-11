@@ -1,0 +1,106 @@
+---
+  portage:
+    use:
+      enabled:
+        main:
+        - cryptsetup
+        development:
+        - designer
+        graphic:
+        - X
+        - xcb
+        - xkb
+        - xrandr
+        - xinerama
+        - wayland
+        - qt
+        - qt5
+        - gtk
+        - gtk3
+        - cairo
+        - applet
+        - skins
+        - javafx
+        - libkms
+        - gtkstyle
+        - legacy-systray
+        - imagemagick
+        hardware:
+        - opengl
+        - egl
+        - vdpau
+        - v4l
+        - bluetooth
+        - cups
+        - printsupport
+        - postscript
+        media:
+        - mp3
+        - vorbis
+        - ogg
+        - mpeg
+        - equalizer
+        - ffmpeg
+        - vlc
+        - aac
+        - cdda
+        - cddb
+        - flac
+        - lame
+        - x264
+        - xvid
+        - twolame
+        - libcaca
+        - x265
+        - gstreamer
+        - aalib
+        - modplug
+        - visualizer
+        - sdl
+        - mplayer
+        - xine
+        - rtsp
+        - rtmp
+        - cue
+        - matroska
+        - id3tag
+        - midi
+        - mod
+        - taglib
+        - encode
+        - mad
+        - chromecast
+        - theora
+        - wavpack
+        - mjpeg
+        - mikmod
+        - smpeg
+        - gsm
+        documents:
+        - pdf
+        - djvu
+        filesystems:
+        - samba
+        - fat
+        - ntfs
+        - udf
+        network:
+        - vnc
+        - rdp
+        - spice
+        - ldap
+        - network
+        languages:
+        - lua
+        - luajit
+        virtual_pc:
+        - virtualbox
+        images:
+        - xpm
+        - xmp
+        - raw
+        - openexr
+        # - wmf
+      disabled:
+        sequrity:
+        - gnome-keyring

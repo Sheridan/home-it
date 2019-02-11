@@ -1,20 +1,81 @@
 ---
-  portage_features:
-  - candy
-  - parallel-fetch
-  - splitdebug
-  - compressdebug
-  - webrsync-gpg
-  - fixlafiles
-
-  portage_mirror: "http://mirror.yandex.ru/gentoo-distfiles/"
-
-  portage_compiler_flags:
-  - '-march=native'
-  - '-O2'
-  - '-pipe'
-
   portage:
+    directoryes:
+    hardware:
+      abi:
+        need_32_on_64: no
+    mirrors:
+    - 'https://mirror.yandex.ru/gentoo-distfiles/'
+    - 'https://ftp.lanet.kr/pub/gentoo/'
+    - 'https://ftp.fau.de/gentoo'
+    - 'https://mirror.netcologne.de/gentoo/'
+    - 'http://distfiles.gentoo.org/'
+    compiler_flags:
+    - '-march=native'
+    - '-O2'
+    - '-pipe'
+    features:
+    - candy
+    - parallel-fetch
+    - splitdebug
+    - compressdebug
+    - webrsync-gpg
+    - fixlafiles
+    targets:
+      python:
+        single: python3_6
+        enabled:
+        - python2_7
+        - python3_6
+      ruby:
+        enabled:
+        - ruby23
+        - ruby24
+      php:
+        enabled:
+        - php5-6
+        - php7
+      nginx:
+        modules:
+        - access
+        - auth_basic
+        - autoindex
+        - browser
+        - charset
+        - empty_gif
+        - fastcgi
+        - geo
+        - gzip
+        - limit_conn
+        - limit_req
+        - map
+        - memcached
+        - proxy
+        - referer
+        - rewrite
+        - scgi
+        - split_clients
+        - ssi
+        - upstream_hash
+        - upstream_ip_hash
+        - upstream_keepalive
+        - upstream_least_conn
+        - upstream_zone
+        - userid
+        - uwsgi
+        - metrics
+        - stub_status
+      qemu:
+        softmmu:
+        - x86_64
+        - arm
+        - i386
+        user:
+        - arm
+        - x86_64
+    linguas:
+    - ru
+    - en
     packages:
     - { name: app-portage/cpuid2cpuflags }
     - { name: app-portage/genlop }
@@ -23,3 +84,136 @@
     - { name: app-portage/gentoolkit }
     - { name: app-portage/euses }
     - { name: app-portage/layman }
+    - { name: net-misc/aria2, use: { enabled: [xmlrpc, metalink, bittorrent, libxml2, metalink] } }
+    # - { name: app-portage/fetchcommandwrapper, unstable: yes }
+    use:
+      enabled:
+        main:
+        - dbus
+        - natspec
+        - bash-completion
+        - zsh-completion
+        - startup-notification
+        - spell
+        - man
+        - libnotify
+        - pcre16
+        - pcre32
+        - threads
+        - ithreads
+        - icu
+        - webkit
+        - savedconfig
+        - systemd
+        - spell
+        sequrity:
+        - sasl
+        - md5sum
+        images:
+        - png
+        - apng
+        - jpeg
+        - jbig
+        - svg
+        - tiff
+        - exif
+        - jpeg2k
+        - gif
+        - mng
+        - aalib
+        - libcaca
+        # - webp
+        archivators:
+        - rar
+        - bzip2
+        - gzip
+        - minizip
+        - zip
+        - lzma
+        languages:
+        - python
+        - perl
+        - xml
+        - json
+        - vala
+        - lua
+        - c++11
+        - qml
+        - cxx
+        - graphviz
+        databases:
+        - sqlite
+        filesystems:
+        - fuse
+        hardware:
+        - efi
+        - cups
+        - alsa
+        - pulseaudio
+        - udisks
+        - lm_sensors
+        - smp
+        - usb
+        - uvm
+        - udev
+        - acpi
+        development:
+        - git
+        network:
+        - ipv6
+        - ipv4
+        - curl
+        - http
+        - http2
+        - nsplugin
+        - ssh
+        - ftp
+        - nftables
+        - conntrack
+        - socks5
+        - tracepath
+        - traceroute
+        fonts:
+        - corefonts
+        - terminus
+        - truetype
+        - fontconfig
+        - fontforge
+      disabled:
+        main:
+        - debug
+        - test
+        - accessibility
+        kde:
+        - kde
+        - plasma
+        - kwallet
+        gnome:
+        - gnome
+        hardware:
+        - glamor
+        - cuda
+        - nvenc
+        - smartcard
+        - ipod
+        - lirc
+        network:
+        - wext
+        - server
+        - networkmanager
+        graphic:
+        - qt3support
+        virtual_pc:
+        - openvz
+        - vserver
+        - xen
+        databases:
+        - odbc
+        - jdbc
+        filesystems:
+        - nfs
+        - reiser4
+        - reiserfs
+        - xfs
+        - hfs
+        - jfs

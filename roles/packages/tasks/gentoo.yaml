@@ -5,6 +5,6 @@
       tasks_from: install_package
     vars:
       package: "{{ item }}"
-    loop: "{{ portage.packages }}"
+    loop: "{{ merged_vars.portage.packages }}"
     tags:
     - packages

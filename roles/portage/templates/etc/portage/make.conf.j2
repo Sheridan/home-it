@@ -1,0 +1,60 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+COMMON_FLAGS="{{ merged_vars.portage.compiler_flags | sort | join(" ") }}"
+CFLAGS="${COMMON_FLAGS}"
+CXXFLAGS="${COMMON_FLAGS}"
+FCFLAGS="${COMMON_FLAGS}"
+FFLAGS="${COMMON_FLAGS}"
+
+CHOST="{{ 'x86_64-pc-linux-gnu' if ansible_architecture == 'x86_64' else 'i686-pc-linux-gnu' }}"
+MAKEOPTS="-j{{ ansible_processor_vcpus }}"
+
+FEATURES="{{ merged_vars.portage.features|join(" ") }}"
+
+CPU_FLAGS_X86="{{ cpu_flags }}"
+ABI_X86="{{ '64' if ansible_architecture == 'x86_64' else '32' }} {{ '32' if merged_vars.portage.hardware.abi.need_32_on_64 else '' }}"
+
+USE="rsync-verify ${CPU_FLAGS_X86}"
+
+{% for use_state in ['enabled', 'disabled'] -%}
+  {%- for use_block in merged_vars.portage.use[use_state] | sort -%}
+# {{ use_block }}
+USE="${USE}{{ " " if use_state == 'enabled' else " -" }}{{ merged_vars.portage.use[use_state][use_block] | sort | join(" " if use_state == 'enabled' else " -") }}"
+
+{# -#}
+  {%- endfor -%}
+{%- endfor %}
+
+
+PYTHON_TARGETS="{{ merged_vars.portage.targets.python.enabled | sort | join(" ") }}"
+PYTHON_SINGLE_TARGET="{{ merged_vars.portage.targets.python.single }}"
+
+RUBY_TARGETS="{{ ( merged_vars.portage.targets.ruby.enabled | default([]) ) | sort | join(" ") }}"
+
+VIDEO_CARDS="{{ ( merged_vars.portage.hardware.video_cards | default([]) ) | sort | join(" ") }}"
+
+LINGUAS="{{ merged_vars.portage.linguas | join(" ") }}"
+L10N="${LINGUAS}"
+
+PHP_TARGETS="{{ ( merged_vars.portage.targets.php.enabled  | default([]) ) | sort | join(" ") }}"
+NGINX_MODULES_HTTP="{{ ( merged_vars.portage.targets.nginx.modules  | default([]) ) | sort | join(" ") }}"
+
+QEMU_SOFTMMU_TARGETS="{{ ( merged_vars.portage.targets.qemu.softmmu | default([]) ) | sort | join(" ") }}"
+QEMU_USER_TARGETS="{{ ( merged_vars.portage.targets.qemu.user | default([]) ) | sort | join(" ") }}"
+
+PORTDIR="{{ portage_fact.directoryes.portdir }}"
+DISTDIR="{{ portage_fact.directoryes.distdir }}"
+PKGDIR="{{ portage_fact.directoryes.pkgdir }}"
+PORTAGE_TMPDIR="{{ portage_fact.directoryes.tmp }}"
+
+GRUB_PLATFORMS="{{ 'efi-64 ' if ansible_architecture == 'x86_64' else '' }}pc"
+
+GENTOO_MIRRORS="{{ merged_vars.portage.mirrors | join(' ') }}"
+PORTDIR_OVERLAY="${PORTDIR_OVERLAY}"
+
+OFFICE_IMPLEMENTATION="libreoffice"
+
+source /var/lib/layman/make.conf
+
+LC_MESSAGES=C

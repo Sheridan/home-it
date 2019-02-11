@@ -1,0 +1,25 @@
+---
+  portage:
+    directoryes:
+      portdir: /usr/portage
+      distdir: /data/usr/portage/distfiles
+      pkgdir: /data/usr/portage/packages
+      tmp: /data/tmp
+    use:
+      enabled:
+        databases:
+        - mysql
+        - postgres
+        hardware:
+        - mdadm
+        - hamlib
+        - radio
+      disabled:
+        network:
+        - wifi
+    hardware:
+      abi:
+        need_32_on_64: yes
+      video_cards:
+      - nouveau
+      - nvidia

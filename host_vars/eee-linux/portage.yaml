@@ -1,0 +1,21 @@
+---
+  portage:
+    directoryes:
+      portdir: /data/portage
+      distdir: /data/portage/distfiles
+      pkgdir: /data/portage/packages
+      tmp: /data/portage-temp
+    hardware:
+      video_cards:
+      - intel
+      - vesa
+      - fbdev
+      - i915
+    use:
+      enabled:
+        network:
+        - wifi
+      disabled:
+        main:
+        - doc
+        - examples

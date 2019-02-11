@@ -1,0 +1,32 @@
+---
+  portage:
+    use:
+      enabled:
+        main:
+        - headless
+        filesystems:
+        - btrfs
+        hardware:
+        - initramfs
+      disabled:
+        network:
+        - wifi
+        - iptables
+        X:
+        - X
+        - xkb
+        - qt
+        - kde
+        - gnome
+        - qt4
+        - qt5
+        - plasma
+        - wayland
+        - gtk
+        - gtk2
+        - gtk3
+        - pango
+    hardware:
+      video_cards:
+      - nouveau
+      - nvidia
