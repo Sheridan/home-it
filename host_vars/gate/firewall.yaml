@@ -44,3 +44,10 @@
         - 123
         interfaces:
         - "internal"
+      factorio:
+        name: "Factorio"
+        ports:
+        - 3192
+        interfaces:
+        - "internal"
+        - "external_kis"

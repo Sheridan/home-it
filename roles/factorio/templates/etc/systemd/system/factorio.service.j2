@@ -1,0 +1,13 @@
+[Unit]
+Description=Factorio game
+After=network-online.target
+
+[Service]
+ExecStart={{ merged_vars.factorio.paths.home }}/start.sh
+RestartSec=30s
+Restart=always
+User=factorio
+Group=users
+
+[Install]
+WantedBy=multi-user.target
