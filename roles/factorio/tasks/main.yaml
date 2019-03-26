@@ -17,11 +17,6 @@
     loop:
       - "{{ merged_vars.factorio.paths.home }}"
 
-  # - name: Скачиваем factorio
-  #   get_url:
-  #     url: "https://www.factorio.com/get-download/{{ merged_vars.factorio.version }}/headless/linux64"
-  #     dest: "{{ merged_vars.factorio.paths.home }}/factorio-{{ merged_vars.factorio.version }}.zip"
-
   - name: Распаковываем factorio
     unarchive:
       src: "https://www.factorio.com/get-download/{{ merged_vars.factorio.version }}/headless/linux64"

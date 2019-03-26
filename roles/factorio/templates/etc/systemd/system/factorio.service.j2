@@ -6,8 +6,9 @@ After=network-online.target
 ExecStart={{ merged_vars.factorio.paths.home }}/start.sh
 RestartSec=30s
 Restart=always
-User=factorio
+User={{ merged_vars.factorio.user }}
 Group=users
+SyslogIdentifier=factorio
 
 [Install]
 WantedBy=multi-user.target
