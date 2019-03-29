@@ -1,0 +1,19 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop:
+    - { name: media-video/ffmpeg, unstable: no, use: { enabled: [X], disabled: [test] } }
+    - { name: x11-misc/xdotool }
+    tags:
+    - packages
+
+  - name: Устанавливаем скрипт
+    template:
+      owner: telegraf
+      src: templates/usr/local/bin/screen-capture.pl
+      dest: /usr/local/bin/screen-capture
+      mode: 0755

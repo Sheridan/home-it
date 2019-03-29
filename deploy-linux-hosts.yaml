@@ -27,6 +27,7 @@
   - { role: pulseaudio, tags: pulseaudio }
   - { role: htop, tags: htop }
   - { role: awesome, tags: awesome }
+  - { role: screen_capture, tags: screen_capture}
 
   # tasks:
   # - name: Sysctl setup
