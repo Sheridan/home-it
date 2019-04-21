@@ -29,11 +29,14 @@
   "_comment_max_upload_in_kilobytes_per_second" : "optional, default value is 0. 0 means unlimited.",
   "max_upload_in_kilobytes_per_second": 0,
 
+  "_comment_max_upload_slots" : "optional, default value is 5. 0 means unlimited.",
+  "max_upload_slots": {{ ( merged_vars.factorio.server.max_players / 4 ) | int }},
+
   "_comment_minimum_latency_in_ticks": "optional one tick is 16ms in default speed, default value is 0. 0 means no minimum.",
   "minimum_latency_in_ticks": 0,
 
   "_comment_ignore_player_limit_for_returning_players": "Players that played on this map already can join even when the max player limit was reached.",
-  "ignore_player_limit_for_returning_players": false,
+  "ignore_player_limit_for_returning_players": true,
 
   "_comment_allow_commands": "possible values are, true, false and admins-only",
   "allow_commands": "admins-only",

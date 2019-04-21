@@ -27,7 +27,7 @@
     notify:
     - restart factorio
 
-  - name: deploy factorio configuration
+  - name: Генерируем конфиг
     template:
       src: opt/factorio/server-settings.json.j2
       dest: /opt/factorio/server-settings.json
@@ -56,6 +56,24 @@
       mode: 0644
     notify:
     - systemd daemon reload
+    - restart factorio
+
+  - name: Устанавливаем моды
+    include_role:
+      name: factorio
+      tasks_from: mod_install
+    vars:
+      mod: "{{ item }}"
+    loop: "{{ merged_vars.factorio.mods }}"
+
+  - name: Генерируем список модов
+    template:
+      src: opt/factorio/mods/mod-list.json.j2
+      dest: /opt/factorio/mods/mod-list.json
+      owner: "{{ merged_vars.factorio.user }}"
+      group: users
+      mode: 0644
+    notify:
     - restart factorio
 
   - name: Enabling services

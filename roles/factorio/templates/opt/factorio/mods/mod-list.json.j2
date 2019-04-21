@@ -1,0 +1,16 @@
+{
+  "mods":
+  [
+    {
+      "name": "base",
+      "enabled": true
+    },
+
+{% for mod in merged_vars.factorio.mods %}
+    {
+      "name": "{{ mod.name }}",
+      "enabled": true
+    }{{ "," if not loop.last else '' }}
+{% endfor %}
+  ]
+}
