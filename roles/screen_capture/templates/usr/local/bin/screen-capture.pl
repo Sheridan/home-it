@@ -48,7 +48,7 @@ sub must_divide_by_2
     return $value;
 }
 
-sub run_ffmpeg
+sub run_ffmpeg_with_audio
 {
   my $options = $_[0];
   my $window = get_size_and_position();
@@ -56,11 +56,11 @@ sub run_ffmpeg
   chomp $pulse_source;
   #print  $pulse_source; exit(0);
   system(sprintf('ffmpeg -video_size %dx%d -framerate %d -f x11grab -i :0.0+%d,%d -f pulse -i "%s" '.
-                 '-c:v libx264 -pix_fmt yuv420p -preset medium -tune animation -r %d -g %d -b:v 64M '.
-                 '-c:a libmp3lame -ar 48000 -ac 2 -b:a 128k -threads 6 -q:v 3 -bufsize 512k %s',
+                 '-c:v libx264 -pix_fmt yuv420p -crf 0 -preset ultrafast -tune zerolatency -r %d -g %d -b:v 512k '.
+                 '-c:a libmp3lame -ar 48000 -ac 2 -b:a 128k -q:v 3 -bufsize 512k %s',
                 must_divide_by_2($window->{'w'}),
                 must_divide_by_2($window->{'h'}),
-                $fps,
+                $fps*2,
                 $window->{'x'},
                 $window->{'y'},
                 $pulse_source,
@@ -69,9 +69,26 @@ sub run_ffmpeg
                 $options));
 }
 
+sub run_ffmpeg
+{
+  my $options = $_[0];
+  my $window = get_size_and_position();
+  system(sprintf('ffmpeg -video_size %dx%d -framerate %d -f x11grab -i :0.0+%d,%d -an '.
+                 '-c:v libx264 -pix_fmt yuv420p -crf 0 -preset ultrafast -tune zerolatency -r %d -g %d -b:v 512k '.
+                 '-qscale:v 3 -bufsize 512k %s',
+                must_divide_by_2($window->{'w'}),
+                must_divide_by_2($window->{'h'}),
+                $fps,
+                $window->{'x'},
+                $window->{'y'},
+                $fps,
+                $fps*2,
+                $options));
+}
+
 sub capture_screen
 {
-  run_ffmpeg(sprintf('%s/%s_capture.mkv',
+  run_ffmpeg(sprintf('%s/%s_capture.mp4',
                 $output_dir,
                 strftime("%d.%m.%Y_%H-%M-%S", localtime)));
 }
