@@ -36,9 +36,9 @@
     loop:
       - {src: etc/bind/named.conf.j2, dst: /etc/bind/named.conf }
     notify:
-    - reload named
+    - restart named
 
-  - name: Make named zones hosts configuration
+  - name: Make local named zones hosts configuration
     template:
       src: "{{ item.src }}"
       dest: "{{ item.dst }}"
@@ -51,7 +51,7 @@
     - reload named
     register: zone_hosts
 
-  - name: Make named zones configuration
+  - name: Make local named zones configuration
     template:
       src: "{{ item.src }}"
       dest: "{{ item.dst }}"
@@ -64,6 +64,14 @@
       - {src: etc/bind/pri/domain.local.zone.j2,          dst: "/etc/bind/pri/{{ networks.home.domain }}.zone" }
     notify:
     - reload named
+
+  - name: Deploying external zones
+    include_role:
+      name: bind
+      tasks_from: deploy_zone
+    vars:
+      zone: "{{ item }}"
+    loop: "{{ merged_vars.bind.zones }}"
 
   - name: Enabling services
     service:

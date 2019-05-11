@@ -38,6 +38,7 @@
         interfaces:
         - "internal"
         - "external_kis"
+        - "external_he"
       ntpd:
         name: "ntpd"
         ports:

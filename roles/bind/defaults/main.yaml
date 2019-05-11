@@ -31,3 +31,48 @@ bind:
     versions: 2
     max_size: 32M
     severity: info
+  zones:
+  - domain: sheridan-home.ru
+    ns:
+      - ns
+      - ns-secondary
+      - ns-tertiary
+    members:
+    - name: ns
+      addresses:
+      - type: A
+        address: "{{ query('ship', 'kis_ip', 2).ip }}"
+      - type: AAAA
+        address: "{{ query('ship', 'henet_ip', 2).ip }}"
+    - name: ns-secondary
+      addresses:
+      - type: A
+        address: "{{ query('ship', 'kis_ip', 2).ip }}"
+      - type: AAAA
+        address: "{{ query('ship', 'henet_ip', 2).ip }}"
+    - name: ns-tertiary
+      addresses:
+      - type: A
+        address: "{{ query('ship', 'kis_ip', 2).ip }}"
+      - type: AAAA
+        address: "{{ query('ship', 'henet_ip', 2).ip }}"
+    - name: gate
+      addresses:
+      - type: A
+        address: "{{ query('ship', 'kis_ip', 2).ip }}"
+      - type: AAAA
+        address: "{{ query('ship', 'henet_ip', 2).ip }}"
+    - name: www
+      addresses:
+      - type: CNAME
+        address: gate
+    - name: files
+      addresses:
+      - type: CNAME
+        address: gate
+    - name: gitinsky-wiki
+      addresses:
+      - type: A
+        address: 134.0.119.53
+      - type: AAAA
+        address: 2a00:f940:2:4:2::3be

@@ -1,6 +1,7 @@
 ---
   portage:
     packages:
+    - { name: sys-apps/systemd, use: { enabled: [ policykit, resolvconf, cryptsetup ], disabled: [ apparmor, audit ] } }
     - { name: app-misc/jq, unstable: yes }
     - { name: app-admin/pydf }
     - { name: net-dns/bind-tools }

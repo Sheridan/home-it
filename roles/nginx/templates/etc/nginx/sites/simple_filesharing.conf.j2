@@ -6,7 +6,7 @@
 server
 {
   listen {{ interface.ip.ipv4.ip }}:80;
-  server_name          _;
+  server_name          files.sheridan-home.ru;
   access_log           /var/log/nginx/files.access.log combined gzip=9;
   error_log            /var/log/nginx/files.error.log warn;
   client_max_body_size 1024g;

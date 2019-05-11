@@ -1,0 +1,31 @@
+---
+  - name: Make zone hosts configuration
+    template:
+      src: "{{ filename.src }}"
+      dest: "{{ filename.dst }}"
+      owner: root
+      group: root
+      mode: 0644
+    loop:
+      - {src: etc/bind/pri/domain.external.zone.hosts.j2, dst: "/etc/bind/pri/{{ zone.domain }}.zone.hosts" }
+    loop_control:
+      loop_var: filename
+    notify:
+    - reload named
+    register: zone_hosts
+
+  - name: Make zone configuration
+    template:
+      src: "{{ filename.src }}"
+      dest: "{{ filename.dst }}"
+      owner: root
+      group: root
+      mode: 0644
+    when: zone_hosts.changed
+    loop:
+      - {src: etc/bind/pri/domain.external.zones.include.j2, dst: "/etc/bind/pri/{{ zone.domain }}.zones.include" }
+      - {src: etc/bind/pri/domain.external.zone.j2,          dst: "/etc/bind/pri/{{ zone.domain }}.zone" }
+    loop_control:
+      loop_var: filename
+    notify:
+    - reload named

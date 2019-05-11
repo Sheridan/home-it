@@ -117,3 +117,7 @@ zone "127.in-addr.arpa" IN {
 -#}
 
 include "/etc/bind/pri/{{ networks.home.domain }}.zones.include";
+
+{% for zone in merged_vars.bind.zones %}
+include "/etc/bind/pri/{{ zone.domain }}.zones.include";
+{% endfor %}
