@@ -20,6 +20,22 @@
     notify:
     - restart apcupsd
 
+
+  - name: Настройка ротации лога apcupsd
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: apcupsd
+        files:
+        - /var/log/apcupsd.events
+        options:
+        - missingok
+        - rotate 4
+        - daily
+        - compress
+
   - name: Установка сервиса apcupsd
     template:
       owner: bind_exporter

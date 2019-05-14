@@ -1,0 +1,8 @@
+---
+  - name: Деплоим конфиг ротации {{ lr.name }}
+    template:
+      src: etc/logrotate.d/template.j2
+      dest: "/etc/logrotate.d/{{ lr.name }}"
+      owner: root
+      group: root
+      mode: 0644

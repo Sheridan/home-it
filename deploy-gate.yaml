@@ -16,6 +16,7 @@
   - { role: users, tags: users }
   - { role: zsh, tags: zsh }
   - { role: sshd, tags: sshd }
+  - { role: logrotate, tags: logrotate }
   - { role: journald, tags: journald }
   - { role: bind, tags: bind }
   - { role: dhcp, tags: dhcp }

@@ -1,0 +1,16 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+{% for file in lr.files|sort %}
+{{ file }}
+{% endfor %}
+{
+{% for option in lr.options %}
+  {{ option }}
+{% endfor %}
+{% if 'postrotate' in lr %}
+  postrotate
+    {{ lr.postrotate }}
+  endscript
+{% endif %}
+}

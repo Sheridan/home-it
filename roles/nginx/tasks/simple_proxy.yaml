@@ -1,5 +1,5 @@
 ---
-  - name: deploy nginx configuration
+  - name: deploy nginx configuration for {{ target.name }}
     template:
       owner: nginx
       group: nginx
@@ -8,3 +8,21 @@
       mode: 0644
     notify:
     - reload nginx
+
+  - name: Настройка ротации {{ target.name }}
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: "nginx-{{ target.name }}"
+        files:
+        - "/var/log/nginx/{{ target.name }}.access.log"
+        - "/var/log/nginx/{{ target.name }}.error.log"
+        options:
+        - missingok
+        - rotate 7
+        - daily
+        - delaycompress
+        - sharedscripts
+        postrotate: "test -r /run/nginx.pid && kill -USR1 `cat /run/nginx.pid`"

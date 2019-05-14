@@ -21,6 +21,21 @@
     notify:
     - restart ntpd
 
+  - name: Настройка ротации лога ntpd
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: ntpd
+        files:
+        - /var/log/ntp.log
+        options:
+        - missingok
+        - rotate 4
+        - daily
+        - compress
+
   - name: Stopping and disabling system ntp-related service
     service:
       name: "{{ item }}"

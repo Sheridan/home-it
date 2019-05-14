@@ -1,0 +1,74 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: app-admin/logrotate, use: { disabled: [cron] } }
+    tags:
+    - packages
+
+  - name: Деплоим конфиг
+    template:
+      src: etc/logrotate.conf.j2
+      dest: /etc/logrotate.conf
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Устанавливаем таймер для ротации
+    import_role:
+      name: systemd_timer
+      tasks_from: setup_timer
+    vars:
+      timer:
+        name: logrotate
+        description: Logs rotation
+        start_at: "{{ merged_vars.logrotate.start_at }}"
+        command: "/usr/bin/logrotate --log=/var/log/logrotate.log /etc/logrotate.conf"
+        user: root
+
+  - name: Настройка ротации logrotate
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: logrotate
+        files:
+        - /var/log/logrotate.log
+        options:
+        - missingok
+        - rotate 4
+        - daily
+        - compress
+
+  - name: Настройка ротации wtmp
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: wtmp
+        files:
+        - /var/log/wtmp
+        options:
+        - monthly
+        - create 0664 root utmp
+        - minsize 1M
+        - rotate 1
+
+  - name: Настройка ротации btmp
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: btmp
+        files:
+        - /var/log/btmp
+        options:
+        - missingok
+        - monthly
+        - create 0600 root utmp
+        - rotate 1

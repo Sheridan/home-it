@@ -2,8 +2,14 @@
 Description=Timer: {{ timer.description }} (sheduled as timer)
 
 [Timer]
+{% if 'interval_sec' in timer %}
 OnBootSec={{ timer.interval_sec }}
 OnUnitActiveSec={{ timer.interval_sec }}
+{% endif %}
+{% if 'start_at' in timer %}
+OnCalendar={{ timer.start_at }}
+Persistent=true
+{% endif %}
 Unit={{ timer.name }}.service
 
 [Install]

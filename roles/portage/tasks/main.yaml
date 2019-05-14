@@ -54,3 +54,18 @@
     loop: "{{ merged_vars.portage.packages }}"
     tags:
     - packages
+
+  - name: Настраиваем ротацию логов
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: elog-save-summary
+        files:
+        - /var/log/portage/elog/summary.log
+        options:
+        - su portage portage
+        - missingok
+        - nocreate
+        - delaycompress
