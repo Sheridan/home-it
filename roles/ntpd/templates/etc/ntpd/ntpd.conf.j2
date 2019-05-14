@@ -12,7 +12,7 @@ interface listen {{ internal_interface.ip[ip_ver].ip }}
 {%- endfor -%}
 
 # GPS Serial data reference
-server 127.127.28.0 minpoll 4 maxpoll 4 prefer
+server 127.127.28.0 minpoll 4 maxpoll 4
 fudge 127.127.28.0 refid NMEA
 
 # GPS PPS reference
