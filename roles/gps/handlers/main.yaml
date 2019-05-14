@@ -1,0 +1,5 @@
+---
+  - name: restart gpsd
+    service:
+      name: gpsd
+      state: restarted

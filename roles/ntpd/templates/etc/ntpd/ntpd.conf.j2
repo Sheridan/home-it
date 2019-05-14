@@ -11,6 +11,14 @@ interface listen {{ internal_interface.ip[ip_ver].ip }}
     {%- endif -%}
 {%- endfor -%}
 
+# GPS Serial data reference
+server 127.127.28.0 minpoll 4 maxpoll 4 prefer
+fudge 127.127.28.0 refid NMEA
+
+# GPS PPS reference
+server 127.127.20.0 minpoll 4 maxpoll 4 prefer
+fudge 127.127.20.0 refid PPS
+
 {% for server in merged_vars.ntpd.servers -%}
 server {{ server }}
 {# -#}
@@ -24,5 +32,8 @@ restrict [::1]
 
 restrict {{ networks.home.subnet.ipv4.net }} mask {{ networks.home.subnet.ipv4.mask.long }} nomodify nopeer notrap
 restrict -6 {{ networks.home.subnet.ipv6.net }} mask {{ networks.home.subnet.ipv6.mask.long }} nomodify nopeer notrap
+
+logconfig +all
+logfile /var/log/ntp.log
 
 # disable monitor

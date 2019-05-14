@@ -43,6 +43,8 @@ NGINX_MODULES_HTTP="{{ ( merged_vars.portage.targets.nginx.modules  | default([]
 QEMU_SOFTMMU_TARGETS="{{ ( merged_vars.portage.targets.qemu.softmmu | default([]) ) | sort | join(" ") }}"
 QEMU_USER_TARGETS="{{ ( merged_vars.portage.targets.qemu.user | default([]) ) | sort | join(" ") }}"
 
+GPSD_PROTOCOLS="{{ ( merged_vars.portage.targets.gpsd_protocols | default([]) ) | sort | join(" ") }}"
+
 PORTDIR="{{ portage_fact.directoryes.portdir }}"
 DISTDIR="{{ portage_fact.directoryes.distdir }}"
 PKGDIR="{{ portage_fact.directoryes.pkgdir }}"

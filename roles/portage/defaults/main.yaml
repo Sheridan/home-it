@@ -34,6 +34,15 @@
         enabled:
         - php5-6
         - php7
+      gpsd_protocols:
+      - gpsclock
+      - mtk3301
+      - rtcm104v2
+      - rtcm104v3
+      - ublox
+      - nmea0183
+      - nmea2000
+      - aivdm
       nginx:
         modules:
         - access

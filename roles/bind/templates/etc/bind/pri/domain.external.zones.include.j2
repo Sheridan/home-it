@@ -4,7 +4,22 @@
 
 zone "{{ zone.domain }}" in
 {
-        type master;
-        file "/etc/bind/pri/{{ zone.domain }}.zone";
-        notify no;
+  type master;
+  file "/etc/bind/pri/{{ zone.domain }}.zone";
+  allow-update { none; };
+  notify explicit;
+  also-notify
+  {
+    {% for ip in zone.changes.notify | sort -%}
+    {{ ip }};
+    {# -#}
+    {%- endfor -%}
+  };
+  allow-transfer
+  {
+    {% for ip in zone.changes.transfer | sort -%}
+    {{ ip }};
+    {# -#}
+    {%- endfor -%}
+  };
 };

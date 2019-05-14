@@ -1,0 +1,32 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: sci-geosciences/gpsd }
+    tags:
+    - packages
+
+  - name: Устанавливаем имена устройств udev
+    template:
+      src: "etc/udev/rules.d/00-gps.rules.j2"
+      dest: /etc/udev/rules.d/00-gps.rules
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Настраиваем gpsd
+    template:
+      src: etc/default/gpsd
+      dest: /etc/default/gpsd
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - restart gpsd
+
+  - name: Enabling services
+    service:
+      name: gpsd
+      enabled: yes

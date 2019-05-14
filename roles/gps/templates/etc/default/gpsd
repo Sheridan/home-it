@@ -1,0 +1,7 @@
+# Disable standart gpsd.
+START_DAEMON="false"
+GPSD_OPTIONS=""
+DEVICES="/dev/gps_u_blox_7"
+USBAUTO="false"
+GPSD_SOCKET="/var/run/gpsd.sock"
+GPSD_OPTIONS="-n -D1"

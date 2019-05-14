@@ -33,10 +33,23 @@ bind:
     severity: info
   zones:
   - domain: sheridan-home.ru
+    changes:
+      notify:
+        - 195.253.54.22
+        - 195.253.51.22
+      transfer:
+        - 91.217.20.0/26
+        - 91.217.21.0/26
+        - 194.226.96.192/28
+        - 31.177.66.192/28
+        - 195.253.54.22
+        - 195.253.51.22
     ns:
       - ns
       - ns-secondary
       - ns-tertiary
+      - ns-fourth
+      - ns-fifth
     members:
     - name: ns
       addresses:
@@ -47,15 +60,23 @@ bind:
     - name: ns-secondary
       addresses:
       - type: A
-        address: "{{ query('ship', 'kis_ip', 2).ip }}"
-      - type: AAAA
-        address: "{{ query('ship', 'henet_ip', 2).ip }}"
+        address: 91.217.21.1
     - name: ns-tertiary
       addresses:
       - type: A
-        address: "{{ query('ship', 'kis_ip', 2).ip }}"
+        address: 91.217.20.1
+    - name: ns-fourth
+      addresses:
+      - type: A
+        address: 185.119.138.10
       - type: AAAA
-        address: "{{ query('ship', 'henet_ip', 2).ip }}"
+        address: 2a01:5b0:9::a
+    - name: ns-fifth
+      addresses:
+      - type: A
+        address: 185.119.136.12
+      - type: AAAA
+        address: 2a01:5b0:8::c
     - name: gate
       addresses:
       - type: A
@@ -70,6 +91,16 @@ bind:
       addresses:
       - type: CNAME
         address: gate
+    - name: spc
+      addresses:
+      - type: AAAA
+        address: "{{ query('ship', 'ip', 10).ipv6.ip }}"
+    - name: eee
+      addresses:
+      - type: AAAA
+        address: "{{ query('ship', 'ip', 20).ipv6.ip }}"
+      - type: AAAA
+        address: "{{ query('ship', 'ip', 21).ipv6.ip }}"
     - name: gitinsky-wiki
       addresses:
       - type: A
