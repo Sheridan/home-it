@@ -16,16 +16,24 @@
       group: root
       mode: 0644
 
+  - name: Создаём каталоги
+    file:
+      dest: /var/lib/logrotate
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+
   - name: Устанавливаем таймер для ротации
     import_role:
-      name: systemd_timer
+      name: systemd_unit
       tasks_from: setup_timer
     vars:
       timer:
         name: logrotate
         description: Logs rotation
         start_at: "{{ merged_vars.logrotate.start_at }}"
-        command: "/usr/bin/logrotate --log=/var/log/logrotate.log /etc/logrotate.conf"
+        command: "/usr/bin/logrotate --log=/var/log/logrotate.log --state=/var/lib/logrotate/logrotate.state /etc/logrotate.conf"
         user: root
 
   - name: Настройка ротации logrotate

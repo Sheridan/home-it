@@ -1,0 +1,13 @@
+[Unit]
+Description={{ service.description }}
+
+[Service]
+Type={{ service.type | default('oneshot') }}
+{% if 'pid_file' in service %}
+PIDFile={{ service.pid_file }}
+{% endif &}
+ExecStart={{ service.command }}
+User={{ service.user | default('root') }}
+
+[Install]
+WantedBy=default.target

@@ -12,7 +12,7 @@
 
   - name: Устанавливаем таймер для апдетящего скрипта
     import_role:
-      name: systemd_timer
+      name: systemd_unit
       tasks_from: setup_timer
     vars:
       timer:

@@ -1,0 +1,10 @@
+---
+  - name: Устанавливаем юнит сервиса
+    template:
+      src: "etc/systemd/system/template.service.j2"
+      dest: "/etc/systemd/system/{{ service.name }}.service"
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - systemd daemon reload

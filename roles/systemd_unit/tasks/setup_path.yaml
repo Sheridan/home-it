@@ -1,0 +1,31 @@
+---
+  - name: Устанавливаем юнит таймера
+    template:
+      src: "etc/systemd/system/template.path.j2"
+      dest: "/etc/systemd/system/{{ path.name }}.path"
+      owner: root
+      group: root
+      mode: 0644
+    register: ts
+    notify:
+    - systemd daemon reload
+
+  - name: Устанавливаем сервис для таймера
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: "{{ path.name }}"
+        description: "Path '{{ path.name }}' watcher service: {{ path.description }}"
+        command: "{{ path.command }}"
+        user: "{{ path.user }}"
+        pid_file: "/run/path-service-{{ path.name }}.pid"
+
+  - name: Включаем таймер
+    service:
+      name: "{{ path.name }}.path"
+      state: restarted
+      daemon_reload: yes
+      enabled: yes
+    when: ts.changed

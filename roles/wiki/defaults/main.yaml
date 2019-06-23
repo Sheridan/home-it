@@ -1,0 +1,18 @@
+---
+  wiki:
+    path:
+      work: /data/wiki/packages/mediawiki
+      prod: /data/wiki/production/mediawiki
+      skins: /data/wiki/production/mediawiki/skins
+      extensions: /data/wiki/production/mediawiki/extensions
+      upload: /data/wiki/production/mediawiki/upload
+    wiki_version:
+      major: 1
+      minor: 32
+    extensions:
+      - { repo: "https://github.com/wikimedia/mediawiki-extensions-YouTube", name: YouTube }
+      - { repo: "https://github.com/wikimedia/mediawiki-extensions-Widgets", name: Widgets }
+      - { repo: "https://github.com/wikimedia/mediawiki-extensions-GraphViz", name: GraphViz, ver: master }
+      - { repo: "https://github.com/wikimedia/mediawiki-extensions-CodeMirror", name: CodeMirror }
+    skins:
+      - { repo: "https://github.com/dolfinus/DarkVector.git", name: DarkVector, ver: HEAD }

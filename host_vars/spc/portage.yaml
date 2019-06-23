@@ -14,6 +14,7 @@
         - mdadm
         - hamlib
         - radio
+        - rtlsdr
       disabled:
         network:
         - wifi
