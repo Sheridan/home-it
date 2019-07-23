@@ -71,8 +71,8 @@
     include_role:
       name: telegraf
       tasks_from: deploy_nginx_status_plugin
-    notify:
-    - reload nginx
+    # notify:
+    # - reload nginx
 
   - name: Stopping and disabling system nginx service
     service:

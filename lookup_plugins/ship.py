@@ -18,7 +18,7 @@ class ConfigLoader:
     def load(self):
         with open("vars/network.yaml", 'r') as stream:
             try:
-                yaml_data = yaml.load(stream)['raw_home_networks']
+                yaml_data = yaml.safe_load(stream)['raw_home_networks']
                 return yaml_data
             except yaml.YAMLError as exc:
                 print(exc)

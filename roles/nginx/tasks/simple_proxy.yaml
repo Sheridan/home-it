@@ -19,6 +19,8 @@
         files:
         - "/var/log/nginx/{{ target.name }}.access.log"
         - "/var/log/nginx/{{ target.name }}.error.log"
+        - "/var/log/nginx/{{ target.name }}.internet.access.log"
+        - "/var/log/nginx/{{ target.name }}.internet.error.log"
         options:
         - missingok
         - rotate 7

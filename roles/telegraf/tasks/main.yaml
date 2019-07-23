@@ -7,8 +7,8 @@
       package: { name: net-analyzer/telegraf, unstable: yes, x86_as_amd64: yes }
     tags:
     - packages
-    notify:
-    - restart telegraf
+    # notify:
+    # - restart telegraf
 
   - name: Устанавливаем основной конфиг
     template:

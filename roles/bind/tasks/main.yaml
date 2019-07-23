@@ -7,8 +7,8 @@
       package: { name: net-dns/bind, use: { enabled: [dlz, geoip, json, xml] } }
     tags:
     - packages
-    notify:
-    - restart named
+    # notify:
+    # - restart named
 
   - name: Create log directory
     file:

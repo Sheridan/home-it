@@ -27,6 +27,7 @@
         name: grafana
         addr: "{{ grafana.listen.addr }}"
         port: "{{ grafana.listen.port }}"
+        to: both
 
   - name: Enabling services
     service:

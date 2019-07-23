@@ -91,6 +91,10 @@ bind:
       addresses:
       - type: CNAME
         address: gate
+    - name: grafana
+      addresses:
+      - type: CNAME
+        address: gate
     - name: spc
       addresses:
       - type: AAAA

@@ -14,5 +14,5 @@
       tasks_from: status
     vars:
       user: telegraf
-    notify:
-    - restart telegraf
+    # notify:
+    # - restart telegraf
