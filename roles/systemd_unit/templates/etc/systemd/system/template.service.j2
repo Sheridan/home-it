@@ -1,14 +1,33 @@
 [Unit]
 Description={{ service.description }}
+{% for order in ['After', 'Before', 'Requires', 'Wants'] -%}
+  {%- if order|lower in service -%}
+    {%- for target in service[order|lower] -%}
+{{ order }}={{ target }}
+{# -#}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endfor %}
 
 [Service]
-Type={{ service.type | default('oneshot') }}
-{% if 'pid_file' in service %}
-PIDFile={{ service.pid_file }}
-{% endif %}
-ExecStart={{ service.command }}
+Type={{ service.type | default('simple') }}
+PIDFile={{ service.pid_file | default('/run/' + service.name + '.pid') }}
+{% if 'exec_start'     in service -%} ExecStart={{ service.exec_start }}          {%- endif -%} {{ '\n' -}}
+{% if 'exec_stop'      in service -%} ExecStop={{ service.exec_stop }}            {%- endif -%} {{ '\n' -}}
+{% if 'exec_reload'    in service -%} ExecReload={{ service.exec_reload }}        {%- endif -%} {{ '\n' -}}
+{% if 'exec_start_pre' in service -%} ExecStartPre={{ service.exec_start_pre }}   {%- endif -%} {{ '\n' -}}
+{% if 'exec_start_post'in service -%} ExecStartPost={{ service.exec_start_post }} {%- endif -%} {{ '\n' -}}
+{% if 'exec_stop_post' in service -%} ExecStopPost={{ service.exec_stop_post }}   {%- endif -%} {{ '\n' -}}
 User={{ service.user | default('root') }}
+Group={{ service.group | default('root') }}
 SyslogIdentifier={{ service.syslog_identifier | default(service.name) }}
+Restart={{ service.restart | default('always') }}
+RemainAfterExit={{ 'yes' if service.remain_after_exit | default(False) else 'no' }}
 
 [Install]
-WantedBy=default.target
+{% if 'wanted_by' in service -%}
+  {%- for wanted_by in service.wanted_by-%}
+WantedBy={{ wanted_by }}
+{# -#}
+  {%- endfor -%}
+{%- endif %}

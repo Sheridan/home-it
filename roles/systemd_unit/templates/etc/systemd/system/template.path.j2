@@ -2,21 +2,11 @@
 Description=Path: {{ timer.description }}
 
 [Path]
-{% if 'path_exists' in path %}
-PathExists={{ path.path_exists }}
-{% endif %}
-{% if 'path_exists_glob' in path %}
-PathExistsGlob={{ path.path_exists_glob }}
-{% endif %}
-{% if 'path_changed' in path %}
-PathChanged={{ path.path_changed }}
-{% endif %}
-{% if 'path_modified' in path %}
-PathModified={{ path.path_modified }}
-{% endif %}
-{% if 'path_not_empty' in path %}
-DirectoryNotEmpty={{ path.path_not_empty }}
-{% endif %}
+{% if 'path_exists'      in path -%} PathExists={{ path.path_exists }}           {%- endif -%} {{ '\n' -}}
+{% if 'path_exists_glob' in path -%} PathExistsGlob={{ path.path_exists_glob }}  {%- endif -%} {{ '\n' -}}
+{% if 'path_changed'     in path -%} PathChanged={{ path.path_changed }}         {%- endif -%} {{ '\n' -}}
+{% if 'path_modified'    in path -%} PathModified={{ path.path_modified }}       {%- endif -%} {{ '\n' -}}
+{% if 'path_not_empty'   in path -%} DirectoryNotEmpty={{ path.path_not_empty }} {%- endif -%} {{ '\n' -}}
 Unit={{ path.name }}.service
 MakeDirectory={{ path.make_directory | default(false) }}
 {% if 'directory_mode' in path and (path.make_directory | default(false)) %}

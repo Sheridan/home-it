@@ -20,16 +20,24 @@
         job: bind_exporter
 
   - name: deploy bind_exporter service with configuration
-    template:
-      owner: bind_exporter
-      src: etc/systemd/system/bind_exporter.service.j2
-      dest: /etc/systemd/system/bind_exporter.service
-      mode: 0644
-    notify:
-    - systemd daemon reload
-    - restart bind_exporter
-
-  - name: Enabling services
-    service:
-      name: bind_exporter
-      enabled: yes
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: bind_exporter
+        description: Bind exporter service
+        user: bind_exporter
+        restart: on-failure
+        exec_start: >-
+          /usr/bin/bind_exporter
+          -bind.stats-url="http://[{{ bind_exporter.bind.addr }}]:{{ bind_exporter.bind.port }}"
+          -bind.stats-groups="server,view,tasks"
+          -web.listen-address=[{{ bind_exporter.listen.addr }}]:{{ bind_exporter.listen.port }}
+        after:
+        - network.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

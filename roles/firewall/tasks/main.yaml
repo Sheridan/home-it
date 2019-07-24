@@ -48,17 +48,6 @@
     notify:
     - update firewall
 
-  - name: Install firewall service
-    template:
-      src: etc/systemd/system/firewall.service.j2
-      dest: /etc/systemd/system/firewall.service
-      owner: root
-      group: root
-      mode: 0644
-    notify:
-    - systemd daemon reload
-    - update firewall
-
   - name: make configuration
     template:
       src: etc/nftables/nftables.rules.j2
@@ -70,12 +59,30 @@
     - update firewall
 
   - name: Stopping and disabling system firewall services
-    service:
+    systemd:
       name: nftables-restore
       enabled: no
+      masked: yes
       state: stopped
 
-  - name: Enabling firewall service
-    service:
-      name: firewall
-      enabled: yes
+  - name: Install firewall service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: firewall
+        description: Firewall service, based on nftables
+        restart: on-failure
+        type: oneshot
+        remain_after_exit: yes
+        exec_start: /usr/local/bin/firewall-manager.sh start
+        exec_stop: /usr/local/bin/firewall-manager.sh stop
+        exec_reload: /usr/local/bin/firewall-manager.sh reload
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: reloaded
+        state: started
+        enabled: yes

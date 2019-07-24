@@ -18,9 +18,10 @@
       service:
         name: "{{ path.name }}"
         description: "Path '{{ path.name }}' watcher service: {{ path.description }}"
-        command: "{{ path.command }}"
+        exec_start: "{{ path.command }}"
         user: "{{ path.user }}"
         pid_file: "/run/path-service-{{ path.name }}.pid"
+        type: oneshot
 
   - name: "{{ path.name }} : Включаем надсмотрщика"
     service:

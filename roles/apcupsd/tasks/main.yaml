@@ -20,7 +20,6 @@
     notify:
     - restart apcupsd
 
-
   - name: Настройка ротации лога apcupsd
     import_role:
       name: logrotate
@@ -37,16 +36,22 @@
         - compress
 
   - name: Установка сервиса apcupsd
-    template:
-      owner: bind_exporter
-      src: etc/systemd/system/apcupsd-daemon.service.j2
-      dest: /etc/systemd/system/apcupsd-daemon.service
-      mode: 0644
-    notify:
-    - systemd daemon reload
-    - restart apcupsd
-
-  - name: Разрешение apcupsd сервиса
-    service:
-      name: apcupsd-daemon
-      enabled: yes
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: apcupsd-daemon
+        description: APC UPS Monitor
+        exec_start: >
+          /sbin/apcupsd
+          -b
+          --pid-file /run/apcupsd.pid
+          --config-file /etc/apcupsd/apcupsd.conf
+        pid_file: /run/apcupsd.pid
+        wanted_by:
+        - multi-user.target
+        syslog_identifier: apcupsd
+        on_changed: restarted
+        state: started
+        enabled: yes

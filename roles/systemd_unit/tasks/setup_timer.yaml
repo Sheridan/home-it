@@ -18,9 +18,10 @@
       service:
         name: "{{ timer.name }}"
         description: "Timer '{{ timer.name }}' service: {{ timer.description }}"
-        command: "{{ timer.command }}"
+        exec_start: "{{ timer.command }}"
         user: "{{ timer.user }}"
         pid_file: "/run/timer-service-{{ timer.name }}.pid"
+        type: oneshot
 
   - name: "{{ timer.name }} : Включаем таймер"
     service:
