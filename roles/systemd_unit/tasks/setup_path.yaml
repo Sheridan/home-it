@@ -1,5 +1,5 @@
 ---
-  - name: Устанавливаем юнит таймера
+  - name: "{{ path.name }} : Устанавливаем юнит надсмотрщика"
     template:
       src: "etc/systemd/system/template.path.j2"
       dest: "/etc/systemd/system/{{ path.name }}.path"
@@ -10,7 +10,7 @@
     notify:
     - systemd daemon reload
 
-  - name: Устанавливаем сервис для таймера
+  - name: "{{ path.name }} : Устанавливаем сервис для надсмотрщика"
     import_role:
       name: systemd_unit
       tasks_from: setup_service
@@ -22,7 +22,7 @@
         user: "{{ path.user }}"
         pid_file: "/run/path-service-{{ path.name }}.pid"
 
-  - name: Включаем таймер
+  - name: "{{ path.name }} : Включаем надсмотрщика"
     service:
       name: "{{ path.name }}.path"
       state: restarted

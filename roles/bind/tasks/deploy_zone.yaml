@@ -1,5 +1,5 @@
 ---
-  - name: Make zone hosts configuration
+  - name: "{{ zone.domain }} : Make zone hosts configuration"
     template:
       src: "{{ filename.src }}"
       dest: "{{ filename.dst }}"
@@ -14,7 +14,7 @@
     - reload named
     register: zone_hosts
 
-  - name: Make zone configuration
+  - name: "{{ zone.domain }} : Make zone configuration"
     template:
       src: "{{ filename.src }}"
       dest: "{{ filename.dst }}"

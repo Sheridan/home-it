@@ -4,7 +4,7 @@
       name: sudoers
       tasks_from: main
 
-  - name: Привелигелируем пользователя
+  - name: "{{ user }} : Привелигелируем пользователя"
     user:
       name: "{{ user }}"
       groups: wheel

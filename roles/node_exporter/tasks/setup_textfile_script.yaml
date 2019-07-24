@@ -1,16 +1,16 @@
 ---
-  - name: Подготавливаем переменные
+  - name: "{{ script.name }} : Подготавливаем переменные"
     set_fact:
       ne_tf_name: "{{ script.name }}-to-node-exporter"
 
-  - name: Устанавливаем скрипт-раннер
+  - name: "{{ script.name }} : Устанавливаем скрипт-раннер"
     template:
       owner: "{{ script.user }}"
       src: usr/local/bin/textfile-script-runner.j2.sh
       dest: "/usr/local/bin/{{ ne_tf_name }}-runner.sh"
       mode: 0755
 
-  - name: Устанавливаем таймер для апдетящего скрипта
+  - name: "{{ script.name }} : Устанавливаем таймер для апдетящего скрипта"
     import_role:
       name: systemd_unit
       tasks_from: setup_timer

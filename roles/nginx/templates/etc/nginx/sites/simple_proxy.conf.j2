@@ -36,12 +36,13 @@ server
 {% set interfaces = network|selectattr('ifname', 'match', 'external_.*') %}
 server
 {
+  {# -#}
 {% for interface in interfaces -%}
     {%- if interface.type in ['static'] -%}
         {%- for ip_ver in ['ipv6', 'ipv4'] -%}
             {%- if ip_ver in interface.ip -%}
-listen {% if ip_ver == 'ipv6' -%} [{{ interface.ip[ip_ver].ip }}] {%- else -%} {{ interface.ip[ip_ver].ip}} {%- endif %}:80;
-{# -#}
+  listen {% if ip_ver == 'ipv6' -%} [{{ interface.ip[ip_ver].ip }}] {%- else -%} {{ interface.ip[ip_ver].ip}} {%- endif %}:80;
+  {# -#}
             {%- endif -%}
         {%- endfor -%}
     {%- endif -%}

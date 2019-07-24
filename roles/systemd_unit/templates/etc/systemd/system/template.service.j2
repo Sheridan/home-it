@@ -5,9 +5,10 @@ Description={{ service.description }}
 Type={{ service.type | default('oneshot') }}
 {% if 'pid_file' in service %}
 PIDFile={{ service.pid_file }}
-{% endif &}
+{% endif %}
 ExecStart={{ service.command }}
 User={{ service.user | default('root') }}
+SyslogIdentifier={{ service.syslog_identifier | default(service.name) }}
 
 [Install]
 WantedBy=default.target

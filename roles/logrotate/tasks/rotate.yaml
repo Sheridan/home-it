@@ -1,5 +1,5 @@
 ---
-  - name: Деплоим конфиг ротации {{ lr.name }}
+  - name: "{{ lr.name }} : Деплоим конфиг ротации"
     template:
       src: etc/logrotate.d/template.j2
       dest: "/etc/logrotate.d/{{ lr.name }}"

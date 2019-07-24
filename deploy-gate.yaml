@@ -30,6 +30,6 @@
   - { role: telegraf, tags: [ telegraf, monitoring ] }
   - { role: observer, tags: observer }
   - { role: htop, tags: htop }
-  - { role: factorio, tags: factorio }
+  # - { role: factorio, tags: factorio }
   - { role: portage, tags: portage }
   - { role: packages, tags: packages }

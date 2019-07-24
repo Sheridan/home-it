@@ -1,5 +1,5 @@
 ---
-  - name: Deploy config to prometheus
+  - name: "{{ target.name }} : Deploying config to prometheus"
     template:
       src: etc/prometheus/file_sd_configs/exporter.yaml.j2
       dest: "/etc/prometheus/file_sd_configs/{{ target.name }}.yaml"

@@ -1,5 +1,5 @@
 ---
-  - name: deploy nginx configuration for {{ target.name }}
+  - name: "{{ target.name }} : Deploying nginx configuration"
     template:
       owner: nginx
       group: nginx
@@ -9,7 +9,7 @@
     notify:
     - reload nginx
 
-  - name: Настройка ротации {{ target.name }}
+  - name: "{{ target.name }} : Настройка ротации"
     import_role:
       name: logrotate
       tasks_from: rotate

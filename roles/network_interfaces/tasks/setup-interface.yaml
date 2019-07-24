@@ -3,7 +3,7 @@
   #   debug:
   #     msg: "{{target_interface}}"
 
-  - name: "Setup systemd static network interface files ({{ target_interface.ifname }})"
+  - name: "{{ target_interface.ifname }} : Setup systemd static network interface files"
     template:
       src: "{{ item }}"
       dest: "/etc/systemd/network/{{ target_interface.ifname }}.network"
@@ -17,7 +17,7 @@
     notify:
     - restart networkd
 
-  - name: "Setup systemd dhcp network interface files ({{ target_interface.ifname }})"
+  - name: "{{ target_interface.ifname }} : Setup systemd dhcp network interface files"
     template:
       src: "{{ item }}"
       dest: "/etc/systemd/network/{{ target_interface.ifname }}.network"
@@ -31,7 +31,7 @@
     notify:
     - restart networkd
 
-  - name: "Setup systemd netdev files ({{ target_interface.ifname }})"
+  - name: "{{ target_interface.ifname }} : Setup systemd netdev files"
     template:
       src: "{{ item }}"
       dest: "/etc/systemd/network/{{ target_interface.ifname }}.netdev"
@@ -46,7 +46,7 @@
     notify:
     - restart networkd
 
-  - name: "Setup systemd bridge netdev files ({{ target_interface.ifname }})"
+  - name: "{{ target_interface.ifname }} : Setup systemd bridge netdev files"
     template:
       src: "{{ item }}"
       dest: "/etc/systemd/network/{{ target_interface.ifname }}.netdev"
