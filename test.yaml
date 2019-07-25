@@ -1,5 +1,5 @@
 ---
-# - hosts: workstations-linux,gate,without-internet
+# - hosts: workstations_linux,gate,without_internet
 - hosts: spc
   gather_facts: False
   vars_files:

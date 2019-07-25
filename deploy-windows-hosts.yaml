@@ -1,5 +1,5 @@
 ---
-- hosts: workstations-windows
+- hosts: workstations_windows
   vars_files:
   - vars/dns.yaml
   - vars/network.yaml
