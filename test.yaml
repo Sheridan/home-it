@@ -7,14 +7,23 @@
 
   tasks:
 
-  - name: Default test
+  - name: strings
     debug:
-      msg: "Default: {{ ntpd }}"
-    when: ntpd is defined
+      msg: "{{ arr | map('regex_replace', '(.*)', '\\1_123') | list | join(' ')}}"
+    vars:
+      arr:
+      - qwe
+      - asd
+      - zxc
 
-  - name: Merge test
-    debug:
-      msg: "Merged: {{ merged_vars.ntpd }}"
+  # - name: Default test
+  #   debug:
+  #     msg: "Default: {{ ntpd }}"
+  #   when: ntpd is defined
+
+  # - name: Merge test
+  #   debug:
+  #     msg: "Merged: {{ merged_vars.ntpd }}"
 
 #   - name: ship net test
 #     debug:

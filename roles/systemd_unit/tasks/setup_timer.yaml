@@ -22,6 +22,7 @@
         user: "{{ timer.user }}"
         pid_file: "/run/timer-service-{{ timer.name }}.pid"
         type: oneshot
+        standalone: no
 
   - name: "{{ timer.name }} : Включаем таймер"
     service:

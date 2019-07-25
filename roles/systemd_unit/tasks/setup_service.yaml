@@ -13,10 +13,22 @@
       daemon_reload: yes
       name: "{{ service.name }}"
       state: "{{ service.on_changed | default('restarted') }}"
-    when: service_template_result.changed
+    when: service_template_result.changed and
+          (service.standalone | default(True))
 
   - name: "{{ service.name }} : Управление запуском"
     systemd:
       name: "{{ service.name }}"
       enabled: "{{ service.enabled | default(False) }}"
       state: "{{ service.state | default('stopped') }}"
+    when: (service.standalone | default(True))
+
+  - name: "{{ service.name }} : Запрет замещаемых сервисов"
+    systemd:
+      name: "{{ item }}"
+      enabled: no
+      masked: yes
+      state: stopped
+    loop: "{{ service.replaces }}"
+    when: service.replaces is defined and
+          (service.standalone | default(True))

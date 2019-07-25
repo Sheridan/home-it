@@ -29,9 +29,7 @@
       mode: "{{ item.mode }}"
     with_items:
         - { mode: "0644", file: 'etc/prometheus/prometheus.yaml' }
-        - { mode: "0644", file: 'etc/systemd/system/prometheus.service' }
     notify:
-    - systemd daemon reload
     - restart prometheus
 
   - name: deploy nginx configuration
@@ -55,7 +53,29 @@
         port: "{{ prometheus.listen.port }}"
         job: prometheus_exporter
 
-  - name: Enabling services
-    service:
-      name: prometheus
-      enabled: yes
+  - name: Install prometheus service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: prometheus
+        description: Prometheus Server
+        restart: on-failure
+        user: prometheus
+        exec_start: >
+          /usr/bin/prometheus
+          --config.file=/etc/prometheus/prometheus.yaml
+          --storage.tsdb.path=/var/lib/prometheus/metrics
+          --storage.tsdb.retention="{{ prometheus.data_retention }}"
+          --web.console.templates=/etc/prometheus/consoles
+          --web.console.libraries=/etc/prometheus/console_libraries
+          --web.listen-address=[{{ prometheus.listen.addr }}]:{{ prometheus.listen.port }}
+          --web.enable-admin-api
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

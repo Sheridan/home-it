@@ -39,17 +39,6 @@
     notify:
     - reload nginx
 
-  - name: Install nginx daemon service
-    template:
-      src: etc/systemd/system/nginx-daemon.service.j2
-      dest: /etc/systemd/system/nginx-daemon.service
-      owner: root
-      group: root
-      mode: 0644
-    notify:
-    - systemd daemon reload
-    - restart nginx
-
   - name: Настройка ротации логов nginx
     import_role:
       name: logrotate
@@ -74,13 +63,26 @@
     # notify:
     # - reload nginx
 
-  - name: Stopping and disabling system nginx service
-    service:
-      name: nginx
-      enabled: no
-      state: stopped
-
-  - name: Enabling services
-    service:
-      name: nginx-daemon
-      enabled: yes
+  - name: Install nginx service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: nginx-daemon
+        description: The nginx HTTP and reverse proxy server
+        type: forking
+        pid_file: "{{ nginx.pid_file }}"
+        exec_start_pre: /usr/sbin/nginx -t
+        exec_start: /usr/sbin/nginx
+        exec_stop: /bin/kill -QUIT $MAINPID
+        exec_reload: /bin/kill -HUP $MAINPID
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: reloaded
+        state: started
+        enabled: yes
+        replaces:
+        - nginx

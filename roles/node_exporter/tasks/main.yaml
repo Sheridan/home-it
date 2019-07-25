@@ -16,15 +16,41 @@
     with_items:
       - /var/lib/node_exporter/textfile_collector
 
-  - name: deploy node_exporter service with configuration
-    template:
-      owner: node_exporter
-      src: etc/systemd/system/node_exporter.service.j2
-      dest: /etc/systemd/system/node_exporter.service
-      mode: 0644
-    notify:
-    - systemd daemon reload
-    - restart node_exporter
+  - name: Creating collectors lists
+    set_fact:
+      enabled_collectors: "{{ prepared_enabled_collectors | map('regex_replace', '(.*)', '--collector.\\1') | list | join(' ')}}"
+      disabled_collectors: "{{ node_exporter_all_collectors|difference(prepared_enabled_collectors) | sort | unique | map('regex_replace', '(.*)', '--no-collector.\\1') | list | join(' ') }}"
+    vars:
+      prepared_enabled_collectors: "{{ merged_vars.node_exporter.collectors.enabled | sort | unique }}"
+
+  - name: Install node_exporter service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: node_exporter
+        description: Node exporter service
+        restart: on-failure
+        user: node_exporter
+        exec_start: >
+          /usr/bin/node_exporter
+          {{ enabled_collectors }}
+          {{ disabled_collectors }}
+          --web.listen-address=[::]:{{ merged_vars.node_exporter.listen.port }}
+          --collector.diskstats.ignored-devices="^(ram|loop|fd)\d+$"
+          --collector.filesystem.ignored-mount-points="^/(sys|proc|dev|run)($|/)"
+          --collector.systemd.enable-start-time-metrics
+          --collector.systemd.enable-restarts-metrics
+          --collector.systemd.enable-task-metrics
+          --collector.textfile.directory="{{ merged_vars.node_exporter.textfile_dir }}/"
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes
 
   - name: Connect exporter to prometheus
     import_role:
@@ -36,8 +62,3 @@
         addr: "{{ '[::1]' if inventory_hostname == 'gate' else inventory_hostname }}"
         port: "{{ merged_vars.node_exporter.listen.port }}"
         job: node_exporter
-
-  - name: Enabling services
-    service:
-      name: node_exporter
-      enabled: yes

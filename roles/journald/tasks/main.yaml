@@ -16,12 +16,12 @@
       owner: root
       group: systemd-journal
       mode: 02755
-    with_items:
-      - /var/log/journal
+    loop:
+    - /var/log/journal
 
   - name: Enabling journald service
     service:
       name: "{{ item }}"
       enabled: yes
     loop:
-      - systemd-journald
+    - systemd-journald

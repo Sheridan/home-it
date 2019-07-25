@@ -70,18 +70,25 @@
     with_filetree: templates/etc/observer/templates/
     when: item.state == 'file'
 
-  - name: Install observer daemon service
-    template:
-      src: etc/systemd/system/observer.service.j2
-      dest: /etc/systemd/system/observer.service
-      owner: root
-      group: root
-      mode: 0644
-    notify:
-    - systemd daemon reload
-    - restart observer
 
-  - name: Enabling services
-    service:
-      name: observer
-      enabled: yes
+  - name: Install observer service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: observer
+        description: Observer service for pushing alerts from many to many
+        user: "{{ observer_user }} "
+        restart_sec: 30s
+        exec_start: >
+          /usr/bin/python3
+          {{ observer_install_path }}/observer.py
+          {{ observer_config_path }}/config.yaml
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

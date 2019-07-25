@@ -58,13 +58,6 @@
     notify:
     - update firewall
 
-  - name: Stopping and disabling system firewall services
-    systemd:
-      name: nftables-restore
-      enabled: no
-      masked: yes
-      state: stopped
-
   - name: Install firewall service
     import_role:
       name: systemd_unit
@@ -73,7 +66,6 @@
       service:
         name: firewall
         description: Firewall service, based on nftables
-        restart: on-failure
         type: oneshot
         remain_after_exit: yes
         exec_start: /usr/local/bin/firewall-manager.sh start
@@ -86,3 +78,5 @@
         on_changed: reloaded
         state: started
         enabled: yes
+        replaces:
+        - nftables-restore

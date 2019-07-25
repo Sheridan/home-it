@@ -18,24 +18,24 @@
     notify:
     - restart sshd
 
-  - name: Install ssh daemon service
-    template:
-      src: etc/systemd/system/ssh-daemon.service.j2
-      dest: /etc/systemd/system/ssh-daemon.service
-      owner: root
-      group: root
-      mode: 0644
-    notify:
-    - systemd daemon reload
-    - restart sshd
-
-  - name: Stopping and disabling system sshd
-    service:
-      name: sshd
-      enabled: no
-      state: stopped
-
-  - name: Enabling services
-    service:
-      name: ssh-daemon
-      enabled: yes
+  - name: Install sshd service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: ssh-daemon
+        description: OpenSSH server daemon
+        restart_sec: 16s
+        exec_start_pre: /usr/bin/ssh-keygen -A
+        exec_start: /usr/sbin/sshd -D -e
+        exec_reload: /bin/kill -HUP $MAINPID
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes
+        replaces:
+        - sshd

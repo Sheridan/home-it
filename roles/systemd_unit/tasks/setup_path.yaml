@@ -22,6 +22,7 @@
         user: "{{ path.user }}"
         pid_file: "/run/path-service-{{ path.name }}.pid"
         type: oneshot
+        standalone: no
 
   - name: "{{ path.name }} : Включаем надсмотрщика"
     service:
