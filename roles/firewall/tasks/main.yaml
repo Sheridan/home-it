@@ -76,7 +76,8 @@
         wanted_by:
         - multi-user.target
         on_changed: reloaded
-        state: started
+        # state: started
+        state: stopped
         enabled: yes
         replaces:
         - nftables-restore

@@ -1,0 +1,25 @@
+---
+- hosts: servers_linux
+  remote_user: root
+  vars_files:
+  - vars/dns.yaml
+  - vars/network.yaml
+  - vars/ssh_keys.yaml
+  - vars/telegram.yaml
+  roles:
+  - { role: network_interfaces, tags: network_interfaces }
+  - { role: smartctl, tags: smartctl }
+  - { role: kernel, tags: kernel }
+  - { role: users, tags: users }
+  - { role: zsh, tags: zsh }
+  - { role: sshd, tags: sshd }
+  - { role: logrotate, tags: logrotate }
+  - { role: journald, tags: journald }
+  - { role: firewall, tags: firewall }
+  - { role: node_exporter, tags: [ node_exporter, monitoring ] }
+  - { role: telegraf, tags: [ telegraf, monitoring ] }
+  - { role: nginx, tags: nginx }
+  - { role: observer, tags: observer }
+  - { role: htop, tags: htop }
+  - { role: portage, tags: portage }
+  - { role: packages, tags: packages }

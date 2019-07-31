@@ -1,0 +1,151 @@
+---
+  - hosts: gentoo_install
+    vars:
+      flags:
+        delete_partitions: no
+      disks:
+      - /dev/sda
+      - /dev/sdb
+      partitions:
+        - name: bios_boot
+          number: 1
+          flags: ['bios_grub']
+          size:
+            start: 0%
+            end: 16MiB
+        - name: swap
+          number: 2
+          flags: []
+          size:
+            start: 16MiB
+            end: 4GiB
+        - name: root
+          number: 3
+          flags: ['boot']
+          size:
+            start: 4GiB
+            end: 100%
+
+    tasks:
+    - name: Чтение инфо про диски
+      parted:
+        device: "{{ item }}"
+        unit: MiB
+      register: disk_info
+      loop: "{{ disks }}"
+
+    # - name: Диски
+    #   debug:
+    #     msg: "{{ disk_info }}"
+
+    # - name: Диски будут
+    #   debug:
+    #     msg: "{{ item }}"
+    #   loop: "{{ disks | product(partitions) | list }}"
+
+    - name: Удаление разделов с диска
+      parted:
+        device: "{{ item.0.disk.dev }}"
+        number: "{{ item.1.num }}"
+        state: absent
+      loop: '{{ disk_info.results|subelements("partitions") }}'
+      register: r_partitions_removed
+      when: flags.delete_partitions
+
+    - name: Создание метки
+      parted:
+        label: gpt
+        device: "{{ item }}"
+      loop: "{{ disks }}"
+      when: r_partitions_removed.changed|default(False)
+
+    - name: Создание разделов
+      parted:
+        device: "{{ item.0 }}"
+        number: "{{ item.1.number }}"
+        name: "{{ item.1.name }}"
+        flags: "{{ item.1.flags }}"
+        part_start: "{{ item.1.size.start }}"
+        part_end: "{{ item.1.size.end }}"
+        part_type: primary
+        state: present
+        unit: 'compact'
+        label: gpt
+      loop: "{{ disks | product(partitions) | list }}"
+      when: r_partitions_removed.changed|default(False)
+
+    # - name: Создание ФС
+    #   filesystem:
+    #     fstype: "{{ item.1.filesystem }}"
+    #     dev: "{{ item.0 }}{{ item.1.number }}"
+    #   loop: "{{ disks | product(partitions) | list }}"
+
+    - name: Создание swap
+      filesystem:
+        dev: "{{ item }}2"
+        fstype: swap
+      loop: "{{ disks }}"
+
+    - name: Создание btrfs
+      shell: >
+        mkfs.btrfs
+        --label root
+        --data raid1
+        --metadata raid1
+        --force
+        {{ disks | map('regex_replace', '(.*)', '\1_3') | list | map('regex_replace', '_', '') | list | join(' ') }}
+
+    - name: check directoryes
+      file:
+        dest: "{{ item }}"
+        state: directory
+      with_items:
+        - /mnt/gentoo
+
+    - name: Mount up root
+      mount:
+        path: /mnt/gentoo
+        src: LABEL=root
+        fstype: btrfs
+        state: present
+
+    - name: Creating volumes
+      shell: "btrfs subvol create {{ item }}"
+      args:
+        chdir: /mnt/gentoo
+      loop:
+      - root
+      - portage
+      - boot
+
+    - name: Unmount
+      mount:
+        path: /mnt/gentoo
+        state: unmounted
+
+    - name: Mount up root
+      mount:
+        path: /mnt/gentoo
+        src: LABEL=root
+        fstype: btrfs
+        state: present
+        opts: defaults,noatime,subvol=root
+
+    - name: check directoryes
+      file:
+        dest: "{{ item }}"
+        state: directory
+      with_items:
+        - /mnt/gentoo/boot
+        - /mnt/gentoo/usr
+        - /mnt/gentoo/usr/portage
+
+    - name: Mount up all
+      mount:
+        path: /mnt/gentoo
+        src: LABEL=root
+        fstype: btrfs
+        state: present
+        opts: defaults,noatime,subvol=root
+      loop:
+      -

@@ -26,4 +26,4 @@
   - name: "Cleanup results for {{ metric }}"
     when: metric is defined
     debug:
-      msg: "Response: {{ clean_result.content }}"
+      msg: "Response: {{ clean_result.msg }}"

@@ -31,7 +31,7 @@ do
     dev_model=`cat $tmp_file | grep "Device Model" | sed -e 's@.*:[[:space:]]*\(.*\)@\1@ig'`
     dev_sn=`cat $tmp_file | grep "Serial Number" | sed -e 's@.*:[[:space:]]*\(.*\)@\1@ig'`
     dev_firmware=`cat $tmp_file | grep "Firmware Version" | sed -e 's@.*:[[:space:]]*\(.*\)@\1@ig'`
-    user_capacity=`cat $tmp_file | grep "User Capacity" | sed -e 's@.*:[[:space:]]*\(.*\)bytes.*@\1@ig' | tr -d " " | xargs`
+    user_capacity=`cat $tmp_file | grep "User Capacity" | sed -e 's@.*:[[:space:]]*\(.*\)bytes.*@\1@ig' | sed -e 's@,@@g' | tr -d " " | xargs`
 
     sata_version=`cat $tmp_file | grep "^SATA Version is:" | sed -e 's@.*:[[:space:]]*SATA[[:space:]]*\(.*\),.*@\1@ig' | awk -v def="Unknown" '{print} END {if(NR==0) {print def}}' `
     ata_version=`cat $tmp_file | grep "^ATA Version is:" | sed -e 's@.*:[[:space:]]*\(.*\)@\1@ig' | sed -e "s@ (Minor.*)@@ig" | awk -v def="Unknown" '{print} END {if(NR==0) {print def}}' `

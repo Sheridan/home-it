@@ -1,0 +1,16 @@
+---
+  firewall:
+    to_host:
+      ssh:
+        name: "SSH"
+        ports:
+        - 22
+        interfaces:
+        - "internal"
+      web:
+        name: "web"
+        ports:
+        - 80
+        - 443
+        interfaces:
+        - "internal"

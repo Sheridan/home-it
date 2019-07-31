@@ -2,12 +2,10 @@
   portage:
     use:
       enabled:
-        main:
-        - headless
-        filesystems:
-        - btrfs
         hardware:
-        - initramfs
+        - hamlib
+        - radio
+        - rtlsdr
         network:
         - nftables
       disabled:
@@ -31,4 +29,3 @@
     hardware:
       video_cards:
       - nouveau
-      - nvidia

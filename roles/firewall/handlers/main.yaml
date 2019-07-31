@@ -3,4 +3,4 @@
     shell: systemctl daemon-reload
 
   - name: update firewall
-    import_tasks: firewall.yaml
+    include_tasks: handlers/firewall.yaml

@@ -10,10 +10,10 @@
       cpu_flags: "{{ cpu_flags_out.stdout  }}"
       portage_fact:
         directoryes:
-          portdir: "{{ merged_vars.portage.directoryes.portdir | default('/usr/portage') }}"
-          distdir: "{{ merged_vars.portage.directoryes.distdir | default('/usr/portage/distfiles') }}"
-          pkgdir: "{{ merged_vars.portage.directoryes.pkgdir | default('/usr/portage/packages') }}"
-          tmp: "{{ merged_vars.portage.directoryes.tmp | default('/var/tmp/portage') }}"
+          portdir: "{{ merged_vars.portage.directoryes.portdir | default('/var/db/repos/gentoo') }}"
+          distdir: "{{ merged_vars.portage.directoryes.distdir | default('/var/cache/distfiles') }}"
+          pkgdir: "{{ merged_vars.portage.directoryes.pkgdir | default('/var/cache/binpkgs') }}"
+          tmp: "{{ merged_vars.portage.directoryes.tmp | default('/var/tmp') }}"
 
   - name: Создаём каталоги для нужд portage
     file:
@@ -29,7 +29,7 @@
       - "{{ portage_fact.directoryes.portdir }}"
       - "{{ portage_fact.directoryes.distdir }}"
       - "{{ portage_fact.directoryes.pkgdir }}"
-      - "{{ portage_fact.directoryes.tmp }}"
+      # - "{{ portage_fact.directoryes.tmp }}"
 
   - name: Генерируем make.conf
     template:
