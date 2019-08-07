@@ -8,7 +8,7 @@ function make_menu(terminal)
                 { "Chrome"               , "google-chrome-stable --no-proxy-server" },
                 { "Skype"                , "skypeforlinux" },
                 { "Telegram"             , "telegram-desktop"},
-                { "VSCode"               , "visual-studio-code --new-window"},
+                { "VSCode"               , "vscode --new-window"},
                 { "Скриншотер"           , "flameshot"},
                 { "File manager"         , "qtfm"},
                 { "Passwords"            , "keepassxc"},

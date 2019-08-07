@@ -9,10 +9,10 @@ flush ruleset
 table inet filter {
   chain netscan_drop {
     {# bad tcp -> avoid network scanning -#}
-    tcp flags & (fin|syn) == (fin|syn) counter drop comment "drop invalid packets"
-    tcp flags & (syn|rst) == (syn|rst) counter drop comment "drop invalid packets"
-    tcp flags & (fin|syn|rst|psh|ack|urg) < (fin) counter drop comment "drop invalid packets"
-    tcp flags & (fin|syn|rst|psh|ack|urg) == (fin|psh|urg) counter drop comment "drop invalid packets"
+    tcp flags & (fin|syn) == (fin|syn) counter drop comment "drop netscan 0"
+    tcp flags & (syn|rst) == (syn|rst) counter drop comment "drop netscan 1"
+    tcp flags & (fin|syn|rst|psh|ack|urg) < (fin) counter drop comment "drop netscan 2"
+    tcp flags & (fin|syn|rst|psh|ack|urg) == (fin|psh|urg) counter drop comment "drop netscan 3"
   }
 
   chain global {
@@ -21,12 +21,12 @@ table inet filter {
     jump netscan_drop
     ip protocol icmp limit rate 32/second counter accept comment "accept icmp"
     ip protocol icmp counter drop comment "drop burst icmp"
-    ip6 nexthdr icmpv6 limit rate 32/second counter accept comment "accept icmp"
-    ip6 nexthdr icmpv6 counter drop comment "drop burst icmp"
+    ip6 nexthdr icmpv6 limit rate 32/second counter accept comment "accept icmp6"
+    ip6 nexthdr icmpv6 counter drop comment "drop burst icmp6"
     iif != lo ip daddr 127.0.0.1/8 counter drop comment "drop connections to loopback not coming from loopback"
-    iif != lo ip6 daddr ::1/128 counter drop comment "drop connections to loopback not coming from loopback"
-    oif lo counter accept comment "accept loopback"
-    iif lo counter accept comment "accept loopback"
+    iif != lo ip6 daddr ::1/128 counter drop comment "drop connections to loopback not coming from loopback6"
+    oif lo counter accept comment "accept to loopback"
+    iif lo counter accept comment "accept from loopback"
     {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { fe80::/16 } counter accept comment "accept from link-local"
     {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { fe80::/16 } counter accept comment "accept to link-local"
     {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { ff02::/16 } counter accept comment "accept from spetial"
@@ -46,7 +46,7 @@ table inet filter {
                 {%- for ip_version in ['ipv6', 'ipv4'] -%}
                   {%- if ip_version in external_interface.ip -%}
                     {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
-    {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ host_internal_interface.ip[ip_version].ip }} {% if 'ports' in rule -%} {{ protocol }} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter {{ rule.policy|default('accept') }} comment "[{{ host_name }}->internet] {{ rule.name }} [{{ protocol }}]"
+    {{ query('nft', 'as_iif', internal_interface) }} {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ host_internal_interface.ip[ip_version].ip }} {% if 'ports' in rule -%} {{ protocol }} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter {{ rule.policy|default('accept') }} comment "[{{ host_name }}->internet] {{ rule.name }} [{{ protocol }}]"
     {# -#}
                   {%- endif -%}
                 {%- endfor -%}
@@ -61,13 +61,13 @@ table inet filter {
   chain output {
     type filter hook output priority 0; policy accept;
     jump global
-    jump network_hosts
-    counter comment "count accepted packets"
+    counter comment "output accepted packets"
   }
 
   chain forward {
-    type filter hook forward priority 0; policy accept;
+    type filter hook forward priority 0; policy drop;
     jump global
+    jump network_hosts
     {#
     # Masquerading forwards
     {% for external_interface in external_interfaces -%}
@@ -81,7 +81,7 @@ table inet filter {
       {%- endfor -%}
     {%- endfor -%}
     -#}
-    counter comment "count output accepted packets"
+    counter comment "output dropped packets"
   }
 
   chain to_self {
@@ -103,7 +103,7 @@ table inet filter {
     type filter hook input priority 0; policy drop;
     jump global
     jump to_self
-    counter comment "count input dropped packets"
+    counter comment "input dropped packets"
   }
 }
 
