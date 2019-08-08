@@ -33,28 +33,38 @@ table inet filter {
     {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { ff02::/16 } counter accept comment "accept to spetial"
   }
 
-  chain network_hosts {
     {# output per host -#}
-    {% for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
-      {%- set host = hostvars[host_name].merged_vars -%}
-      {%- if 'firewall' in host -%}
-        {%- for host_internal_interface in host.network -%}
-          {%- for rule_name in host.firewall.host_to_internet -%}
-            {%- set rule = host.firewall.host_to_internet[rule_name] -%}
-            {%- for external_interface in external_interfaces -%}
-              {%- for protocol in ['tcp', 'udp'] -%}
-                {%- for ip_version in ['ipv6', 'ipv4'] -%}
-                  {%- if ip_version in external_interface.ip -%}
-                    {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
+  {% for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
+  chain host_{{ host_name | replace('-','_') }} {
+    {# -#}
+    {%- set host = hostvars[host_name].merged_vars -%}
+    {%- if 'firewall' in host -%}
+      {%- for host_internal_interface in host.network -%}
+        {%- for rule_name in host.firewall.host_to_internet -%}
+          {%- set rule = host.firewall.host_to_internet[rule_name] -%}
+          {%- for external_interface in external_interfaces -%}
+            {%- for protocol in ['tcp', 'udp'] -%}
+              {%- for ip_version in ['ipv6', 'ipv4'] -%}
+                {%- if ip_version in external_interface.ip -%}
+                  {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
     {{ query('nft', 'as_iif', internal_interface) }} {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ host_internal_interface.ip[ip_version].ip }} {% if 'ports' in rule -%} {{ protocol }} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter {{ rule.policy|default('accept') }} comment "[{{ host_name }}->internet] {{ rule.name }} [{{ protocol }}]"
     {# -#}
-                  {%- endif -%}
-                {%- endfor -%}
+                {%- endif -%}
               {%- endfor -%}
             {%- endfor -%}
           {%- endfor -%}
         {%- endfor -%}
-      {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  }
+
+  {# -#}
+  {%- endfor -%}
+
+  chain network_hosts {
+    {% for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
+    jump host_{{ host_name | replace('-','_') }}
+    {# -#}
     {%- endfor -%}
   }
 
@@ -66,8 +76,8 @@ table inet filter {
 
   chain forward {
     type filter hook forward priority 0; policy drop;
-    jump global
     jump network_hosts
+    jump global
     {#
     # Masquerading forwards
     {% for external_interface in external_interfaces -%}
