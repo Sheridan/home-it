@@ -23,3 +23,18 @@
         name: "IRC"
         ports:
         - 6667
+      media_streams:
+        name: "Default media streams"
+        ports:
+        - 554 # rtsp
+      steam:
+        name: "Steam"
+        ports:
+        - 27000-27037
+        - 4379-4380
+        - 3478
+      google:
+        name: "Google"
+        ports:
+        - 5228 # Market, sync
+        - 5222 # Talk

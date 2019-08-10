@@ -1,0 +1,15 @@
+---
+  firewall:
+    host_to_internet:
+      dns:
+        name: "dns"
+        ports:
+        - 53
+      ntp:
+        name: "ntp"
+        ports:
+        - 123
+      queryes:
+        name: 'queries'
+        ports:
+        - 33400-33500

@@ -6,6 +6,7 @@
     - { name: app-admin/pydf }
     - { name: net-dns/bind-tools }
     - { name: net-analyzer/nmap }
+    - { name: net-misc/whois }
     - { name: net-analyzer/tcpdump }
     - { name: net-misc/netkit-telnetd, state: absent }
     - { name: net-misc/telnet-bsd }

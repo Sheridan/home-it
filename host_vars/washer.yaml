@@ -5,3 +5,11 @@
     ip: "{{ query('ship', 'ip', 73) }}"
     network: 'home'
     type: 'dhcp'
+
+  firewall:
+    host_to_internet:
+      requests:
+        name: "Default media streams"
+        ports:
+        - 46030
+        - 47878

@@ -1,0 +1,12 @@
+---
+  firewall:
+    host_to_internet:
+      android:
+        name: "Android"
+        ports:
+        - 5228
+      telegram:
+        name: "Telegram"
+        ports:
+        - 3561
+        - 9935

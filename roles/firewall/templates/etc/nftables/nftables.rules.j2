@@ -91,7 +91,8 @@ table inet filter {
       {%- endfor -%}
     {%- endfor -%}
     -#}
-    counter comment "output dropped packets"
+    log prefix "Forward dropped: "
+    counter comment "forward dropped packets"
   }
 
   chain to_self {
@@ -113,6 +114,7 @@ table inet filter {
     type filter hook input priority 0; policy drop;
     jump global
     jump to_self
+    log prefix "Input dropped: "
     counter comment "input dropped packets"
   }
 }
@@ -136,9 +138,21 @@ table ip nat {
 
   chain postrouting {
     type nat hook postrouting priority 0; policy accept;
+
+    {% set host = hostvars['probe-kis'].merged_vars -%}
+    {%- for host_internal_interface in host.network -%}
+    ip saddr {{ host_internal_interface.ip.ipv4.ip }} {{ query('nft', 'as_oif', network|selectattr('ifname', 'match', 'external_kis.*')|first) }} counter masquerade comment "probe-kis masquerade"
+    {# -#}
+    {%- endfor -%}
+    {% set host = hostvars['probe-rt'].merged_vars -%}
+      {%- for host_internal_interface in host.network -%}
+    ip saddr {{ host_internal_interface.ip.ipv4.ip }} {{ query('nft', 'as_oif', network|selectattr('ifname', 'match', 'external_rt.*')|first) }} counter masquerade comment "probe-rt masquerade"
+    {# -#}
+    {%- endfor -%}
+
     {% for external_interface in external_interfaces -%}
         {%- if 'ipv4' in external_interface.ip -%}
-    ip saddr {{ networks.home.subnet.ipv4.full }} {{ query('nft', 'as_oif', external_interface) }} counter masquerade
+    ip saddr {{ networks.home.subnet.ipv4.full }} {{ query('nft', 'as_oif', external_interface) }} counter masquerade comment "Network masquerade trought {{ external_interface.name }}"
     {# -#}
         {%- endif -%}
     {%- endfor -%}
