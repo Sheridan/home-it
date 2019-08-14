@@ -14,29 +14,57 @@
         - 546-547
         interfaces:
         - "internal"
-      dns:
-        name: "Domain"
+      dns_internal:
+        name: "Domain internal"
         ports:
         - 53
         interfaces:
         - "internal"
+      dns_external:
+        name: "Domain external"
+        max_rate:
+          count: 32
+          per_period: second
+          burst: 32
+        ports:
+        - 53
+        interfaces:
         - "external_kis"
         - "external_he"
-      ssh:
-        name: "SSH"
+      ssh_internal:
+        name: "SSH internal"
         ports:
         - 22
         interfaces:
         - "internal"
+      ssh_external:
+        name: "SSH external"
+        max_rate:
+          count: 16
+          per_period: second
+          burst: 8
+        ports:
+        - 22
+        interfaces:
         - "external_kis"
         - "external_he"
-      web:
+      web_internal:
         name: "web"
         ports:
         - 80
         - 443
         interfaces:
         - "internal"
+      web_external:
+        name: "web"
+        max_rate:
+          count: 1024
+          per_period: second
+          burst: 2048
+        ports:
+        - 80
+        - 443
+        interfaces:
         - "external_kis"
         - "external_he"
       ntpd:

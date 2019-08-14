@@ -20,10 +20,6 @@
         - 161
         - 162
         - 992
-      rsync:
-        name: "Devops to rsync"
-        ports:
-        - 873
       openvpn:
         name: "Devops to openvpn"
         ports:

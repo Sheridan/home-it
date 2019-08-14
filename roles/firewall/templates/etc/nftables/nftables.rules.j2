@@ -1,7 +1,13 @@
 #!/sbin/nft -f
 
+# Managed by ansible. Editing is useless
+# Sheridan
+
 {% set internal_interface = network|selectattr('ifname', 'match', 'internal_.*')|first %}
+{% set internal_interfaces = network|selectattr('ifname', 'match', 'internal_.*')|list %}
 {% set external_interfaces = network|selectattr('ifname', 'match', 'external_.*')|list %}
+{% set external_interfaces_ipv4 = network|selectattr('ifname', 'match', 'external_(rt|kis).*')|list %}
+{% set external_interfaces_ipv6 = network|selectattr('ifname', 'match', 'external_he.*')|list %}
 
 flush ruleset
 
@@ -42,15 +48,11 @@ table inet filter {
       {%- for host_internal_interface in host.network -%}
         {%- for rule_name in host.firewall.host_to_internet -%}
           {%- set rule = host.firewall.host_to_internet[rule_name] -%}
-          {%- for external_interface in external_interfaces -%}
-            {%- for protocol in ['tcp', 'udp'] -%}
-              {%- for ip_version in ['ipv6', 'ipv4'] -%}
-                {%- if ip_version in external_interface.ip -%}
-                  {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
-    {{ query('nft', 'as_iif', internal_interface) }} {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ host_internal_interface.ip[ip_version].ip }} {% if 'ports' in rule -%} {{ protocol }} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter {{ rule.policy|default('accept') }} comment "[{{ host_name }}->internet] {{ rule.name }} [{{ protocol }}]"
+          {%- for protocol in ['tcp', 'udp'] -%}
+            {%- for ip_version in ['ipv6', 'ipv4'] -%}
+              {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
+    {{ query('nft', 'as_iif', internal_interface) }} {{ nfipv }} saddr {{ host_internal_interface.ip[ip_version].ip }} {% if 'ports' in rule -%} {{ protocol }} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter goto to_provider_{{ ip_version }} comment "[{{ host_name }}->internet] {{ rule.name }} [{{ protocol }}]"
     {# -#}
-                {%- endif -%}
-              {%- endfor -%}
             {%- endfor -%}
           {%- endfor -%}
         {%- endfor -%}
@@ -66,6 +68,22 @@ table inet filter {
     jump host_{{ host_name | replace('-','_') }}
     {# -#}
     {%- endfor -%}
+  }
+
+  chain to_provider_ipv4 {
+    {%- for external_interface in external_interfaces_ipv4 -%}
+    {{ query('nft', 'as_oif', external_interface) }} counter accept comment "Accepted to {{ external_interface.ifname }} ({{ external_interface.name }})"
+    {# -#}
+    {%- endfor -%}
+
+  }
+
+  chain to_provider_ipv6 {
+    {%- for external_interface in external_interfaces_ipv6 -%}
+    {{ query('nft', 'as_oif', external_interface) }} counter accept comment "Accepted to {{ external_interface.ifname }} ({{ external_interface.name }})"
+    {# -#}
+    {%- endfor -%}
+
   }
 
   chain output {
@@ -91,22 +109,29 @@ table inet filter {
       {%- endfor -%}
     {%- endfor -%}
     -#}
-    log prefix "Forward dropped: "
+    limit rate 8/second log prefix "Forward dropped: "
     counter comment "forward dropped packets"
   }
 
   chain to_self {
     {# to_host -#}
     {% for rule_name in merged_vars.firewall.to_host|list -%}
-        {%- set rule = merged_vars.firewall.to_host[rule_name] -%}
-        {%- for protocol in ['tcp', 'udp'] -%}
-            {%- for rule_interface_name_part in rule.interfaces -%}
-                {%- for rule_interface in network|selectattr('ifname', 'match', '.*' + rule_interface_name_part + '.*')|list -%}
+      {%- set rule = merged_vars.firewall.to_host[rule_name] -%}
+      {%- for protocol in ['tcp', 'udp'] -%}
+        {%- for rule_interface_name_part in rule.interfaces -%}
+          {%- for rule_interface in network|selectattr('ifname', 'match', '.*' + rule_interface_name_part + '.*')|list -%}
+            {%- if 'max_rate' in rule -%}
+    {{ query('nft', 'as_iif', rule_interface) }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} limit rate {{ rule.max_rate.count }}/{{ rule.max_rate.per_period }} burst {{ rule.max_rate.burst }} packets counter accept comment "[->{{ inventory_hostname }}] {{ rule.name }} [{{ protocol }}]"
+    {{ query('nft', 'as_iif', rule_interface) }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} limit rate 8/second log prefix "Input {{ rule.name }} [{{ protocol }}] limit: "
+    {{ query('nft', 'as_iif', rule_interface) }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter drop comment "[->{{ inventory_hostname }}] {{ rule.name }} [{{ protocol }}]"
+    {# -#}
+            {%- else -%}
     {{ query('nft', 'as_iif', rule_interface) }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter accept comment "[->{{ inventory_hostname }}] {{ rule.name }} [{{ protocol }}]"
     {# -#}
-              {%- endfor -%}
-            {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
         {%- endfor -%}
+      {%- endfor -%}
     {%- endfor -%}
   }
 
@@ -114,7 +139,7 @@ table inet filter {
     type filter hook input priority 0; policy drop;
     jump global
     jump to_self
-    log prefix "Input dropped: "
+    limit rate 8/second log prefix "Input dropped: "
     counter comment "input dropped packets"
   }
 }
@@ -152,7 +177,7 @@ table ip nat {
 
     {% for external_interface in external_interfaces -%}
         {%- if 'ipv4' in external_interface.ip -%}
-    ip saddr {{ networks.home.subnet.ipv4.full }} {{ query('nft', 'as_oif', external_interface) }} counter masquerade comment "Network masquerade trought {{ external_interface.name }}"
+    ip saddr {{ networks.home.subnet.ipv4.full }} {{ query('nft', 'as_oif', external_interface) }} counter masquerade comment "Network masquerade through {{ external_interface.ifname }} ({{ external_interface.name }})"
     {# -#}
         {%- endif -%}
     {%- endfor -%}

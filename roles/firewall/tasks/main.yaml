@@ -12,7 +12,7 @@
     tags:
     - packages
 
-  - name: Sysctl setup
+  - name: Настройка sysctl
     sysctl:
       name: "{{ item.key }}"
       value: "{{ item.value }}"
@@ -30,7 +30,7 @@
     - { key: net.ipv4.conf.default.forwarding, value: 1 }
     when: inventory_hostname == 'gate'
 
-  - name: Create conf directory
+  - name: Создание каталога для настроек
     file:
       path: "{{ config.location }}"
       state: directory
@@ -38,7 +38,7 @@
       group: root
       mode: 0644
 
-  - name: Install manager script
+  - name: Установка скриптов управления
     template:
       src: usr/local/bin/firewall-manager.sh.j2
       dest: /usr/local/bin/firewall-manager.sh
@@ -48,7 +48,7 @@
     notify:
     - update firewall
 
-  - name: make configuration
+  - name: Установка конфигурации firewall'а
     template:
       src: etc/nftables/nftables.rules.j2
       dest: "{{ config.location }}/{{ config.filename }}"
@@ -58,7 +58,15 @@
     notify:
     - update firewall
 
-  - name: Install firewall service
+  - name: Установка конфигурации iproute2
+    template:
+      src: etc/iproute2/rt_tables.j2
+      dest: /etc/iproute2/rt_tables
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Установка сервиса firewall'а
     import_role:
       name: systemd_unit
       tasks_from: setup_service

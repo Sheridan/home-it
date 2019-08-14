@@ -48,3 +48,11 @@
       ipv6: "{{ query('ship', 'henet_ip', 2) }}"
     network: 'henet'
     type: 'static'
+
+  router_paths:
+  - interface: "{{ network | selectattr('ifname', 'match', 'external_kis.*') | first }}"
+    default: yes
+    mark: 100
+  - interface: "{{ network | selectattr('ifname', 'match', 'external_rt.*') | first }}"
+    default: no
+    mark: 101

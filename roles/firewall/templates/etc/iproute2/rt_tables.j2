@@ -1,0 +1,16 @@
+# Managed by ansible.Editing is useless
+# Sheridan
+
+# reserved values
+255     local
+254     main
+253     default
+0       unspec
+
+# local
+#1      inr.ruhep
+
+{% for router_path in router_paths -%}
+{{ router_path.mark }} to_{{ router_path.interface.ifname }}
+{# -#}
+{%- endfor %}

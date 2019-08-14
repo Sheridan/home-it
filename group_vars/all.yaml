@@ -10,11 +10,6 @@
         name: "Default https"
         ports:
         - 443
-      http_extented:
-        name: "Default http extended"
-        ports:
-          - 8080
-          - 8081
       ftp:
         name: "Default ftp"
         ports:
@@ -23,11 +18,6 @@
         - 115
         - 989
         - 990
-      nntp:
-        name: "Default nntp"
-        ports:
-        - 563
-        - 119
 
   ballance:
     mark:

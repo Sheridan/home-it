@@ -7,14 +7,14 @@
 
   tasks:
 
-  - name: strings
-    debug:
-      msg: "{{ arr | map('regex_replace', '(.*)', '\\1_123') | list | join(' ')}}"
-    vars:
-      arr:
-      - qwe
-      - asd
-      - zxc
+  # - name: strings
+  #   debug:
+  #     msg: "{{ arr | map('regex_replace', '(.*)', '\\1_123') | list | join(' ')}}"
+  #   vars:
+  #     arr:
+  #     - qwe
+  #     - asd
+  #     - zxc
 
   # - name: Default test
   #   debug:
@@ -25,9 +25,9 @@
   #   debug:
   #     msg: "Merged: {{ merged_vars.ntpd }}"
 
-#   - name: ship net test
-#     debug:
-#       msg: "{{ query('ship', 'ip', 65536).ipv6.ip }}"
+  - name: ship net test
+    debug:
+      msg: "{{ query('ship', 'ip', 10) }}"
 
   # - name: merge test
   #   debug:
