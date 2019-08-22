@@ -106,6 +106,12 @@ class VarsModule(BaseVarsPlugin):
         return {}
 
     def _combine_dicts(self, left, right):
+        if not left and not right:
+            return {}
+        if not left:
+            return right
+        if not right:
+            return left
         for key in right:
             if key in left:
                 value = right[key]

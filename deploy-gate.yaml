@@ -9,7 +9,6 @@
   roles:
   - { role: apcupsd, tags: apcupsd }
   - { role: network_interfaces, tags: network_interfaces }
-  - { role: smartctl, tags: smartctl }
   - { role: gps, tags: gps }
   - { role: pppoe, tags: pppoe }
   - { role: kernel, tags: kernel }
@@ -27,6 +26,8 @@
   - { role: grafana, tags: [ grafana, monitoring ] }
   - { role: node_exporter, tags: [ node_exporter, monitoring ] }
   - { role: bind_exporter, tags: [ bind_exporter, monitoring ] }
+  - { role: smartctl_exporter, tags: smartctl_exporter }
+  - { role: nftables_exporter, tags: nftables_exporter }
   - { role: telegraf, tags: [ telegraf, monitoring ] }
   - { role: observer, tags: observer }
   - { role: htop, tags: htop }

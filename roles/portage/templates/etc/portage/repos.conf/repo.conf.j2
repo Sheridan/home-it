@@ -1,0 +1,8 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+[{{ merged_vars.portage.ansible_repository.name }}]
+location = /var/db/repos/{{ merged_vars.portage.ansible_repository.name }}
+priority = 10
+masters = gentoo
+auto-sync = no

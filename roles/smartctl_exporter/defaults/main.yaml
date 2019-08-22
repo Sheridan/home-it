@@ -1,0 +1,7 @@
+---
+  hardware:
+    storage:
+    - device: /dev/sda
+  smartctl_exporter:
+    listen:
+      port: 9106

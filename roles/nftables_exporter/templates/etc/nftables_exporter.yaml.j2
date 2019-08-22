@@ -1,0 +1,4 @@
+nftables_exporter:
+  bind_to: "{{ '[::1]' if inventory_hostname == 'gate' else inventory_hostname }}:{{ merged_vars.nftables_exporter.listen.port }}"
+  url_path: "/metrics"
+  nft_location: /sbin/nft

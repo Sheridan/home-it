@@ -1,0 +1,5 @@
+---
+  - name: restart smartctl_exporter
+    service:
+      name: smartctl_exporter
+      state: restarted

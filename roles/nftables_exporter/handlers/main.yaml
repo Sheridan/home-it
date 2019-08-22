@@ -1,0 +1,5 @@
+---
+  - name: restart nftables_exporter
+    service:
+      name: nftables_exporter
+      state: restarted

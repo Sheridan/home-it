@@ -1,0 +1,4 @@
+---
+  nftables_exporter:
+    listen:
+      port: 9105

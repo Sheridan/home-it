@@ -1,0 +1,21 @@
+---
+  - name: Создаём каталоги
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: portage
+      group: root
+    with_items:
+      - "/var/db/repos/{{ merged_vars.portage.ansible_repository.name }}"
+      - "/var/db/repos/{{ merged_vars.portage.ansible_repository.name }}/metadata"
+
+  - name: Генерируем настроки репозитория
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dst }}"
+      owner: portage
+      group: root
+      mode: 0644
+    loop:
+    - { src: etc/portage/repos.conf/repo.conf.j2, dst: "/etc/portage/repos.conf/{{ merged_vars.portage.ansible_repository.name }}.conf" }
+    - { src: repo/metadata/layout.conf.j2, dst: "/var/db/repos/{{ merged_vars.portage.ansible_repository.name }}/metadata/layout.conf" }

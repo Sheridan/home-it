@@ -1,0 +1,60 @@
+---
+  - name: "{{ ebuild.name }} : Определение дополнительных параметров"
+    set_fact:
+      ebld:
+        name: "{{ ebuild.name }}"
+        url: "{{ ebuild.url | default('') }}"
+        version: "{{ ebuild.version }}"
+        category: "{{ ebuild.category }}"
+        filename: "{{ ebuild.name }}-{{ ebuild.version }}.ebuild"
+        atom: "{{ ebuild.category }}/{{ ebuild.name }}"
+        ebuild_directory: "/var/db/repos/{{ merged_vars.portage.ansible_repository.name }}/{{ ebuild.category }}/{{ ebuild.name }}"
+        files: "{{ ebuild.files | default([])}}"
+      v_need_reinit_files: no
+
+  - name: "{{ ebuild.name }} : Создаём каталог категории"
+    file:
+      dest: "{{ ebld.ebuild_directory }}"
+      state: directory
+      owner: portage
+      group: root
+
+  - name: "{{ ebuild.name }} Скачивание"
+    get_url:
+      url: "{{ ebld.url }}"
+      dest: "{{ ebld.ebuild_directory }}/{{ ebld.filename }}"
+      owner: portage
+      group: root
+      mode: 0644
+    when: ebld.url != ""
+    register: r_need_reinit_ebuild
+
+  - name: "{{ ebuild.name }} : Скачивание дополнительных файлов"
+    block:
+    - name: "{{ ebuild.name }} : Создаём каталог файлов"
+      file:
+        dest: "{{ ebld.ebuild_directory }}/files"
+        state: directory
+        owner: portage
+        group: root
+    - name: "{{ ebuild.name }} : Скачивание"
+      get_url:
+        url: "{{ item.url }}"
+        dest: "{{ ebld.ebuild_directory }}/files/{{ item.name }}"
+        owner: portage
+        group: root
+        mode: 0644
+      when: item.url != ""
+      loop: "{{ ebld.files }}"
+      register: r_need_reinit_file
+    - name: "{{ ebuild.name }} : Определение изменений"
+      set_fact:
+        v_need_reinit_files: "{{ v_need_reinit_files or item.changed }}"
+      loop: "{{ r_need_reinit_file.results }}"
+    when: ebld.files | length > 0
+
+  - name: "{{ ebuild.name }} : Инициализвция"
+    shell: "ebuild {{ ebld.filename }} digest"
+    args:
+      chdir: "{{ ebld.ebuild_directory }}"
+    when: r_need_reinit_ebuild.changed or v_need_reinit_files

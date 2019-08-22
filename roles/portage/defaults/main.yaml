@@ -81,6 +81,11 @@
         user:
         - arm
         - x86_64
+      dotnet:
+        enabled:
+        - net45
+        - net40
+        - net35
     linguas:
     - ru
     - en
@@ -227,3 +232,5 @@
         - xfs
         - hfs
         - jfs
+    ansible_repository:
+      name: ansible_custom

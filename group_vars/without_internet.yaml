@@ -1,0 +1,6 @@
+---
+  # firewall:
+  #   host_to_internet:
+  #     reject:
+  #       name: "Reject all"
+  #       policy: "reject"

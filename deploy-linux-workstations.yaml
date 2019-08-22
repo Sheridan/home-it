@@ -9,7 +9,6 @@
   roles:
   # - { role: firewall, tags: firewall }
   - { role: network_interfaces, tags: network_interfaces }
-  - { role: smartctl, tags: smartctl }
   - { role: bluetooth, tags: bluetooth }
   - { role: kernel, tags: kernel }
   - { role: users, tags: users }
@@ -21,6 +20,7 @@
   - { role: ntp, tags: ntp }
   - { role: node_exporter, tags: [ node_exporter, monitoring ] }
   - { role: telegraf, tags: [ telegraf, monitoring ] }
+  - { role: smartctl_exporter, tags: smartctl_exporter }
   - { role: observer, tags: observer }
   - { role: portage, tags: portage }
   - { role: packages, tags: packages }

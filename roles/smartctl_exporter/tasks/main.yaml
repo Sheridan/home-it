@@ -1,0 +1,71 @@
+---
+  - name: Устанавливаем необходимые ебилды
+    include_role:
+      name: portage
+      tasks_from: install_ebuild
+    vars:
+      ebuild:
+        name: smartctl_exporter
+        category: app-metrics
+        version: "9999"
+        url: "https://raw.githubusercontent.com/Sheridan/smartctl_exporter/master/gentoo/app-metrics/smartctl_exporter/smartctl_exporter-9999.ebuild"
+        files:
+        - url: "https://raw.githubusercontent.com/Sheridan/smartctl_exporter/master/gentoo/app-metrics/smartctl_exporter/files/smartctl_exporter.yaml"
+          name: smartctl_exporter.yaml
+    tags:
+    - packages
+
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop:
+    - { name: sys-apps/smartmontools, use: { enabled: [update_drivedb], disabled: [daemon] } }
+    - { name: app-metrics/smartctl_exporter, unstable: yes }
+    tags:
+    - packages
+
+  - name: Устанавливаем конфигурацию
+    template:
+      src: etc/smartctl_exporter.yaml.j2
+      dest: /etc/smartctl_exporter.yaml
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - restart smartctl_exporter
+
+  - name: Установка сервиса smartctl_exporter
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: smartctl_exporter
+        description: S.M.A.R.T. exporter service
+        restart: on-failure
+        user: root
+        exec_start: >
+          /usr/bin/smartctl_exporter
+          --verbose
+          --config=/etc/smartctl_exporter.yaml
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes
+
+  - name: Connect exporter to prometheus
+    import_role:
+      name: prometheus
+      tasks_from: connect_exporter
+    vars:
+      target:
+        name: "{{ inventory_hostname }}_smartctl_exporter"
+        addr: "{{ '[::1]' if inventory_hostname == 'gate' else inventory_hostname }}"
+        port: "{{ merged_vars.smartctl_exporter.listen.port }}"
+        job: smartctl_exporter

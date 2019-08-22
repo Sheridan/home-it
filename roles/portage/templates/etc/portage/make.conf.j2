@@ -32,6 +32,8 @@ PYTHON_SINGLE_TARGET="{{ merged_vars.portage.targets.python.single }}"
 
 RUBY_TARGETS="{{ ( merged_vars.portage.targets.ruby.enabled | default([]) ) | sort | join(" ") }}"
 
+DOTNET_TARGETS="{{ ( merged_vars.portage.targets.dotnet.enabled | default([]) ) | sort | join(" ") }}"
+
 VIDEO_CARDS="{{ ( merged_vars.portage.hardware.video_cards | default([]) ) | sort | join(" ") }}"
 
 LINGUAS="{{ merged_vars.portage.linguas | join(" ") }}"
@@ -57,6 +59,8 @@ PORTDIR_OVERLAY="${PORTDIR_OVERLAY}"
 
 OFFICE_IMPLEMENTATION="libreoffice"
 
-{# source /var/lib/layman/make.conf #}
+{% if r_layman_exists.stat.exists %}
+source /var/lib/layman/make.conf
+{% endif %}
 
 LC_MESSAGES=C

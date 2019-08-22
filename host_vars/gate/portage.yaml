@@ -32,3 +32,8 @@
       video_cards:
       - nouveau
       - nvidia
+    directoryes:
+      portdir: /usr/portage
+      distdir: /usr/portage/distfiles
+      pkgdir: /usr/portage/packages
+      tmp: /var/tmp/portage

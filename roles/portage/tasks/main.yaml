@@ -31,6 +31,11 @@
       - "{{ portage_fact.directoryes.pkgdir }}"
       # - "{{ portage_fact.directoryes.tmp }}"
 
+  - name: Сужествует ли layman.conf?
+    stat:
+      path: /var/lib/layman/make.conf
+    register: r_layman_exists
+
   - name: Генерируем make.conf
     template:
       src: templates/etc/portage/make.conf.j2
@@ -44,6 +49,11 @@
       content: "*/* *\n"
       dest: /etc/portage/package.license
       owner: portage
+
+  - name: Устанавливаем свой репозиторий
+    include_role:
+      name: portage
+      tasks_from: make_ansible_repository
 
   - name: Устанавливаем внеролевые пакеты
     include_role:

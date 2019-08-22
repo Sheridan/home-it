@@ -8,7 +8,6 @@
   - vars/telegram.yaml
   roles:
   - { role: network_interfaces, tags: network_interfaces }
-  - { role: smartctl, tags: smartctl }
   - { role: kernel, tags: kernel }
   - { role: users, tags: users }
   - { role: zsh, tags: zsh }
@@ -18,6 +17,7 @@
   - { role: firewall, tags: firewall }
   - { role: node_exporter, tags: [ node_exporter, monitoring ] }
   - { role: telegraf, tags: [ telegraf, monitoring ] }
+  - { role: smartctl_exporter, tags: smartctl_exporter }
   - { role: nginx, tags: nginx }
   - { role: observer, tags: observer }
   - { role: htop, tags: htop }
