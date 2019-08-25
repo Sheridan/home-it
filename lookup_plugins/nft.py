@@ -27,7 +27,7 @@ class LookupModule(LookupBase):
             raise AnsibleError("Error in nft: %s (%s)" % (terms, e))
 
     def as_if(self, direction, interface):
-        return '{0}if {1}'.format(direction, interface['ifname']) if interface['type'] == 'static' else '{0}ifname "{1}"'.format(direction, interface['ifname'])
+        return '{0}if {1}'.format(direction, interface['ifname']) if interface['type'] in ['static', 'virtual'] else '{0}ifname "{1}"'.format(direction, interface['ifname'])
 
     def as_list_or_single(self, items):
         if isinstance(items, list):

@@ -1,0 +1,5 @@
+---
+  - name: restart 3proxy
+    service:
+      name: 3proxy
+      state: restarted

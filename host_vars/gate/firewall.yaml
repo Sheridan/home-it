@@ -4,9 +4,11 @@
       proxy:
         name: "Proxy"
         ports:
-        - 3128-3129
+        - 3128
+        - 1080
         interfaces:
         - "internal"
+        - "external_kis"
       dhcpd:
         name: "DHCPd"
         ports:

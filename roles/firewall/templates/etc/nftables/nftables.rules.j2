@@ -13,6 +13,7 @@ flush ruleset
 
 {# filter, inet -#}
 table inet filter {
+
   chain netscan_drop {
     {# bad tcp -> avoid network scanning -#}
     tcp flags & (fin|syn) == (fin|syn) counter drop comment "drop netscan 0"
@@ -21,25 +22,41 @@ table inet filter {
     tcp flags & (fin|syn|rst|psh|ack|urg) == (fin|psh|urg) counter drop comment "drop netscan 3"
   }
 
-  chain global {
-    ct state {established, related} counter accept comment "accept all connections related to connections made by us"
-    ct state invalid counter drop comment "drop invalid packets"
-    jump netscan_drop
+  chain lo_rules {
+    {{ query('nft', 'as_iif', internal_interface) }} ip daddr 127.0.0.1/8 counter accept comment "Accept v4 to lo from internal"
+    {{ query('nft', 'as_iif', internal_interface) }} ip6 daddr ::1/128 counter accept comment "Accept v6 to lo from internal"
+    iif != lo ip daddr 127.0.0.1/8 counter log prefix "drop to loopback not from loopback: "
+    iif != lo ip daddr 127.0.0.1/8 counter drop comment "drop connections to loopback not coming from loopback"
+    iif != lo ip6 daddr ::1/128 counter log prefix "drop to loopback not from loopback: "
+    iif != lo ip6 daddr ::1/128 counter drop comment "drop connections to loopback not coming from loopback6"
+    oif lo counter accept comment "accept to loopback"
+    iif lo counter accept comment "accept from loopback"
+  }
+
+  chain icmp_rules {
     ip protocol icmp limit rate 32/second counter accept comment "accept icmp"
     ip protocol icmp counter drop comment "drop burst icmp"
     ip6 nexthdr icmpv6 limit rate 32/second counter accept comment "accept icmp6"
     ip6 nexthdr icmpv6 counter drop comment "drop burst icmp6"
-    iif != lo ip daddr 127.0.0.1/8 counter drop comment "drop connections to loopback not coming from loopback"
-    iif != lo ip6 daddr ::1/128 counter drop comment "drop connections to loopback not coming from loopback6"
-    oif lo counter accept comment "accept to loopback"
-    iif lo counter accept comment "accept from loopback"
+  }
+
+  chain ipv6_spetial {
     {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { fe80::/16 } counter accept comment "accept from link-local"
     {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { fe80::/16 } counter accept comment "accept to link-local"
     {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { ff02::/16 } counter accept comment "accept from spetial"
     {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { ff02::/16 } counter accept comment "accept to spetial"
   }
 
-    {# output per host -#}
+  chain global {
+    ct state {established, related} counter accept comment "accept all connections related to connections made by us"
+    ct state invalid counter drop comment "drop invalid packets"
+    jump icmp_rules
+    jump lo_rules
+    jump netscan_drop
+    jump ipv6_spetial
+  }
+
+  {# output per host -#}
   {% for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
   chain host_{{ host_name | replace('-','_') }} {
     {# -#}
@@ -71,7 +88,7 @@ table inet filter {
   }
 
   chain to_provider_ipv4 {
-    {%- for external_interface in external_interfaces_ipv4 -%}
+    {% for external_interface in external_interfaces_ipv4 -%}
     {{ query('nft', 'as_oif', external_interface) }} counter accept comment "Accepted to {{ external_interface.ifname }} ({{ external_interface.name }})"
     {# -#}
     {%- endfor -%}
@@ -79,38 +96,15 @@ table inet filter {
   }
 
   chain to_provider_ipv6 {
-    {%- for external_interface in external_interfaces_ipv6 -%}
+    {% for external_interface in external_interfaces_ipv6 -%}
     {{ query('nft', 'as_oif', external_interface) }} counter accept comment "Accepted to {{ external_interface.ifname }} ({{ external_interface.name }})"
     {# -#}
     {%- endfor -%}
 
   }
 
-  chain output {
-    type filter hook output priority 0; policy accept;
-    jump global
-    counter comment "output accepted packets"
-  }
-
-  chain forward {
-    type filter hook forward priority 0; policy drop;
-    jump network_hosts
-    jump global
-    {#
-    # Masquerading forwards
-    {% for external_interface in external_interfaces -%}
-      {%- for ip_version in ['ipv6', 'ipv4'] -%}
-        {%- if ip_version in external_interface.ip -%}
-        {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
-    {{ query('nft', 'as_iif', internal_interface) }} {{ query('nft', 'as_oif', external_interface) }} {{ nfipv }} saddr {{ networks.home.subnet[ip_version].full }} counter accept comment "Forwarding net->internet for {{ external_interface.name }} ({{ external_interface.ifname }})"
-    {{ query('nft', 'as_iif', external_interface) }} {{ query('nft', 'as_oif', internal_interface) }} {{ nfipv }} daddr {{ networks.home.subnet[ip_version].full }} counter accept comment "Forwarding net<-internet for {{ external_interface.name }} ({{ external_interface.ifname }})"
-    {# -}
-        {%- endif -%}
-      {%- endfor -%}
-    {%- endfor -%}
-    -#}
-    limit rate 8/second log prefix "Forward dropped: "
-    counter comment "forward dropped packets"
+  chain onion_to_tor {
+    {{ query('nft', 'as_iif', internal_interface) }} ip daddr {{ merged_vars.tor.network.ipv4.net }}/{{ merged_vars.tor.network.ipv4.mask }} counter accept comment "[network->tor] Accepted to Tor"
   }
 
   chain to_self {
@@ -135,6 +129,21 @@ table inet filter {
     {%- endfor -%}
   }
 
+  chain output {
+    type filter hook output priority 0; policy accept;
+    jump global
+    counter comment "output accepted packets"
+  }
+
+  chain forward {
+    type filter hook forward priority 0; policy drop;
+    jump global
+    jump network_hosts
+    jump onion_to_tor
+    limit rate 8/second log prefix "Forward dropped: "
+    counter comment "forward dropped packets"
+  }
+
   chain input {
     type filter hook input priority 0; policy drop;
     jump global
@@ -142,12 +151,22 @@ table inet filter {
     limit rate 8/second log prefix "Input dropped: "
     counter comment "input dropped packets"
   }
+
 }
 
 {# nat, ipv4 -#}
 table ip nat {
+
+  chain onion_to_tor {
+    {% for protocol in ['tcp', 'udp'] -%}
+    ip daddr {{ merged_vars.tor.network.ipv4.net }}/{{ merged_vars.tor.network.ipv4.mask }} ip protocol {{ protocol }} counter dnat to 127.0.0.1:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv4 DNAT {{ protocol }}"
+    {# -#}
+    {%- endfor -%}
+  }
+
   chain prerouting {
     type nat hook prerouting priority 0; policy accept;
+    jump onion_to_tor
     counter comment "count accepted packets"
   }
 
@@ -162,25 +181,55 @@ table ip nat {
   }
 
   chain postrouting {
-    type nat hook postrouting priority 0; policy accept;
+    type nat hook postrouting priority 100; policy accept;
 
-    {% set host = hostvars['probe-kis'].merged_vars -%}
-    {%- for host_internal_interface in host.network -%}
-    ip saddr {{ host_internal_interface.ip.ipv4.ip }} {{ query('nft', 'as_oif', network|selectattr('ifname', 'match', 'external_kis.*')|first) }} counter masquerade comment "probe-kis masquerade"
-    {# -#}
-    {%- endfor -%}
-    {% set host = hostvars['probe-rt'].merged_vars -%}
+    {% for prov in ['kis', 'rt'] -%}
+      {% set host = hostvars['probe-' + prov].merged_vars -%}
       {%- for host_internal_interface in host.network -%}
-    ip saddr {{ host_internal_interface.ip.ipv4.ip }} {{ query('nft', 'as_oif', network|selectattr('ifname', 'match', 'external_rt.*')|first) }} counter masquerade comment "probe-rt masquerade"
+    ip saddr {{ host_internal_interface.ip.ipv4.ip }} {{ query('nft', 'as_oif', network|selectattr('ifname', 'match', 'external_' + prov + '.*')|first) }} counter masquerade comment "probe-{{ prov }} masquerade"
     {# -#}
+      {%- endfor -%}
     {%- endfor -%}
 
     {% for external_interface in external_interfaces -%}
-        {%- if 'ipv4' in external_interface.ip -%}
+      {%- if 'ipv4' in external_interface.ip -%}
     ip saddr {{ networks.home.subnet.ipv4.full }} {{ query('nft', 'as_oif', external_interface) }} counter masquerade comment "Network masquerade through {{ external_interface.ifname }} ({{ external_interface.name }})"
     {# -#}
-        {%- endif -%}
+      {%- endif -%}
     {%- endfor -%}
+
+    counter comment "count accepted packets"
+  }
+}
+
+{# nat, ipv6 -#}
+table ip6 nat {
+
+  chain onion_to_tor {
+    {% for protocol in ['tcp', 'udp'] -%}
+    ip6 daddr {{ merged_vars.tor.network.ipv6.net }}/{{ merged_vars.tor.network.ipv6.mask }} ip6 nexthdr {{ protocol }} counter dnat to [::1]:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv6 DNAT {{ protocol }}"
+    {# -#}
+    {%- endfor -%}
+  }
+
+  chain prerouting {
+    type nat hook prerouting priority 0; policy accept;
+    jump onion_to_tor
+    counter comment "count accepted packets"
+  }
+
+  chain input {
+    type nat hook input priority 0; policy accept;
+    counter comment "count accepted packets"
+  }
+
+  chain output {
+    type nat hook output priority 0; policy accept;
+    counter comment "count accepted packets"
+  }
+
+  chain postrouting {
+    type nat hook postrouting priority 100; policy accept;
     counter comment "count accepted packets"
   }
 }

@@ -1,0 +1,75 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop:
+    - { name: net-proxy/3proxy, unstable: yes }
+    tags:
+    - packages
+
+  - name: Создаём пользователя
+    user:
+      name: "{{ merged_vars.three_proxy.user }}"
+      comment: 3proxy user
+      shell: /bin/false
+      group: users
+      create_home: no
+
+  - name: Создаём каталоги
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ merged_vars.three_proxy.user }}"
+    with_items:
+      - /var/log/3proxy
+
+  - name: Деплоим настройки
+    template:
+      owner: root
+      group: root
+      src: etc/3proxy.cfg.j2
+      dest: /etc/3proxy.cfg
+      mode: "0644"
+    notify:
+    - restart 3proxy
+
+  - name: Настраиваем ротацию логов
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: 3proxy
+        files:
+        - /var/log/3proxy/main.log
+        options:
+        - missingok
+        - nocreate
+        - rotate 7
+        - daily
+        - compress
+        - copytruncate
+
+  - name: Установка сервиса 3proxy
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: 3proxy
+        description: 3proxy service
+        restart: on-failure
+        user: "{{ merged_vars.three_proxy.user }}"
+        exec_start: >
+          /usr/bin/3proxy
+          /etc/3proxy.cfg
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

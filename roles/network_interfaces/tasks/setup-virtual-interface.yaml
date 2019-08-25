@@ -1,0 +1,6 @@
+---
+  - name: "{{ target_interface.ifname }} : NetDev for interface"
+    include_tasks: setup-netdev-for-interface.yaml
+
+  - name: "{{ target_interface.ifname }} : Static interface"
+    include_tasks: setup-static-interface.yaml

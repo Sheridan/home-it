@@ -53,6 +53,10 @@ class LookupModule(LookupBase):
                 return self.prov_ip('ipv6', 'henet', int(terms[1]))
             if terms[0] == 'henet_net':
                 return self.prov_net('ipv6', 'henet')
+            if terms[0] == 'tor_ip':  # 1 == версия ip, 2 == номер
+                return self.prov_ip(terms[1], 'tor', int(terms[2]))
+            if terms[0] == 'tor_net':  # 1 == версия ip
+                return self.prov_net(terms[1], 'tor')
             raise AnsibleParserError("Непонятно что делать")
         except Exception as e:
             raise AnsibleError("Error in ship: %s (%s)" % (terms, e))

@@ -32,7 +32,7 @@ options
   listen-on-v6 { ::1; };
   {% for interface in network -%}
     {%- for ip_ver in ['ipv6', 'ipv4'] -%}
-      {%- if ip_ver in interface.ip and ( ( interface.type is defined and ( interface.type != 'pppoe' and interface.type != 'bridge' ) ) or interface.type is not defined ) -%}
+      {%- if ip_ver in interface.ip and ( ( interface.type is defined and ( interface.type != 'pppoe' and interface.type != 'bridge' and interface.type != 'virtual' ) ) or interface.type is not defined ) -%}
   listen-on {%- if ip_ver == 'ipv6' -%} -v6 {%- endif %} { {{ interface.ip[ip_ver].ip }}; }; /* {% if 'ifname' in interface -%} {{ interface.ifname }} {% endif -%} ({{ interface.name }}) */
   {# -#}
       {%- endif -%}
@@ -59,7 +59,8 @@ options
   check-names response ignore;
   -#}
   dnssec-enable yes;
-  dnssec-validation auto;
+  dnssec-validation yes;
+  dnssec-must-be-secure onion. no;
 };
 
 logging
@@ -101,7 +102,7 @@ zone "." in
         file "/var/bind/root.cache";
 };
 
-zone "localhost" IN
+zone "localhost" in
 {
         type master;
         file "pri/localhost.zone";
@@ -115,6 +116,13 @@ zone "127.in-addr.arpa" IN {
         notify no;
 };
 -#}
+
+zone "onion." in
+{
+        type forward;
+        forward only;
+        forwarders { ::1 port {{ merged_vars.tor.ports.dns }}; };
+};
 
 include "/etc/bind/pri/{{ networks.home.domain }}.zones.include";
 

@@ -7,6 +7,8 @@
   - vars/ssh_keys.yaml
   - vars/telegram.yaml
   roles:
+  - { role: portage, tags: portage }
+  - { role: packages, tags: packages }
   - { role: apcupsd, tags: apcupsd }
   - { role: network_interfaces, tags: network_interfaces }
   - { role: gps, tags: gps }
@@ -29,8 +31,8 @@
   - { role: smartctl_exporter, tags: smartctl_exporter }
   - { role: nftables_exporter, tags: nftables_exporter }
   - { role: telegraf, tags: [ telegraf, monitoring ] }
+  - { role: tor, tags: tor }
+  - { role: 3proxy, tags: 3proxy }
   - { role: observer, tags: observer }
   - { role: htop, tags: htop }
   # - { role: factorio, tags: factorio }
-  - { role: portage, tags: portage }
-  - { role: packages, tags: packages }

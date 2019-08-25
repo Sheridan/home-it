@@ -3,59 +3,27 @@
   #   debug:
   #     msg: "{{target_interface}}"
 
-  - name: "{{ target_interface.ifname }} : Setup systemd static network interface files"
-    template:
-      src: "{{ item }}"
-      dest: "/etc/systemd/network/{{ target_interface.ifname }}.network"
-      owner: root
-      group: root
-      mode: 0644
-    when: target_interface.ifname is defined and target_interface.type == 'static'
-    with_first_found:
-    - "templates/{{ inventory_hostname }}/etc/systemd/network/{{ target_interface.ifname }}.network.j2"
-    - etc/systemd/network/static.network.j2
-    notify:
-    - restart networkd
+  - name: "{{ target_interface.ifname }} : Setup interface"
+    block:
 
-  - name: "{{ target_interface.ifname }} : Setup systemd dhcp network interface files"
-    template:
-      src: "{{ item }}"
-      dest: "/etc/systemd/network/{{ target_interface.ifname }}.network"
-      owner: root
-      group: root
-      mode: 0644
-    when: target_interface.ifname is defined and target_interface.type == 'dhcp'
-    with_first_found:
-    - "templates/{{ inventory_hostname }}/etc/systemd/network/{{ target_interface.ifname }}.network.j2"
-    - etc/systemd/network/dhcp.network.j2
-    notify:
-    - restart networkd
+    - name: "{{ target_interface.ifname }} : NetDev for interface"
+      include_tasks: setup-netdev-for-interface.yaml
+      when: target_interface.need_netdev is defined
 
-  - name: "{{ target_interface.ifname }} : Setup systemd netdev files"
-    template:
-      src: "{{ item }}"
-      dest: "/etc/systemd/network/{{ target_interface.ifname }}.netdev"
-      owner: root
-      group: root
-      mode: 0644
-    when: target_interface.ifname is defined and
-          target_interface.need_netdev is defined
-    with_first_found:
-    - "templates/{{ inventory_hostname }}/etc/systemd/network/{{ target_interface.ifname }}.netdev.j2"
-    - etc/systemd/network/interface.netdev.j2
-    notify:
-    - restart networkd
+    - name: "{{ target_interface.ifname }} : Static interface"
+      include_tasks: setup-static-interface.yaml
+      when: target_interface.type == 'static'
 
-  - name: "{{ target_interface.ifname }} : Setup systemd bridge netdev files"
-    template:
-      src: "{{ item }}"
-      dest: "/etc/systemd/network/{{ target_interface.ifname }}.netdev"
-      owner: root
-      group: root
-      mode: 0644
-    when: target_interface.ifname is defined and target_interface.type == 'bridge'
-    with_first_found:
-    - "templates/{{ inventory_hostname }}/etc/systemd/network/{{ target_interface.ifname }}.netdev.j2"
-    - etc/systemd/network/bridge.netdev.j2
-    notify:
-    - restart networkd
+    - name: "{{ target_interface.ifname }} : DHCP interface"
+      include_tasks: setup-dhcp-interface.yaml
+      when: target_interface.type == 'dhcp'
+
+    - name: "{{ target_interface.ifname }} : Bridge interface"
+      include_tasks: setup-bridge-interface.yaml
+      when: target_interface.type == 'bridge'
+
+    - name: "{{ target_interface.ifname }} : Virtual interface"
+      include_tasks: setup-virtual-interface.yaml
+      when: target_interface.type == 'virtual'
+
+    when: target_interface.ifname is defined

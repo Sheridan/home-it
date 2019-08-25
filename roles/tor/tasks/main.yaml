@@ -1,0 +1,62 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop:
+    - { name: net-vpn/tor, use: { enabled: [lzma, man, seccomp, systemd, zstd] } }
+    tags:
+    - packages
+
+  - name: Создаём каталоги
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ merged_vars.tor.user }}"
+    with_items:
+      - /var/log/tor
+      - /var/lib/tor
+      - /var/lib/tor/data
+
+  - name: Получаем хеш пароля
+    shell: "tor --hash-password {{ merged_vars.tor.control_password }}"
+    become: yes
+    become_user: "{{ merged_vars.tor.user }}"
+    check_mode: no
+    changed_when: false
+    register: r_tor_hashed_pw
+
+  - name: Деплоим настройки
+    template:
+      owner: root
+      group: root
+      src: etc/tor/torrc.j2
+      dest: /etc/tor/torrc
+      mode: "0644"
+    notify:
+    - restart tor
+
+  - name: Настраиваем ротацию логов
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: tor
+        files:
+        - /var/log/tor/notices.log
+        - /var/log/tor/debug.log
+        options:
+        - missingok
+        - nocreate
+        - rotate 7
+        - daily
+        - compress
+        - copytruncate
+
+  - name: Enabling services
+    service:
+      name: tor
+      enabled: yes

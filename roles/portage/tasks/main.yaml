@@ -78,4 +78,4 @@
         - su portage portage
         - missingok
         - nocreate
-        - delaycompress
+        - compress

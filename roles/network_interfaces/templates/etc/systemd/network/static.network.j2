@@ -10,7 +10,8 @@ DHCP=no
 {% for ip_ver in ['ipv6', 'ipv4'] %}
 {% if ip_ver in target_interface.ip %}
 Address={{ target_interface.ip[ip_ver].prefixed }}
-{% if ip_ver in networks[target_interface.network].gateway and
+{% if 'gateway' in networks[target_interface.network] and
+      ip_ver in networks[target_interface.network].gateway and
       networks[target_interface.network].gateway[ip_ver].ip != target_interface.ip[ip_ver].ip %}
 Gateway={{ networks[target_interface.network].gateway[ip_ver].ip }}
 {% endif %}

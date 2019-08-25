@@ -28,6 +28,10 @@
     - { key: net.ipv6.conf.default.forwarding, value: 1 }
     - { key: net.ipv4.ip_forward, value: 1 }
     - { key: net.ipv4.conf.default.forwarding, value: 1 }
+    - { key: net.ipv4.conf.all.log_martians, value: 0 }
+    - { key: net.ipv4.conf.default.log_martians, value: 0 }
+    - { key: net.ipv4.conf.all.route_localnet, value: 1 }
+    - { key: net.ipv4.conf.default.route_localnet, value: 1 }
     when: inventory_hostname == 'gate'
 
   - name: Создание каталога для настроек

@@ -1,0 +1,13 @@
+---
+  - name: "{{ target_interface.ifname }} : Setup systemd dhcp network interface files"
+    template:
+      src: "{{ item }}"
+      dest: "/etc/systemd/network/{{ target_interface.ifname }}.network"
+      owner: root
+      group: root
+      mode: 0644
+    with_first_found:
+    - "templates/{{ inventory_hostname }}/etc/systemd/network/{{ target_interface.ifname }}.network.j2"
+    - etc/systemd/network/dhcp.network.j2
+    notify:
+    - restart networkd

@@ -27,7 +27,11 @@
 
   - name: ship net test
     debug:
-      msg: "{{ query('ship', 'ip', 10) }}"
+      msg: "{{ query('ship', 'tor_ip', 'ipv4', 1) }}"
+
+  - name: ship net test
+    debug:
+      msg: "{{ query('ship', 'tor_ip', 'ipv6', 1) }}"
 
   # - name: merge test
   #   debug:
