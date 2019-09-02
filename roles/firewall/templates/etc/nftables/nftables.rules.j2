@@ -8,6 +8,11 @@
 {% set external_interfaces = network|selectattr('ifname', 'match', 'external_.*')|list %}
 {% set external_interfaces_ipv4 = network|selectattr('ifname', 'match', 'external_(rt|kis).*')|list %}
 {% set external_interfaces_ipv6 = network|selectattr('ifname', 'match', 'external_he.*')|list %}
+{% set route_rt = router_paths|selectattr('name', 'match', 'rt')|first %}
+{% set route_kis = router_paths|selectattr('name', 'match', 'kis')|first %}
+
+{% set route_addr_test = "216.239.0.0/16" %}
+{# '"ifconfig.me"' #}
 
 flush ruleset
 
@@ -104,7 +109,13 @@ table inet filter {
   }
 
   chain onion_to_tor {
-    {{ query('nft', 'as_iif', internal_interface) }} ip daddr {{ merged_vars.tor.network.ipv4.net }}/{{ merged_vars.tor.network.ipv4.mask }} counter accept comment "[network->tor] Accepted to Tor"
+    {{ query('nft', 'as_iif', internal_interface) }} ip daddr {{ merged_vars.tor.network.ipv4.net }}/{{ merged_vars.tor.network.ipv4.mask }} counter accept comment "[network->tor] Accepted ipv4 to Tor"
+    {{ query('nft', 'as_iif', internal_interface) }} ip6 daddr {{ merged_vars.tor.network.ipv6.net }}/{{ merged_vars.tor.network.ipv6.mask }} counter accept comment "[network->tor] Accepted ipv6 to Tor"
+  }
+
+  chain guests_to_tor {
+    {{ query('nft', 'as_iif', internal_interface) }} ip saddr { {{ networks.home.ranges.guests.first.ipv4.ip }}-{{ networks.home.ranges.guests.last.ipv4.ip }} } counter accept comment "[guests->tor] Accepted ipv4 to Tor"
+    {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { {{ networks.home.ranges.guests.first.ipv6.ip }}-{{ networks.home.ranges.guests.last.ipv6.ip }} } counter accept comment "[guests->tor] Accepted ipv6 to Tor"
   }
 
   chain to_self {
@@ -129,6 +140,20 @@ table inet filter {
     {%- endfor -%}
   }
 
+{#
+  chain route_log {
+    ip daddr {{ route_addr_test }} log prefix "->route target: "
+    ip saddr {{ route_addr_test }} log prefix "<-route target: "
+  }
+#}
+  chain input {
+    type filter hook input priority 0; policy drop;
+    jump global
+    jump to_self
+    limit rate 8/second log prefix "Input dropped: "
+    counter comment "input dropped packets"
+  }
+
   chain output {
     type filter hook output priority 0; policy accept;
     jump global
@@ -140,19 +165,45 @@ table inet filter {
     jump global
     jump network_hosts
     jump onion_to_tor
+    jump guests_to_tor
     limit rate 8/second log prefix "Forward dropped: "
     counter comment "forward dropped packets"
   }
 
-  chain input {
-    type filter hook input priority 0; policy drop;
-    jump global
-    jump to_self
-    limit rate 8/second log prefix "Input dropped: "
-    counter comment "input dropped packets"
+}
+
+{# ip daddr {{ route_addr_test }} counter ct mark set meta mark comment "route target mangle store mark" #}
+
+table mangle {
+
+  chain route_test {
+    ip daddr {{ route_addr_test }} counter meta mark set {{ route_rt.mark }} accept comment "route target mangle mark"
+  }
+
+  chain probes {
+    {% for prov in ['kis', 'rt'] -%}
+      {%- set host = hostvars['probe-' + prov].merged_vars -%}
+      {%- for host_internal_interface in host.network -%}
+        {%- set host_route = router_paths|selectattr('name', 'match', prov)|first -%}
+    ip saddr {{ host_internal_interface.ip.ipv4.ip }} meta mark set {{ host_route.mark }} counter accept comment "probe-{{ prov }} mark"
+    {# -#}
+      {%- endfor -%}
+    {%- endfor -%}
+  }
+
+  chain default {
+    ip saddr {{ networks.home.subnet.ipv4.full }} counter meta mark set {{ route_kis.mark }} accept comment "default route target mangle mark"
+  }
+
+  chain prerouting {
+    type filter hook prerouting priority -150;
+    jump route_test
+    jump probes
+    jump default
   }
 
 }
+
 
 {# nat, ipv4 -#}
 table ip nat {
@@ -164,32 +215,49 @@ table ip nat {
     {%- endfor -%}
   }
 
+  chain guests_to_tor {
+    {% for protocol in ['tcp', 'udp'] -%}
+    ip saddr { {{ networks.home.ranges.guests.first.ipv4.ip }}-{{ networks.home.ranges.guests.last.ipv4.ip }} } ip protocol {{ protocol }} counter dnat to 127.0.0.1:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv4 DNAT guests {{ protocol }}"
+    {# -#}
+    {%- endfor -%}
+  }
+
   chain prerouting {
-    type nat hook prerouting priority 0; policy accept;
+    type nat hook prerouting priority -100; policy accept;
     jump onion_to_tor
+    jump guests_to_tor
     counter comment "count accepted packets"
   }
 
   chain input {
-    type nat hook input priority 0; policy accept;
+    type nat hook input priority 100; policy accept;
     counter comment "count accepted packets"
   }
 
   chain output {
-    type nat hook output priority 0; policy accept;
+    type nat hook output priority -100; policy accept;
     counter comment "count accepted packets"
   }
 
   chain postrouting {
     type nat hook postrouting priority 100; policy accept;
-
+{#
     {% for prov in ['kis', 'rt'] -%}
       {% set host = hostvars['probe-' + prov].merged_vars -%}
       {%- for host_internal_interface in host.network -%}
     ip saddr {{ host_internal_interface.ip.ipv4.ip }} {{ query('nft', 'as_oif', network|selectattr('ifname', 'match', 'external_' + prov + '.*')|first) }} counter masquerade comment "probe-{{ prov }} masquerade"
-    {# -#}
+    # -#
       {%- endfor -%}
     {%- endfor -%}
+#}
+{#
+    {% for router_path in merged_vars.router_paths -%}
+      {%- if 'ipv4' in router_path.interface.ip -%}
+    ip saddr {{ networks.home.subnet.ipv4.full }} {{ query('nft', 'as_oif', router_path.interface) }} mark {{ router_path.mark }} counter masquerade comment "Network masquerade through {{ router_path.interface.ifname }} ({{ router_path.interface.name }})"
+    # -#
+      {%- endif -%}
+    {%- endfor -%}
+  #}
 
     {% for external_interface in external_interfaces -%}
       {%- if 'ipv4' in external_interface.ip -%}
@@ -197,6 +265,7 @@ table ip nat {
     {# -#}
       {%- endif -%}
     {%- endfor -%}
+
 
     counter comment "count accepted packets"
   }
@@ -212,19 +281,27 @@ table ip6 nat {
     {%- endfor -%}
   }
 
+  chain guests_to_tor {
+    {% for protocol in ['tcp', 'udp'] -%}
+    ip6 saddr { {{ networks.home.ranges.guests.first.ipv6.ip }}-{{ networks.home.ranges.guests.last.ipv6.ip }} } ip6 nexthdr {{ protocol }} counter dnat to [::1]:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv6 DNAT guests {{ protocol }}"
+    {# -#}
+    {%- endfor -%}
+  }
+
   chain prerouting {
-    type nat hook prerouting priority 0; policy accept;
+    type nat hook prerouting priority -100; policy accept;
     jump onion_to_tor
+    jump guests_to_tor
     counter comment "count accepted packets"
   }
 
   chain input {
-    type nat hook input priority 0; policy accept;
+    type nat hook input priority 100; policy accept;
     counter comment "count accepted packets"
   }
 
   chain output {
-    type nat hook output priority 0; policy accept;
+    type nat hook output priority -100; policy accept;
     counter comment "count accepted packets"
   }
 

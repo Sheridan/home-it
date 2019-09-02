@@ -10,7 +10,7 @@
 # local
 #1      inr.ruhep
 
-{% for router_path in router_paths -%}
+{% for router_path in merged_vars.router_paths -%}
 {{ router_path.mark }} to_{{ router_path.interface.ifname }}
 {# -#}
 {%- endfor %}

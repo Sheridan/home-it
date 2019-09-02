@@ -62,6 +62,8 @@
   - interface: "{{ network | selectattr('ifname', 'match', 'external_kis.*') | first }}"
     default: yes
     mark: 100
+    name: kis
   - interface: "{{ network | selectattr('ifname', 'match', 'external_rt.*') | first }}"
     default: no
     mark: 101
+    name: rt

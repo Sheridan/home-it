@@ -42,7 +42,7 @@
       group: root
       mode: 0644
 
-  - name: Установка скриптов управления
+  - name: Установка скриптов управления стеной
     template:
       src: usr/local/bin/firewall-manager.sh.j2
       dest: /usr/local/bin/firewall-manager.sh
@@ -51,6 +51,14 @@
       mode: 0744
     notify:
     - update firewall
+
+  - name: Установка скриптов управления маршрутами
+    template:
+      src: usr/local/bin/route-tables-reload.sh.j2
+      dest: /usr/local/bin/route-tables-reload.sh
+      owner: root
+      group: root
+      mode: 0744
 
   - name: Установка конфигурации firewall'а
     template:

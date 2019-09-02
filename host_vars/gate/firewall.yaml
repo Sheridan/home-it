@@ -5,7 +5,7 @@
         name: "Proxy"
         ports:
         - 3128
-        - 1080
+        - 8080
         interfaces:
         - "internal"
         - "external_kis"
