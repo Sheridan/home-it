@@ -1,0 +1,32 @@
+---
+  factorio:
+    version: 0.17.32
+    user: factorio
+    port: 3192
+    paths:
+      home: /opt/factorio
+    server:
+      name: "Babylon 5"
+      description: "Sheridan personal factorio server"
+      password: "{{ factorio_secrets.server_password }}"
+      max_players: 16
+      autosave:
+        interval: 8
+        slots: 512
+      visibility:
+        public: yes,
+        lan: yes
+      auth:
+        login: "{{ factorio_secrets.auth.login }}"
+        password: "{{ factorio_secrets.auth.password }}"
+      admins:
+      - Sheridan
+    mods:
+      - name: Blueprint_Flip_Turn_017
+        version: latest
+      - name: Enhanced_Map_Colors
+        version: latest
+      - name: LightCone
+        version: latest
+      - name: Soundpack-alerts-and-sirens
+        version: latest
