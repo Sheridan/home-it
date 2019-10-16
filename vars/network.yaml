@@ -1,0 +1,79 @@
+---
+  networks:
+    home:
+      type: 'static'
+      domain: "sheridan-home.local"
+      subnet:
+        ipv4: "{{ query('ship', 'net', 'ipv4') }}"
+        ipv6: "{{ query('ship', 'net', 'ipv6') }}"
+      delegated: "{{ query('ship', 'delegated_net') }}"
+      gateway: "{{ query('ship', 'ip', 1) }}"
+      ranges:
+        owned:
+          first: "{{ query('ship', 'ip', 1) }}"
+          last: "{{ query('ship', 'ip', 512) }}"
+        guests:
+          first: "{{ query('ship', 'ip', 513) }}"
+          last: "{{ query('ship', 'ip', 1024) }}"
+          temporary: "{{ query('ship', 'ip', 65536).ipv6.ip }}/120"
+
+    kis:
+      type: 'static'
+      subnet:
+        ipv4: "{{ query('ship', 'kis_net') }}"
+      gateway:
+        ipv4: "{{ query('ship', 'kis_ip', 1) }}"
+
+    henet:
+      type: 'static'
+      tunnel_addr: "216.66.80.30"
+      subnet:
+        ipv6: "{{ query('ship', 'henet_net') }}"
+      gateway:
+        ipv6: "{{ query('ship', 'henet_ip', 1) }}"
+      tunnel:
+        local: "{{ query('ship', 'henet_ip', 2) }}"
+        remote: "{{ query('ship', 'henet_ip', 1) }}"
+
+    rt:
+      type: 'dynamic'
+
+    tor:
+      type: 'static'
+      subnet:
+        ipv4: "{{ query('ship', 'tor_net', 'ipv4') }}"
+        ipv6: "{{ query('ship', 'tor_net', 'ipv6') }}"
+
+  raw_home_networks:
+    home:
+      ipv4:
+        net: '10.0.0.0'
+        mask: 8
+      ipv6:
+        net: '2001:470:70c8:1::'
+        mask: 64
+      delegated:
+        net: '2001:0470:70c8::'
+        mask: 48
+
+    henet:
+      ipv6:
+        net: '2001:470:1f0a:1880::'
+        mask: 64
+    kis:
+      ipv4:
+        net: '91.210.98.60'
+        mask: 30
+    tor:
+      ipv4:
+        net: '172.16.0.0'
+        mask: 12
+      ipv6:
+        net: 'abcd::'
+        mask: 64
+
+  wireless:
+    wifi:
+      trusted:
+        ssid: "{{ wifi_secrets.main.ssid }}"
+        psk: "{{ wifi_secrets.main.psk }}"
