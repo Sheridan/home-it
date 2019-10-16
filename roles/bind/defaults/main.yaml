@@ -105,9 +105,3 @@ bind:
         address: "{{ query('ship', 'ip', 20).ipv6.ip }}"
       - type: AAAA
         address: "{{ query('ship', 'ip', 21).ipv6.ip }}"
-    - name: gitinsky-wiki
-      addresses:
-      - type: A
-        address: 134.0.119.53
-      - type: AAAA
-        address: 2a00:f940:2:4:2::3be

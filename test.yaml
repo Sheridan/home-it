@@ -3,6 +3,7 @@
 - hosts: spc
   gather_facts: False
   vars_files:
+  - vars/vault.yaml
   - vars/network.yaml
 
   tasks:

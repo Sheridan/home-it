@@ -1,6 +1,8 @@
 ---
   - hosts: mikrotik
     gather_facts: no
+    vars_files:
+    - vars/vault.yaml
     roles:
     - { role: mikrotik, tags: mikrotik }
 

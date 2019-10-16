@@ -2,6 +2,7 @@
 - hosts: gate
   remote_user: root
   vars_files:
+  - vars/vault.yaml
   - vars/dns.yaml
   - vars/network.yaml
   - vars/ssh_keys.yaml
