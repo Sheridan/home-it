@@ -14,6 +14,10 @@
       include_tasks: setup-static-interface.yaml
       when: target_interface.type == 'static'
 
+    - name: "{{ target_interface.ifname }} : PPPoE interface"
+      include_tasks: setup-pppoe-interface.yaml
+      when: target_interface.type == 'pppoe'
+
     - name: "{{ target_interface.ifname }} : DHCP interface"
       include_tasks: setup-dhcp-interface.yaml
       when: target_interface.type == 'dhcp'

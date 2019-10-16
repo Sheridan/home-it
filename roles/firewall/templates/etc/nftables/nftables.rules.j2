@@ -3,13 +3,11 @@
 # Managed by ansible. Editing is useless
 # Sheridan
 
-{% set internal_interface = network|selectattr('ifname', 'match', 'internal_.*')|first %}
-{% set internal_interfaces = network|selectattr('ifname', 'match', 'internal_.*')|list %}
-{% set external_interfaces = network|selectattr('ifname', 'match', 'external_.*')|list %}
-{% set external_interfaces_ipv4 = network|selectattr('ifname', 'match', 'external_(rt|kis).*')|list %}
-{% set external_interfaces_ipv6 = network|selectattr('ifname', 'match', 'external_he.*')|list %}
-{% set route_rt = router_paths|selectattr('name', 'match', 'rt')|first %}
-{% set route_kis = router_paths|selectattr('name', 'match', 'kis')|first %}
+{% set internal_interface       = internal_interfaces                                                   | first %}
+{% set external_interfaces_ipv4 = external_interfaces | selectattr('ifname', 'match', '.*_(rt|kis)_.*') | list  %}
+{% set external_interfaces_ipv6 = external_interfaces | selectattr('ifname', 'match', '.*_he_.*')       | list  %}
+{% set external_interface_rt    = external_interfaces | selectattr('ifname', 'match', '.*_rt_.*')       | first %}
+{% set external_interface_kis   = external_interfaces | selectattr('ifname', 'match', '.*_kis_.*')      | first %}
 
 {% set route_addr_test = "216.239.0.0/16" %}
 {# '"ifconfig.me"' #}
@@ -177,22 +175,22 @@ table inet filter {
 table mangle {
 
   chain route_test {
-    ip daddr {{ route_addr_test }} counter meta mark set {{ route_rt.mark }} accept comment "route target mangle mark"
+    ip daddr {{ route_addr_test }} counter meta mark set {{ external_interface_rt.route_table }} accept comment "route target mangle mark"
   }
 
   chain probes {
     {% for prov in ['kis', 'rt'] -%}
       {%- set host = hostvars['probe-' + prov].merged_vars -%}
       {%- for host_internal_interface in host.network -%}
-        {%- set host_route = router_paths|selectattr('name', 'match', prov)|first -%}
-    ip saddr {{ host_internal_interface.ip.ipv4.ip }} meta mark set {{ host_route.mark }} counter accept comment "probe-{{ prov }} mark"
+        {%- set route_interface = external_interfaces | selectattr('ifname', 'match', '.*_' + prov + '_.*') | first -%}
+    ip saddr {{ host_internal_interface.ip.ipv4.ip }} meta mark set {{ route_interface.route_table }} counter accept comment "probe-{{ prov }} mark"
     {# -#}
       {%- endfor -%}
     {%- endfor -%}
   }
 
   chain default {
-    ip saddr {{ networks.home.subnet.ipv4.full }} counter meta mark set {{ route_kis.mark }} accept comment "default route target mangle mark"
+    ip saddr {{ networks.home.subnet.ipv4.full }} counter meta mark set {{ external_interface_kis.route_table }} accept comment "default route target mangle mark"
   }
 
   chain prerouting {

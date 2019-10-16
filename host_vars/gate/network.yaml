@@ -23,6 +23,7 @@
       ipv4: "{{ query('ship', 'kis_ip', 2) }}"
     network: 'kis'
     type: 'static'
+    route_table: 100
 
   - name: "External RT"
     ifname: "external_rt_0"
@@ -30,6 +31,7 @@
     bridge: "bridge_rt_0"
     ip:
       ipv4: 'dynamic'
+    route_table: 101
 
   - name: "Bridge RT"
     ifname: "bridge_rt_0"
@@ -57,13 +59,3 @@
   #   ip: # "{{ query('ship', 'ip', 8) }}"
   #     ipv4: "{{ query('ship', 'tor_ip', 'ipv4', 1) }}"
   #     ipv6: "{{ query('ship', 'tor_ip', 'ipv6', 1) }}"
-
-  router_paths:
-  - interface: "{{ network | selectattr('ifname', 'match', 'external_kis.*') | first }}"
-    default: yes
-    mark: 100
-    name: kis
-  - interface: "{{ network | selectattr('ifname', 'match', 'external_rt.*') | first }}"
-    default: no
-    mark: 101
-    name: rt

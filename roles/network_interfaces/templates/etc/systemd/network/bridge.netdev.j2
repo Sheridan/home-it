@@ -1,9 +1,9 @@
 [Match]
+
+
+[NetDev]
 Name={{ target_interface.ifname }}
 {% if 'mac' in target_interface %}
 MACAddress={{ target_interface.mac }}
 {% endif %}
-
-[NetDev]
-Name={{ target_interface.ifname }}
 Kind=bridge

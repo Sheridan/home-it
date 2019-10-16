@@ -1,14 +1,16 @@
 #!/bin/bash
 
-{% set external_interfaces_rt = network|selectattr('ifname', 'match', 'external_rt.*')|first %}
-{% set external_interfaces_kis = network|selectattr('ifname', 'match', 'external_kis.*')|first %}
+{% set external_interface_rt  = external_interfaces | selectattr('ifname', 'match', '.*_rt_.*')  | first %}
+{% set external_interface_kis = external_interfaces | selectattr('ifname', 'match', '.*_kis_.*') | first %}
 
-ip route add default via {{ networks.kis.gateway.ipv4.ip }} dev {{ external_interfaces_kis.ifname }} proto static table to_{{ external_interfaces_kis.ifname }}
-ip route add default dev {{ external_interfaces_rt.ifname }} table to_{{ external_interfaces_rt.ifname }}
+ip route add default via {{ networks.kis.gateway.ipv4.ip }} dev {{ external_interface_kis.ifname }} proto static table to_{{ external_interface_kis.ifname }}
+ip route add default dev {{ external_interface_rt.ifname }} table to_{{ external_interface_rt.ifname }}
 
-{% for router_path in merged_vars.router_paths -%}
-ip rule add fwmark {{ router_path.mark }} table to_{{ router_path.interface.ifname }}
+{% for external_interface in external_interfaces -%}
+  {%- if 'route_table' in external_interface -%}
+ip rule add fwmark {{ external_interface.route_table}} table to_{{ external_interface.ifname }}
 {# -#}
+  {%- endif -%}
 {%- endfor %}
 
 ip route flush cache

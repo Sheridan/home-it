@@ -30,6 +30,7 @@
       ruby:
         enabled:
         - ruby24
+        - ruby25
       php:
         enabled:
         - php5-6

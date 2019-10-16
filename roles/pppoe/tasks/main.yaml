@@ -8,7 +8,7 @@
     tags:
     - packages
 
-  - name: Setup PPPoE passwords
+  - name: Установка паролей PPPoE
     template:
       src: etc/ppp/secrets.j2
       dest: "/etc/ppp/{{ item }}-secrets"
@@ -21,18 +21,20 @@
     notify:
     - restart pppoe
 
-  - name: Setup PPPoE peer options
+  - name: Установка настроек пиров PPPoE
     template:
       src: etc/ppp/peers/peer.j2
-      dest: "/etc/ppp/peers/{{ item }}"
+      dest: "/etc/ppp/peers/{{ provider }}"
       owner: root
       group: root
       mode: 0644
     loop: "{{ pppoe.providers }}"
+    loop_control:
+      loop_var: provider
     notify:
-    - "restart pppoe@{{ item }}"
+    - "restart pppoe@{{ provider }}"
 
-  - name: Setup PPPoE service
+  - name: Установка сервиса PPPoE
     template:
       src: etc/systemd/system/pppoe@.service.j2
       dest: /etc/systemd/system/pppoe@.service
@@ -43,8 +45,10 @@
     - systemd daemon reload
     - restart pppoe
 
-  - name: Enabling PPPoE services
+  - name: Включение сервиса PPPoE
     service:
-      name: "pppoe@{{ item }}"
+      name: "pppoe@{{ provider }}"
       enabled: yes
     loop: "{{ pppoe.providers }}"
+    loop_control:
+      loop_var: provider

@@ -1,0 +1,15 @@
+---
+  - hosts: mikrotik
+    gather_facts: no
+    roles:
+    - { role: mikrotik, tags: mikrotik }
+
+    # tasks:
+    # - name: Loading facts
+    #   routeros_facts:
+    #       gather_subset: all
+    #   register: r_mikrotik_facts
+
+    # - name: Debug
+    #   debug:
+    #     msg: "{{ r_mikrotik_facts }}"

@@ -1,20 +1,20 @@
 # Managed by ansible. Editing is useless
 # Sheridan
-{% set bridge_interface = network|selectattr('ifname', 'match', 'bridge_' + item + '.*')|first %}
-{% set external_interface = network|selectattr('ifname', 'match', 'external_' + item + '.*')|first %}
+{% set bridge_interface = network|selectattr('ifname', 'match', 'bridge_' + provider + '.*')|first %}
+{% set external_interface = network|selectattr('ifname', 'match', 'external_' + provider + '.*')|first %}
 plugin rp-pppoe.so {{ bridge_interface.ifname }}
 ifname {{ external_interface.ifname }}
-name "{{ pppoe[item].login }}"
-user "{{ pppoe[item].login }}"
-linkname {{ item }}
+name "{{ pppoe[provider].login }}"
+user "{{ pppoe[provider].login }}"
+linkname {{ provider }}
 persist
 noipdefault
 nodefaultroute
 hide-password
 default-asyncmap
 noauth
-mtu {{ pppoe[item].mtu }}
-mru {{ pppoe[item].mru }}
+mtu {{ pppoe[provider].mtu }}
+mru {{ pppoe[provider].mru }}
 nodetach
 
 {# -- compression -- -#}
@@ -28,5 +28,5 @@ nobsdcomp
 noccp
 nodeflate
 -#}
-lcp-echo-interval {{ pppoe[item].lcp_echo.interval }}
-lcp-echo-failure {{ pppoe[item].lcp_echo.failures }}
+lcp-echo-interval {{ pppoe[provider].lcp_echo.interval }}
+lcp-echo-failure {{ pppoe[provider].lcp_echo.failures }}

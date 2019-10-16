@@ -42,6 +42,11 @@
       group: root
       mode: 0644
 
+  - name: Определение интерфейсов внешних и внутренних
+    set_fact:
+      internal_interfaces: "{{ network | selectattr('ifname', 'match', 'internal_.*') | list }}"
+      external_interfaces: "{{ network | selectattr('ifname', 'match', 'external_.*') | list }}"
+
   - name: Установка скриптов управления стеной
     template:
       src: usr/local/bin/firewall-manager.sh.j2
@@ -96,8 +101,7 @@
         wanted_by:
         - multi-user.target
         on_changed: reloaded
-        # state: started
-        state: stopped
+        state: started
         enabled: yes
         replaces:
         - nftables-restore

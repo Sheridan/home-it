@@ -1,0 +1,8 @@
+---
+  network:
+  - name: "Internal"
+    mac: "74:4d:28:83:96:e9"
+    duid: "00:03:00:01:74:4d:28:83:96:e8"
+    ip: "{{ query('ship', 'ip', 91) }}"
+    network: 'home'
+    type: 'dhcp'

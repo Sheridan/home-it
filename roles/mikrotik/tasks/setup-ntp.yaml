@@ -1,0 +1,22 @@
+---
+  - name: Preparing NTP
+    set_fact:
+      f_gate_ntp_interface: "{{ hostvars['gate'].network|selectattr('ifname', 'match', 'internal_.*')|first }}"
+
+  - debug:
+      msg: "{{ f_gate_ntp_interface }}"
+
+  - include_tasks: execute-command.yaml
+    vars:
+      command:
+        name: "Setting NTP option '{{ i_option.name }}'"
+        checks:
+        - cmd: system ntp client print
+          must_contains: "{{ i_option.name }}: {{ i_option.value }}"
+        command: "system ntp client set {{ i_option.name }}={{ i_option.value }}"
+    loop:
+    - { name: enabled, value: "yes" }
+    - { name: primary-ntp, value: "{{ f_gate_ntp_interface.ip.ipv6.ip }}" }
+    - { name: secondary-ntp, value: "{{ f_gate_ntp_interface.ip.ipv4.ip }}" }
+    loop_control:
+      loop_var: i_option

@@ -1,0 +1,17 @@
+---
+  - include_tasks: execute-command.yaml
+    vars:
+      command:
+        name: "Setup package {{ i_package.name }}"
+        checks:
+        - cmd: system package print detail without-paging
+          must_contains: "{{ '' if i_package.state else 'X ' }}name=\"{{ i_package.name }}\""
+        command: "system package {{ 'enable' if i_package.state else 'disable' }} {{ i_package.name }}"
+    loop:
+    - { name: ipv6, state: yes }
+    - { name: hotspot, state: no }
+    - { name: mpls, state: no }
+    - { name: ppp, state: no }
+    - { name: routing, state: no }
+    loop_control:
+      loop_var: i_package

@@ -1,0 +1,33 @@
+---
+  - name: "{{ command.name }} : Preparing..."
+    set_fact:
+      f_do_execute: no
+
+  - name: "{{ command.name }} : Execute check commands"
+    routeros_command:
+      commands: "/{{ i_command.cmd }}"
+    loop: "{{ command.checks }}"
+    loop_control:
+      loop_var: i_command
+    register: r_check_result
+
+  - debug:
+      msg: "{{ r_check_result }}"
+
+  - name: "{{ command.name }} : Check results"
+    set_fact:
+      f_do_execute: yes
+    when: not i_check.stdout.0 is regex(v_rx|string)
+    vars:
+      v_rx: "( |^){{ i_check.i_command.must_contains }}( |$|\\n)"
+    loop: "{{ r_check_result.results }}"
+    loop_control:
+      loop_var: i_check
+
+  - debug:
+      msg: "{{ f_do_execute }}"
+
+  - name: "{{ command.name }} : Execute command"
+    routeros_command:
+      commands: "/{{ command.command }}"
+    when: f_do_execute

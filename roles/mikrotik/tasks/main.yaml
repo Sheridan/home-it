@@ -1,0 +1,17 @@
+---
+  # - name: Loading facts
+  #   routeros_facts:
+  #       gather_subset: hardware
+  #   register: r_mikrotik_facts
+
+  # - include_tasks: execute-command.yaml
+  #   vars:
+  #     command:
+  #       name: Set identity
+  #       checks:
+  #       - cmd: system identity print
+  #         must_contains: "name: {{ inventory_hostname }}"
+  #       command: "system identity set name={{ inventory_hostname }}"
+
+  - include_tasks: setup-packages.yaml
+  - include_tasks: setup-ntp.yaml
