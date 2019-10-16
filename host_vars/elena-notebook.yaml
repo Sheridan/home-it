@@ -1,0 +1,37 @@
+# lenovo ideapad 330 15ikb
+---
+  network:
+  - name: "Ethernet"
+    mac: "e8:6a:64:0c:bb:a7"
+    ip: "{{ query('ship', 'ip', 31) }}"
+    network: 'home'
+    type: 'dhcp'
+
+  - name: "Wifi"
+    mac: "00:f4:8d:c1:89:1f"
+    duid: "00:01:00:01:23:de:36:27:e8:6a:64:0c:bb:a7"
+    ip: "{{ query('ship', 'ip', 32) }}"
+    network: 'home'
+    type: 'dhcp'
+
+  hard_disks:
+  - name: System
+    win_letter: C
+  - name: Data
+    win_letter: D
+
+  windows:
+    oem:
+      model: 'Lenovo Ideapad 330-15IKB MTM:81DE011PRU'
+      support:
+        url: 'https://technopoint.ru/product/b0f46864bd663330/156-noutbuk-lenovo-ideapad-330-15ikbr-cernyj-sale/characteristics/'
+    users: "{{ elena_notebook_users }}"
+
+  firewall:
+    host_to_internet:
+      video_cast:
+        name: "Video cast"
+        ports:
+        - 31000-32000
+        - 56000-57000
+        - 60000-62000
