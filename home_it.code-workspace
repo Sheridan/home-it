@@ -1,0 +1,35 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../observer"
+		},
+		{
+			"path": "/mnt/Sheridan/sheridan/sheridan/nftables_exporter"
+		},
+		{
+			"path": "/mnt/Sheridan/sheridan/sheridan/smartctl_exporter"
+		}
+	],
+	"settings": {
+		"lua.format.indentCount": 2,
+		"editor.tabSize": 2,
+		"files.autoSave": "onFocusChange",
+		"editor.cursorStyle": "line-thin",
+		"editor.fontFamily": "'Ubuntu Mono', 'Droid Sans Fallback'",
+		"editor.fontSize": 14,
+		"editor.fontLigatures": true,
+		"editor.formatOnPaste": true,
+		"editor.wordWrapColumn": 160,
+		"files.insertFinalNewline": true,
+		"files.trimFinalNewlines": true,
+		"editor.cursorBlinking": "phase",
+		"editor.cursorSmoothCaretAnimation": true,
+		"editor.cursorWidth": 1,
+		"files.eol": "\n",
+		"files.trimTrailingWhitespace": true,
+		"editor.rulers": [],
+	}
+}
