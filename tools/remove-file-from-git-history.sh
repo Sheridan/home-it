@@ -6,6 +6,7 @@ tmp_filename=$(date +"%Y_%m_%d_%H_%M_%S")
 
 mkdir -p ${tmp_dir}
 cat ${filename} > ${tmp_dir}/${tmp_filename}
+git update-ref -d refs/original/refs/heads/master
 git filter-branch --index-filter "git rm -rf --cached --ignore-unmatch ${filename}" HEAD
 git push --force
 cat ${tmp_dir}/${tmp_filename} > ${filename}
