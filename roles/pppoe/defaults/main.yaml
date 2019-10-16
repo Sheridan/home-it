@@ -1,0 +1,12 @@
+---
+  pppoe:
+    providers:
+      - rt
+    rt:
+      login: "{{ rt_secrets.login }}"
+      password: "{{ rt_secrets.password }}"
+      mtu: 1492
+      mru: 1492
+      lcp_echo:
+        interval: 32
+        failures: 8
