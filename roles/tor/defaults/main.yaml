@@ -1,0 +1,17 @@
+---
+  tor:
+    user: tor
+    ports:
+      transparent: 9050
+      control: 9051
+      socks: 9052
+      dns: 9053
+      http: 9054
+    control_password: "{{ tor_secrets.control_password }}"
+    network:
+      ipv4:
+        net: 172.16.0.0
+        mask: 12
+      ipv6:
+        net: "abcd::"
+        mask: 64
