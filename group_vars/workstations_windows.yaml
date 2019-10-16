@@ -1,0 +1,6 @@
+---
+  ansible_user: root
+  ansible_password: '{{ windows_admin_password }}'
+  ansible_connection: winrm
+  ansible_winrm_transport: ntlm
+  ansible_ssh_port: 5985
