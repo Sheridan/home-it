@@ -1,0 +1,10 @@
+# model Edimax PS-1208MF (E5)
+---
+  network:
+  - name: "Internal"
+    mac: "80:1f:02:4b:9a:10"
+    ip: "{{ query('ship', 'ip', 80) }}"
+    network: 'home'
+    type: 'dhcp'
+
+  auth: "{{ printserver_auth }}"
