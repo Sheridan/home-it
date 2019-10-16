@@ -1,0 +1,2 @@
+---
+  users: "{{ eeepc_users }}"
