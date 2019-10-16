@@ -23,4 +23,4 @@
       name: "{{ item }}"
       enabled: yes
     loop:
-      - systemd-resolved
+    - systemd-resolved

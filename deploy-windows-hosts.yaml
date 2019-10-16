@@ -1,6 +1,7 @@
 ---
 - hosts: workstations_windows
   vars_files:
+  - vars/vault.yaml
   - vars/dns.yaml
   - vars/network.yaml
   roles:

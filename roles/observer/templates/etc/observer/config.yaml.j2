@@ -1,6 +1,6 @@
 ---
   {% set external_interfaces_kis = hostvars['gate'].network|selectattr('ifname', 'match', 'external_kis.*')|first %}
-  {% set proxy_user = merged_vars.three_proxy.users |selectattr('login', 'match', 'observer') | first %}
+  {% set proxy_user = merged_vars.three_proxy.users | selectattr('login', 'match', 'observer') | first %}
 
   debug: no
 

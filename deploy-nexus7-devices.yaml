@@ -1,6 +1,7 @@
 - hosts: nexus7
   remote_user: root
   vars_files:
+  - vars/vault.yaml
   - vars/network.yaml
 
   tasks:

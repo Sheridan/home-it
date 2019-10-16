@@ -1,6 +1,7 @@
 ---
 - hosts: gate
   vars_files:
+  - vars/vault.yaml
   - roles/prometheus/defaults/main.yaml
   vars_prompt:
     - name: "metric"
