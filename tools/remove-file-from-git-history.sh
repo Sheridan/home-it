@@ -11,5 +11,5 @@ git filter-branch --index-filter "git rm -rf --cached --ignore-unmatch ${filenam
 git push --force
 cat ${tmp_dir}/${tmp_filename} > ${filename}
 git add ${filename}
-git commit -m "✖ Removing `${filename}` from history"
+git commit -m "✖ Removing \`${filename}\` from history"
 git push
