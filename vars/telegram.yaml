@@ -1,0 +1,10 @@
+---
+telegram:
+  bots:
+    logger:
+      token: "{{ telegram_secrets.logger_bot_token }}"
+    alerter:
+      token: "{{ telegram_secrets.alerter_bot_token }}"
+  chats:
+    log:
+      id: "{{ telegram_secrets.log_chat_id }}"
