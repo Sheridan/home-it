@@ -11,3 +11,4 @@ git commit --amend -CHEAD -m "Removing ${tmp_filename} from history"
 cat ${tmp_dir}/${tmp_filename} > ${filename}
 git add ${filename}
 git commit --amend -CHEAD -m "Restoring ${tmp_filename}"
+git push
