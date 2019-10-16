@@ -1,0 +1,7 @@
+---
+  grafana:
+    login: "{{ grafana_secrets.login }}"
+    password: "{{ grafana_secrets.password }}"
+    listen:
+      addr: ::1
+      port: 3000
