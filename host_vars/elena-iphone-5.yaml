@@ -6,3 +6,9 @@
     ip: "{{ query('ship', 'ip', 30) }}"
     network: 'home'
     type: 'dhcp'
+
+  firewall:
+    sber_online:
+      name: "Sber online"
+      ports:
+      - 4477

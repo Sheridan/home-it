@@ -1,0 +1,186 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: dev-java/oracle-jre-bin, use: { disabled: [fontconfig, nsplugin, alsa, javafx], enabled: [headless-awt] } }
+    tags:
+    - packages
+
+  - name: Добавляем пользователя
+    user:
+      name: "{{ merged_vars.minecraft.user.name }}"
+      comment: Minecraft runner
+      password: "{{ merged_vars.minecraft.user.pw | password_hash('sha512', default_salt)}}"
+      shell: /bin/false
+      group: users
+      create_home: no
+
+  - name: Создаём каталоги
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ merged_vars.minecraft.user.name }}"
+      group: users
+      mode: 0755
+    loop:
+    - "{{ merged_vars.minecraft.paths.home }}"
+    - "{{ merged_vars.minecraft.paths.log }}"
+
+  - name: Определяем переменные
+    set_fact:
+      f_version_manifest_file: "/tmp/minecraft_version_manifest.json"
+      f_version_file: "/tmp/minecraft_version.json"
+      f_java_options: "-XX:{{ merged_vars.minecraft.java_options | join(' -XX:') }}"
+
+  - name: Выкачиваем инфо о версиях
+    get_url:
+      url: https://launchermeta.mojang.com/mc/game/version_manifest.json
+      dest: "{{ f_version_manifest_file }}"
+      mode: 0644
+      force: yes
+    check_mode: no
+    delegate_to: localhost
+
+  - name: Выкачиваем инфо текущего релиза
+    get_url:
+      url: "{{ v_release_json_url }}"
+      dest: "{{ f_version_file }}"
+      mode: 0644
+      force: yes
+    check_mode: no
+    delegate_to: localhost
+    vars:
+      v_json_string: "{{ lookup('file', f_version_manifest_file) }}"
+      v_latest_release: "{{ v_json_string | json_query('latest.release') }}"
+      v_json_url_query: "versions[?id=='{{ v_latest_release }}'].url"
+      v_release_json_url: '{{ v_json_string | json_query(v_json_url_query) | first }}'
+
+  - name: Выкачиваем minecraft сервер
+    get_url:
+      url: "{{ v_url }}"
+      dest: "{{ merged_vars.minecraft.paths.home }}/server.jar"
+      mode: 0644
+      owner: "{{ merged_vars.minecraft.user.name }}"
+      checksum: "sha1:{{ v_hash }}"
+    vars:
+      v_json_string: "{{ lookup('file', f_version_file) }}"
+      v_url: "{{ v_json_string | json_query('downloads.server.url') }}"
+      v_hash: "{{ v_json_string | json_query('downloads.server.sha1') }}"
+    notify:
+    - restart minecraft
+
+  - name: Генерируем конфиг сервера
+    lineinfile:
+      path: "/opt/minecraft/server.properties"
+      regexp: "^{{ item.name }}="
+      line: "{{ item.name }}={{ item.value }}"
+    loop:
+    - { name: 'server-ip', value: '' }
+    - { name: 'server-port', value: '{{ merged_vars.minecraft.port }}' }
+
+    - { name: 'enable-query', value: 'true' }
+    - { name: 'query.port', value: '{{ merged_vars.minecraft.query.port }}' }
+
+    - { name: 'enable-rcon', value: 'true' }
+    - { name: 'rcon.port', value: '{{ merged_vars.minecraft.rcon.port }}' }
+    - { name: 'rcon.password', value: '{{ merged_vars.minecraft.rcon.pw }}' }
+    - { name: 'broadcast-rcon-to-ops', value: 'true' }
+
+    - { name: 'enable-command-block', value: 'false' }
+    - { name: 'allow-nether', value: 'true' }
+    - { name: 'spawn-monsters', value: 'true' }
+    - { name: 'spawn-npcs', value: 'true' }
+    - { name: 'spawn-animals', value: 'true' }
+    - { name: 'generate-structures', value: 'true' }
+    - { name: 'allow-flight', value: 'false' }
+
+    - { name: 'white-list', value: 'true' }
+    - { name: 'force-gamemode', value: 'true' }
+    - { name: 'gamemode', value: 'survival' }
+    - { name: 'level-type', value: 'default' }
+    - { name: 'hardcore', value: 'false' }
+    - { name: 'difficulty', value: 'normal' }
+
+    - { name: 'spawn-protection', value: '0' }
+    - { name: 'player-idle-timeout', value: '0' }
+    # - { name: 'announce-player-achievements', value: 'true' }
+    - { name: 'max-players', value: '3' }
+    - { name: 'pvp', value: 'false' }
+
+    - { name: 'op-permission-level', value: '4' }
+    - { name: 'allow-cheats', value: 'false' }
+
+    - { name: 'snooper-enabled', value: 'true' }
+    - { name: 'online-mode', value: 'true' }
+    - { name: 'broadcast-console-to-ops', value: 'true' }
+
+    - { name: 'level-name', value: 'Babylon 5' }
+    - { name: 'level-seed', value: '{{ merged_vars.minecraft.seed }}' }
+    - { name: 'motd', value: 'A Sheridan`s Minecraft Server' }
+    - { name: 'generator-settings', value: '' }
+    - { name: 'view-distance', value: '12' }
+    - { name: 'max-world-size', value: '29999984' }
+    - { name: 'max-build-height', value: '256' }
+    - { name: 'resource-pack', value: '' }
+    - { name: 'resource-pack-sha1', value: '' }
+
+    - { name: 'max-tick-time', value: '-1' }
+    - { name: 'network-compression-threshold', value: '256' }
+    - { name: 'prevent-proxy-connections', value: 'false' }
+    - { name: 'use-native-transport', value: 'true' }
+
+    - { name: 'debug', value: 'false' }
+
+
+  - name: Генерируем конфиги
+    template:
+      src: "opt/minecraft/{{ item }}.j2"
+      dest: "/opt/minecraft/{{ item }}"
+      owner: "{{ merged_vars.minecraft.user.name }}"
+      group: users
+      mode: 0644
+    loop:
+    - whitelist.json
+    - ops.json
+    - banned-ips.json
+    - banned-players.json
+    - eula.txt
+    notify:
+    - restart minecraft
+
+  - name: Устанавливаем сервис
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: minecraft
+        description: Minecraft daemon
+        restart_sec: 32s
+        working_dir: "{{ merged_vars.minecraft.paths.home }}"
+        environments:
+        - { name: MINECRAFT_JAVA_MAX_MEMORY, value: "{{ merged_vars.minecraft.memory.max }}" }
+        - { name: MINECRAFT_JAVA_INITIAL_MEMORY, value: "{{ merged_vars.minecraft.memory.initial }}" }
+        - { name: MINECRAFT_JAVA_HEAP_YOUNG_GEN_MEMORY, value: "{{ merged_vars.minecraft.memory.heap_young_gen }}" }
+        - { name: MINECRAFT_JAVA_THREAD_STACK_SIZE_MEMORY, value: "{{ merged_vars.minecraft.memory.thread_stack_size }}" }
+        - { name: MINECRAFT_JAVA_OPTIONS, value: "{{ f_java_options }}" }
+        exec_start: >
+          /usr/bin/java
+          -server -d64
+          -Xmx${MINECRAFT_JAVA_MAX_MEMORY}M
+          -Xms${MINECRAFT_JAVA_INITIAL_MEMORY}M
+          -Xss${MINECRAFT_JAVA_THREAD_STACK_SIZE_MEMORY}k
+          -Xmn${MINECRAFT_JAVA_HEAP_YOUNG_GEN_MEMORY}M
+          ${MINECRAFT_JAVA_OPTIONS}
+          -jar {{ merged_vars.minecraft.paths.home }}/server.jar nogui
+        user: minecraft
+        group: users
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

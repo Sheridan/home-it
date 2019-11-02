@@ -1,0 +1,58 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+server-ip=
+server-port={{ merged_vars.minecraft.port }}
+
+enable-query=true
+query.port={{ merged_vars.minecraft.query.port }}
+
+enable-rcon=true
+rcon.port={{ merged_vars.minecraft.rcon.port }}
+rcon.password={{ merged_vars.minecraft.rcon.pw }}
+broadcast-rcon-to-ops=true
+
+enable-command-block=false
+allow-nether=true
+spawn-monsters=true
+spawn-npcs=true
+spawn-animals=true
+generate-structures=true
+allow-flight=false
+
+white-list=true
+force-gamemode=true
+gamemode=0
+level-type=DEFAULT
+hardcore=false
+difficulty=2
+
+spawn-protection=0
+player-idle-timeout=0
+announce-player-achievements=true
+max-players=3
+pvp=false
+
+op-permission-level=4
+allow-cheats=false
+
+snooper-enabled=true
+online-mode=true
+broadcast-console-to-ops=true
+
+level-name=Babylon 5
+level-seed={{ merged_vars.minecraft.seed }}
+motd=A Sheridan`s Minecraft Server
+generator-settings=
+view-distance=12
+max-world-size=29999984
+max-build-height=256
+resource-pack=
+resource-pack-sha1=
+
+max-tick-time=-1
+network-compression-threshold=256
+prevent-proxy-connections=false
+use-native-transport=true
+
+debug=false

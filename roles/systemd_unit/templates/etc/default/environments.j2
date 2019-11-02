@@ -1,0 +1,6 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+{% for env in service.environments %}
+{{ env.name }}="{{ env.value }}"
+{% endfor %}

@@ -18,10 +18,6 @@
         - 115
         - 989
         - 990
-      sber_online:
-        name: "Sber onlines"
-        ports:
-        - 4477
 
   ballance:
     mark:

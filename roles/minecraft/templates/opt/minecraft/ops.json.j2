@@ -1,0 +1,11 @@
+{% set minecraft_admins = merged_vars.minecraft.users | selectattr('admin', 'defined') | selectattr('admin', 'equalto', True) | list  %}
+[
+{% for user in merged_vars.minecraft.users %}
+  {
+    "uuid": "{{ user.uuid }}",
+    "name": "{{ user.name }}",
+    "level": 4,
+    "bypassesPlayerLimit": false
+  }{{ "," if not loop.last else '' }}
+{% endfor %}
+]
