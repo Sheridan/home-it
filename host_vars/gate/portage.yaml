@@ -28,6 +28,8 @@
         - gtk2
         - gtk3
         - pango
+        hardware:
+        - cups
     hardware:
       video_cards:
       - nouveau

@@ -5,6 +5,7 @@
         name: "Torrent"
         ports:
         - 6881-6889
+        - 6969
       email:
         name: "Mail"
         ports:

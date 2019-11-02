@@ -82,3 +82,11 @@
         interfaces:
         - "internal"
         - "external_kis"
+      minecraft:
+        name: "Minecraft"
+        ports:
+        - 25565
+        - 25575
+        interfaces:
+        - "internal"
+        - "external_kis"

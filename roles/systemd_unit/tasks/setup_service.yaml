@@ -1,4 +1,13 @@
 ---
+  - name: "{{ service.name }} : Устанавливаем окружение сервиса"
+    template:
+      src: "etc/default/environments.j2"
+      dest: "/etc/default/{{ service.name }}.env"
+      owner: root
+      group: root
+      mode: 0644
+    when: service.environments is defined
+
   - name: "{{ service.name }} : Устанавливаем юнит сервиса"
     template:
       src: "etc/systemd/system/template.service.j2"

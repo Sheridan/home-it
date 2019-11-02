@@ -3,3 +3,10 @@
   ansible_network_os: routeros
   ansible_user: admin
   ansible_password: "{{ mikrotik_secrets.admin_password }}"
+
+  firewall:
+    host_to_internet:
+      ddns:
+        name: "DDNS"
+        ports:
+        - 15252

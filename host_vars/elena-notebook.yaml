@@ -35,3 +35,7 @@
         - 31000-32000
         - 56000-57000
         - 60000-62000
+    sber_online:
+      name: "Sber online"
+      ports:
+      - 4477

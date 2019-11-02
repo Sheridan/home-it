@@ -1,0 +1,57 @@
+---
+  minecraft_java_max_memory: "{{ 1024 * 8 }}"
+  minecraft:
+    port: 25565
+    seed: "-1430670998"
+    paths:
+      home: /opt/minecraft
+      log: /var/log/minecraft
+    user:
+      name: minecraft
+      pw: "{{ minecraft_secrets.system_user_pw }}"
+    query:
+      port: 25585
+    rcon:
+      port: 25575
+      pw: "{{ minecraft_secrets.rcon_pw }}"
+    memory:
+      max: "{{ minecraft_java_max_memory }}"
+      initial: "{{ (minecraft_java_max_memory | int / 100 * 10) | int }}"
+      heap_young_gen: "{{ (minecraft_java_max_memory | int  / 100 * 5) | int }}"
+      thread_stack_size: "{{ 1024 }}"
+    java_options:
+    - 'ParallelGCThreads={{ (ansible_processor_vcpus | int  - 1) | int }}'
+    # - '+UseNUMA'
+    # - '+UseConcMarkSweepGC'
+    # - '+UseParNewGC'
+    # - '+UseG1GC'
+    # - '+UseLargePages'
+    # - '+DisableExplicitGC'
+    # - '+UnlockExperimentalVMOptions'
+    # - 'MaxGCPauseMillis=50'
+    # - 'G1HeapRegionSize=32M'
+    # - 'G1NewSizePercent=20'
+    # - 'G1ReservePercent=20'
+    # - '+UseCompressedOops'
+    # - '+UseParallelGC'
+    # - 'G1HeapRegionSize=32M'
+    # - '+UseAdaptiveSizePolicy'
+    # - 'InitiatingHeapOccupancyPercent=50'
+    # - 'InitiatingOccupancyFraction'
+    # - 'MaxGCPauseMillis=500'
+    # - '+ParallelRefProcEnabled'
+    # - 'SurvivorRatio=20'
+    # - 'TargetSurvivorRatio=90'
+    # - '+PrintGCDetails'
+    # - '+PrintAdaptiveSizePolicy'
+    # - '+EliminateLocks'
+    # - '+OptimizeStringConcat'
+    # - '+UseBiasedLocking'
+    # - '+AggressiveOpts'
+    users:
+    - name: capitan_Sheridan
+      uuid: '5fc3a225-d64d-4934-a06c-6bcaef911359'
+      admin: yes
+    - name: Chief_Garibaldi
+      uuid: 'e69575b9-7620-47b0-90bf-07123667d688'
+      admin: yes

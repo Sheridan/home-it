@@ -19,7 +19,6 @@
     - parallel-fetch
     - splitdebug
     - compressdebug
-    - webrsync-gpg
     - fixlafiles
     targets:
       python:
@@ -149,7 +148,6 @@
         - perl
         - xml
         - json
-        - vala
         - lua
         - c++11
         - qml
@@ -200,6 +198,7 @@
         - accessibility
         sequrity:
         - policykit
+        - kerberos
         kde:
         - kde
         - plasma
@@ -219,6 +218,8 @@
         - networkmanager
         graphic:
         - qt3support
+        languages:
+        - vala
         virtual_pc:
         - openvz
         - vserver

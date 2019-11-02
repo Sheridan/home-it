@@ -1,0 +1,5 @@
+---
+  - name: restart minecraft
+    systemd:
+      name: minecraft
+      state: restarted
