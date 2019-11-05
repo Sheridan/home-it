@@ -232,7 +232,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 
 
-awful.spawn("setxkbmap -layout 'us,ru' -variant ',winkeys,winkeys' -option grp:caps_toggle -option grp_led:scroll -option terminate:ctrl_alt_bksp -option compose:menu")
+awful.spawn("setxkbmap -layout 'us,ru' -variant ',winkeys,winkeys' -option grp:caps_toggle -option grp_led:scroll -option terminate:ctrl_alt_bksp -option compose:menu -option keypad:pointerkeys")
 awful.spawn("numlockx on")
 
 run_once("pasystray")

@@ -3,6 +3,16 @@
   minecraft:
     port: 25565
     seed: "-1430670998"
+    options:
+      spawn:
+        monsters: yes
+        npcs: yes
+        animals: yes
+      gamemode: survival
+      level_type: default
+      hardcore: no
+      difficulty: normal
+      online: no
     paths:
       home: /opt/minecraft
       log: /var/log/minecraft
@@ -52,6 +62,12 @@
     - name: capitan_Sheridan
       uuid: '5fc3a225-d64d-4934-a06c-6bcaef911359'
       admin: yes
+    - name: capitan_Sheridan
+      uuid: '66394e6e-24d3-3ccf-b8c2-c297ed33cf68'
+      admin: yes
     - name: Chief_Garibaldi
       uuid: 'e69575b9-7620-47b0-90bf-07123667d688'
       admin: yes
+    - name: Depish
+      uuid: '81b9eefc-a855-3bdf-adc4-4c31fc6ccac8'
+      admin: no
