@@ -90,22 +90,22 @@
 
     - { name: 'enable-command-block', value: 'false' }
     - { name: 'allow-nether', value: 'true' }
-    - { name: 'spawn-monsters', value: 'true' }
-    - { name: 'spawn-npcs', value: 'true' }
-    - { name: 'spawn-animals', value: 'true' }
+    - { name: 'spawn-monsters', value: '{{ "true" if merged_vars.minecraft.options.spawn.monsters else "false" }}' }
+    - { name: 'spawn-npcs', value: '{{ "true" if merged_vars.minecraft.options.spawn.npcs else "false" }}' }
+    - { name: 'spawn-animals', value: '{{ "true" if merged_vars.minecraft.options.spawn.animals else "false" }}' }
     - { name: 'generate-structures', value: 'true' }
     - { name: 'allow-flight', value: 'false' }
 
     - { name: 'white-list', value: 'true' }
     - { name: 'force-gamemode', value: 'true' }
-    - { name: 'gamemode', value: 'survival' }
-    - { name: 'level-type', value: 'default' }
-    - { name: 'hardcore', value: 'false' }
-    - { name: 'difficulty', value: 'normal' }
+    - { name: 'gamemode', value: '{{ merged_vars.minecraft.options.gamemode }}' }
+    - { name: 'level-type', value: '{{ merged_vars.minecraft.options.level_type }}' }
+    - { name: 'hardcore', value: '{{ "true" if merged_vars.minecraft.options.hardcore else "false" }}' }
+    - { name: 'difficulty', value: '{{ merged_vars.minecraft.options.difficulty }}' }
 
     - { name: 'spawn-protection', value: '0' }
     - { name: 'player-idle-timeout', value: '0' }
-    # - { name: 'announce-player-achievements', value: 'true' }
+    - { name: 'announce-player-achievements', value: 'true' }
     - { name: 'max-players', value: '3' }
     - { name: 'pvp', value: 'false' }
 
@@ -113,7 +113,7 @@
     - { name: 'allow-cheats', value: 'false' }
 
     - { name: 'snooper-enabled', value: 'true' }
-    - { name: 'online-mode', value: 'true' }
+    - { name: 'online-mode', value: '{{ "true" if merged_vars.minecraft.options.online else "false" }}' }
     - { name: 'broadcast-console-to-ops', value: 'true' }
 
     - { name: 'level-name', value: 'Babylon 5' }
