@@ -1,73 +1,102 @@
 ---
   minecraft_java_max_memory: "{{ 1024 * 8 }}"
   minecraft:
-    port: 25565
-    seed: "-1430670998"
+    debug: false
+    network:
+      port: 25565
+      send_stat_to_devs: yes
+      compression_threshold: 256
+      query:
+        port: 25585
+        enabled: yes
+      rcon:
+        port: 25575
+        pw: "{{ minecraft_secrets.rcon_pw }}"
+        enabled: yes
     options:
+      players:
+        whitelisted: yes
+        maximum: 4
+        flight: no
+        pvp: no
+        registered: no
       spawn:
         monsters: yes
         npcs: yes
         animals: yes
-      gamemode: survival
-      level_type: default
-      hardcore: no
-      difficulty: normal
-      online: no
+        structures: yes
+      world:
+        seed: "-1430670998"
+        level_name: 'Babylon 5'
+        motd: 'A Sheridan`s Minecraft Server'
+        size:
+          height: 256
+          side: 29999984
+          view: 16
+      game:
+        gamemode: survival
+        level_type: default
+        hardcore: no
+        difficulty: normal
+        command_block: no
+        dimensions:
+          nether: yes
+      cheats: false
     paths:
       home: /opt/minecraft
       log: /var/log/minecraft
     user:
       name: minecraft
       pw: "{{ minecraft_secrets.system_user_pw }}"
-    query:
-      port: 25585
-    rcon:
-      port: 25575
-      pw: "{{ minecraft_secrets.rcon_pw }}"
     memory:
-      max: "{{ minecraft_java_max_memory }}"
-      initial: "{{ (minecraft_java_max_memory | int / 100 * 10) | int }}"
-      heap_young_gen: "{{ (minecraft_java_max_memory | int  / 100 * 5) | int }}"
-      thread_stack_size: "{{ 1024 }}"
+      max: "{{ minecraft_java_max_memory | default(1024*4) }}M"
+      initial: "{{ (minecraft_java_max_memory | default(1024*4) | int / 100 * 10) | int }}M"
+      heap_young_gen: "{{ (minecraft_java_max_memory | default(1024*4) | int  / 100 * 5) | int }}M"
+      thread_stack_size: "{{ 1024 }}k"
     java_options:
-    - 'ParallelGCThreads={{ (ansible_processor_vcpus | int  - 1) | int }}'
+    # - 'ParallelGCThreads={{ (ansible_processor_vcpus | int  - 1) | int }}'
     # - '+UseNUMA'
     # - '+UseConcMarkSweepGC'
     # - '+UseParNewGC'
-    # - '+UseG1GC'
+    - '-UseParNewGC'
+    - '-UseConcMarkSweepGC'
+    - '+UseG1GC'
+    # - '+UseSHM'
+    # - '+ParallelRefProcEnabled'
     # - '+UseLargePages'
     # - '+DisableExplicitGC'
-    # - '+UnlockExperimentalVMOptions'
-    # - 'MaxGCPauseMillis=50'
-    # - 'G1HeapRegionSize=32M'
-    # - 'G1NewSizePercent=20'
-    # - 'G1ReservePercent=20'
+    - '+UnlockExperimentalVMOptions'
+    - 'MaxGCPauseMillis=50'
+    - 'G1HeapRegionSize=32M'
+    - 'G1NewSizePercent=20'
+    - 'G1ReservePercent=20'
     # - '+UseCompressedOops'
     # - '+UseParallelGC'
-    # - 'G1HeapRegionSize=32M'
     # - '+UseAdaptiveSizePolicy'
     # - 'InitiatingHeapOccupancyPercent=50'
     # - 'InitiatingOccupancyFraction'
-    # - 'MaxGCPauseMillis=500'
-    # - '+ParallelRefProcEnabled'
     # - 'SurvivorRatio=20'
     # - 'TargetSurvivorRatio=90'
     # - '+PrintGCDetails'
     # - '+PrintAdaptiveSizePolicy'
     # - '+EliminateLocks'
-    # - '+OptimizeStringConcat'
-    # - '+UseBiasedLocking'
-    # - '+AggressiveOpts'
+    - '+OptimizeStringConcat'
+    - '-UseBiasedLocking'
+    # - '+AggressiveHeap'
+    - '+AggressiveOpts'
     users:
-    - name: capitan_Sheridan
-      uuid: '5fc3a225-d64d-4934-a06c-6bcaef911359'
-      admin: yes
     - name: capitan_Sheridan
       uuid: '66394e6e-24d3-3ccf-b8c2-c297ed33cf68'
       admin: yes
+    - name: capitan_Sheridan
+      uuid: '5fc3a225-d64d-4934-a06c-6bcaef911359'
+      admin: yes
     - name: Chief_Garibaldi
       uuid: 'e69575b9-7620-47b0-90bf-07123667d688'
-      admin: yes
+      admin: no
+    - name: Chief_Garibaldi
+      uuid: 'fe2bc80d-f146-32c9-b979-8d82648ea450'
+      admin: no
     - name: Depish
       uuid: '81b9eefc-a855-3bdf-adc4-4c31fc6ccac8'
       admin: no
