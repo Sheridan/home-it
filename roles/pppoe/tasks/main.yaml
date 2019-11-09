@@ -46,7 +46,7 @@
     - restart pppoe
 
   - name: Включение сервиса PPPoE
-    service:
+    systemd:
       name: "pppoe@{{ provider }}"
       enabled: yes
     loop: "{{ pppoe.providers }}"

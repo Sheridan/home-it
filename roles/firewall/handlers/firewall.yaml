@@ -9,7 +9,7 @@
     when: not ansible_check_mode
 
   - name: Reload firewall ruleset
-    service:
+    systemd:
       name: firewall
       state: reloaded
     when: not ansible_check_mode and firewall_success

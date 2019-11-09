@@ -1,5 +1,5 @@
 ---
   - name: restart nftables_exporter
-    service:
+    systemd:
       name: nftables_exporter
       state: restarted

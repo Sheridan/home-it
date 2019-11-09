@@ -1,9 +1,10 @@
 ---
   - name: systemd daemon reload
-    shell: systemctl daemon-reload
+    systemd:
+      daemon_reload: yes
 
   - name: restart dhcpd
-    service:
+    systemd:
       name: "dhcpd@{{ item }}"
       state: restarted
     loop:
@@ -11,16 +12,16 @@
       - 4
 
   - name: restart dhcpd@4
-    service:
+    systemd:
       name: dhcpd@4
       state: restarted
 
   - name: restart dhcpd@6
-    service:
+    systemd:
       name: dhcpd@6
       state: restarted
 
   - name: restart radvd
-    service:
+    systemd:
       name: radvd
       state: restarted

@@ -25,7 +25,7 @@
         standalone: no
 
   - name: "{{ path.name }} : Включаем надсмотрщика"
-    service:
+    systemd:
       name: "{{ path.name }}.path"
       state: restarted
       daemon_reload: yes

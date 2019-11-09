@@ -1,5 +1,5 @@
 ---
   - name: restart tor
-    service:
+    systemd:
       name: tor
       state: restarted

@@ -1,10 +1,10 @@
 ---
   - name: restart named
-    service:
+    systemd:
       name: named
       state: restarted
 
   - name: reload named
-    service:
+    systemd:
       name: named
       state: reloaded

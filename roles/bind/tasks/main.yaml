@@ -74,6 +74,6 @@
     loop: "{{ merged_vars.bind.zones }}"
 
   - name: Enabling services
-    service:
+    systemd:
       name: named
       enabled: yes

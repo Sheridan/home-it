@@ -37,14 +37,14 @@
         - compress
 
   - name: Stopping and disabling system ntp-related service
-    service:
-      name: "{{ item }}"
+    systemd:
+      name: systemd-timesyncd
       enabled: no
       state: stopped
-    loop:
-    - systemd-timesyncd
 
   - name: Enabling services
-    service:
+    systemd:
       name: ntpd
       enabled: yes
+    notify:
+    - restart ntpd

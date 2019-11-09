@@ -1,8 +1,5 @@
 ---
-  - name: systemd daemon reload
-    shell: systemctl daemon-reload
-
   - name: restart apcupsd
-    service:
+    systemd:
       name: apcupsd-daemon
       state: restarted

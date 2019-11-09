@@ -69,7 +69,7 @@
     - restart radvd
 
   - name: Enabling dhcpd services
-    service:
+    systemd:
       name: "dhcpd@{{ item }}"
       enabled: yes
     loop:
@@ -77,6 +77,6 @@
       - 4
 
   - name: Enabling radvd service
-    service:
+    systemd:
       name: radvd
       enabled: yes

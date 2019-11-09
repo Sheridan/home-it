@@ -20,8 +20,6 @@
     - /var/log/journal
 
   - name: Enabling journald service
-    service:
-      name: "{{ item }}"
+    systemd:
+      name: systemd-journald
       enabled: yes
-    loop:
-    - systemd-journald

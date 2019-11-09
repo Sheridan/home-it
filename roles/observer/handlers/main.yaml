@@ -1,5 +1,5 @@
 ---
   - name: restart observer
-    service:
+    systemd:
       name: observer
       state: restarted
