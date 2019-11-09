@@ -55,6 +55,7 @@
       recursive: yes
       owner: no
     become_user: "{{ user.name }}"
+    ignore_errors: "{{ ansible_check_mode }}"
 
   - name: Копируем тему
     synchronize:
@@ -93,10 +94,11 @@
       section: "{{ item.section }}"
       option: "{{ item.key }}"
       value: "{{ item.value }}"
+      no_extra_spaces: yes
     loop:
     - { section: Appearance, key: style, value: "{{ merged_vars.X.theme.name }}" }
     - { section: Appearance, key: icon_theme, value: "{{ merged_vars.X.icons.name }}" }
     - { section: Appearance, key: custom_palette, value: "false" }
-    - { section: Appearance, key: standard_dialogs, value: defaults }
+    - { section: Appearance, key: standard_dialogs, value: "default" }
     - { section: Interface, key: menus_have_icons, value: "true" }
     - { section: Interface, key: dialog_buttons_have_icons, value: 2 }

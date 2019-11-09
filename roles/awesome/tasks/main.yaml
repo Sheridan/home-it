@@ -41,6 +41,7 @@
       url: https://www.fatcow.com/images/fatcow-icons/fatcow-hosting-icons-3.9.2-all.zip
       dest: "{{ tmp_workdir }}/awesome/fatcow.zip"
     delegate_to: localhost
+    ignore_errors: "{{ ansible_check_mode }}"
 
   - name: Распаковываем иконки
     unarchive:
@@ -50,6 +51,7 @@
     - "{{ tmp_workdir }}/awesome/fatcow.zip"
     - "{{ tmp_workdir }}/awesome/fatcow/fatcow-hosting-icons-3.9.2.zip"
     delegate_to: localhost
+    ignore_errors: "{{ ansible_check_mode }}"
 
   - name: Устанавливаем xrandr скрипт
     template:

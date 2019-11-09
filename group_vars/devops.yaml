@@ -5,6 +5,8 @@
         name: "Devops to SSH"
         ports:
         - 22
+        - 2200-2210
+        - 2220-2229
       telnet:
         name: "Devops to telnet"
         ports:
