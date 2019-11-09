@@ -57,6 +57,8 @@
         - copytruncate
 
   - name: Enabling services
-    service:
+    systemd:
       name: tor
       enabled: yes
+    notify:
+    - restart tor

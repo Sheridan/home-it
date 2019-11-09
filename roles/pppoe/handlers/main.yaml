@@ -1,14 +1,15 @@
 ---
   - name: systemd daemon reload
-    shell: systemctl daemon-reload
+    systemd:
+      daemon_reload: yes
 
   - name: restart pppoe@rt
-    service:
+    systemd:
       name: pppoe@rt
       state: restarted
 
   - name: restart pppoe
-    service:
+    systemd:
       name: "pppoe@{{ item }}"
       state: restarted
     loop: "{{ pppoe.providers }}"

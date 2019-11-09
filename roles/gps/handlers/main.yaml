@@ -1,5 +1,5 @@
 ---
   - name: restart gpsd
-    service:
+    systemd:
       name: gpsd
       state: restarted

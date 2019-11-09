@@ -19,8 +19,8 @@
       mode: 0644
 
   - name: Enabling systemd resolved service
-    service:
-      name: "{{ item }}"
+    systemd:
+      name: systemd-resolved
       enabled: yes
-    loop:
-    - systemd-resolved
+    notify:
+    - restart resolved

@@ -1,5 +1,5 @@
 ---
   - name: restart 3proxy
-    service:
+    systemd:
       name: 3proxy
       state: restarted

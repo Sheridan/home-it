@@ -1,5 +1,5 @@
 ---
   - name: restart smartctl_exporter
-    service:
+    systemd:
       name: smartctl_exporter
       state: restarted

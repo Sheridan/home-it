@@ -30,6 +30,6 @@
         to: both
 
   - name: Enabling services
-    service:
+    systemd:
       name: grafana
       enabled: yes

@@ -27,6 +27,6 @@
     - restart gpsd
 
   - name: Enabling services
-    service:
+    systemd:
       name: gpsd
       enabled: yes

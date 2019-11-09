@@ -1,11 +1,11 @@
 ---
   - name: restart prometheus
-    service:
+    systemd:
       name: prometheus
       state: restarted
 
   - name: restart gate prometheus
-    service:
+    systemd:
       name: prometheus
       state: restarted
     delegate_to: gate

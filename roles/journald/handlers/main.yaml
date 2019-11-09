@@ -1,5 +1,5 @@
 ---
   - name: restart journald
-    service:
+    systemd:
       name: systemd-journald
       state: restarted

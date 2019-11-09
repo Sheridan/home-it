@@ -1,8 +1,9 @@
 ---
   - name: systemd daemon reload
-    shell: systemctl daemon-reload
+    systemd:
+      daemon_reload: yes
 
   - name: restart factorio
-    service:
+    systemd:
       name: factorio
       state: restarted

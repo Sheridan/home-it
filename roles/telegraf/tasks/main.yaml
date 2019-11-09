@@ -31,6 +31,8 @@
         job: telegraf
 
   - name: Enabling services
-    service:
+    systemd:
       name: telegraf
       enabled: yes
+    notify:
+    - restart telegraf

@@ -1,13 +1,10 @@
 ---
-  - name: systemd daemon reload
-    shell: systemctl daemon-reload
-
   - name: reload nginx
-    service:
+    systemd:
       name: nginx-daemon
       state: reloaded
 
   - name: restart nginx
-    service:
+    systemd:
       name: nginx-daemon
       state: restarted
