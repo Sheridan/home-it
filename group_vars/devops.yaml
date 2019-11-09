@@ -16,6 +16,7 @@
         name: "Devops to dns"
         ports:
         - 53
+        - 853
       snmp:
         name: "Devops to snmp"
         ports:

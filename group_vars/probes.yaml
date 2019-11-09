@@ -5,6 +5,7 @@
         name: "dns"
         ports:
         - 53
+        - 853
       ntp:
         name: "ntp"
         ports:
