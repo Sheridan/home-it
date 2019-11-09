@@ -20,6 +20,7 @@
         name: "Domain internal"
         ports:
         - 53
+        - 853
         interfaces:
         - "internal"
       dns_external:
@@ -30,6 +31,7 @@
           burst: 32
         ports:
         - 53
+        - 853
         interfaces:
         - "external_kis"
         - "external_he"
