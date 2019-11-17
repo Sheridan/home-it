@@ -15,20 +15,36 @@
     tags:
     - packages
 
-  - name: Add observer user
-    user:
-      name: "{{ observer_user }}"
-      comment: Observer and alerter
-      shell: /bin/false
-      group: systemd-journal
-      groups: portage
-      create_home: no
+  # - name: Add observer user
+  #   user:
+  #     name: "{{ observer_user }}"
+  #     comment: Observer and alerter
+  #     shell: /bin/false
+  #     group: root
+  #     groups:
+  #     - portage
+  #     - systemd-journal
+  #     create_home: no
+
+  - name: Setup observer user
+    import_role:
+      name: system_user
+      tasks_from: setup_user
+    vars:
+      user:
+        name: "{{ observer_user }}"
+        comment: Observer and alerter
+        groups:
+        - root
+        - portage
+        - systemd-journal
 
   - name: Создаём каталоги для наблюдателя
     file:
       dest: "{{ item }}"
       state: directory
       owner: "{{ observer_user }}"
+      group: "{{ observer_user }}"
       mode: 0755
     with_items:
       - "{{ observer_install_path }}"
@@ -79,10 +95,11 @@
       service:
         name: observer
         description: Observer service for pushing alerts from many to many
-        user: "{{ observer_user }} "
+        user: "{{ observer_user }}"
         restart_sec: 30s
-        exec_start: >
+        exec_start: >-
           /usr/bin/python3
+          -u
           {{ observer_install_path }}/observer.py
           {{ observer_config_path }}/config.yaml
         after:

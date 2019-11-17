@@ -1,18 +1,22 @@
 ---
-  - name: Создаём пользователя
-    user:
-      name: "{{ merged_vars.factorio.user }}"
-      comment: Factorio game user
-      shell: /bin/false
-      group: users
-      create_home: no
+  - name: Добавляем пользователя
+    import_role:
+      name: system_user
+      tasks_from: setup_user
+    vars:
+      user:
+        name: "{{ merged_vars.factorio.user.name }}"
+        password: "{{ merged_vars.factorio.user.pw  }}"
+        comment: Factorio runner
+        groups:
+        - users
 
   - name: Создаём каталоги
     file:
       dest: "{{ item }}"
       state: directory
-      owner: "{{ merged_vars.factorio.user }}"
-      group: users
+      owner: "{{ merged_vars.factorio.user.name }}"
+      group: "{{ merged_vars.factorio.user.name }}"
       mode: 0755
     loop:
       - "{{ merged_vars.factorio.paths.home }}"
@@ -21,8 +25,8 @@
     unarchive:
       src: "https://www.factorio.com/get-download/{{ merged_vars.factorio.version }}/headless/linux64"
       dest: "{{ merged_vars.factorio.paths.home }}/../"
-      owner: "{{ merged_vars.factorio.user }}"
-      group: users
+      owner: "{{ merged_vars.factorio.user.name }}"
+      group: "{{ merged_vars.factorio.user.name }}"
       remote_src: yes
     notify:
     - restart factorio
@@ -31,8 +35,8 @@
     template:
       src: opt/factorio/server-settings.json.j2
       dest: /opt/factorio/server-settings.json
-      owner: "{{ merged_vars.factorio.user }}"
-      group: users
+      owner: "{{ merged_vars.factorio.user.name }}"
+      group: "{{ merged_vars.factorio.user.name }}"
       mode: 0644
     notify:
     - restart factorio
@@ -41,21 +45,10 @@
     template:
       src: opt/factorio/start.sh.j2
       dest: /opt/factorio/start.sh
-      owner: "{{ merged_vars.factorio.user }}"
-      group: users
+      owner: "{{ merged_vars.factorio.user.name }}"
+      group: "{{ merged_vars.factorio.user.name }}"
       mode: 0755
     notify:
-    - restart factorio
-
-  - name: Install factorio daemon service
-    template:
-      src: etc/systemd/system/factorio.service.j2
-      dest: /etc/systemd/system/factorio.service
-      owner: root
-      group: root
-      mode: 0644
-    notify:
-    - systemd daemon reload
     - restart factorio
 
   - name: Устанавливаем моды
@@ -70,13 +63,29 @@
     template:
       src: opt/factorio/mods/mod-list.json.j2
       dest: /opt/factorio/mods/mod-list.json
-      owner: "{{ merged_vars.factorio.user }}"
+      owner: "{{ merged_vars.factorio.user.name }}"
       group: users
       mode: 0644
     notify:
     - restart factorio
 
-  - name: Enabling services
-    systemd:
-      name: factorio
-      enabled: yes
+  - name: Устанавливаем сервис
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: factorio
+        description: Factorio server daemon
+        restart_sec: 16s
+        working_dir: "{{ merged_vars.factorio.paths.home }}"
+        exec_start: "{{ merged_vars.factorio.paths.home }}/start.sh"
+        user: "{{ merged_vars.factorio.user.name }}"
+        group: "{{ merged_vars.factorio.user.name }}"
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: "{{ 'restarted' if merged_vars.factorio.active else 'noop' }}"
+        state: "{{ 'started' if merged_vars.factorio.active else 'stopped' }}"
+        enabled: "{{ merged_vars.factorio.active }}"

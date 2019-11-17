@@ -9,20 +9,23 @@
     - packages
 
   - name: Добавляем пользователя
-    user:
-      name: "{{ merged_vars.minecraft.user.name }}"
-      comment: Minecraft runner
-      password: "{{ merged_vars.minecraft.user.pw | password_hash('sha512', default_salt)}}"
-      shell: /bin/false
-      group: users
-      create_home: no
+    import_role:
+      name: system_user
+      tasks_from: setup_user
+    vars:
+      user:
+        name: "{{ merged_vars.minecraft.user.name }}"
+        password: "{{ merged_vars.minecraft.user.pw  }}"
+        comment: Minecraft runner
+        groups:
+        - users
 
   - name: Создаём каталоги
     file:
       dest: "{{ item }}"
       state: directory
       owner: "{{ merged_vars.minecraft.user.name }}"
-      group: users
+      group: "{{ merged_vars.minecraft.user.name }}"
       mode: 0755
     loop:
     - "{{ merged_vars.minecraft.paths.home }}"
@@ -127,7 +130,7 @@
       src: "opt/minecraft/{{ item }}.j2"
       dest: "/opt/minecraft/{{ item }}"
       owner: "{{ merged_vars.minecraft.user.name }}"
-      group: users
+      group: "{{ merged_vars.minecraft.user.name }}"
       mode: 0644
     loop:
     - whitelist.json
@@ -164,12 +167,12 @@
           -Xmn${MINECRAFT_JAVA_HEAP_YOUNG_GEN_MEMORY}
           ${MINECRAFT_JAVA_OPTIONS}
           -jar {{ merged_vars.minecraft.paths.home }}/server.jar nogui "
-        user: minecraft
-        group: users
+        user: "{{ merged_vars.minecraft.user.name }}"
+        group: "{{ merged_vars.minecraft.user.name }}"
         after:
         - network-online.target
         wanted_by:
         - multi-user.target
-        on_changed: restarted
-        state: started
-        enabled: yes
+        on_changed: "{{ 'restarted' if merged_vars.minecraft.active else 'noop' }}"
+        state: "{{ 'started' if merged_vars.minecraft.active else 'stopped' }}"
+        enabled: "{{ merged_vars.minecraft.active }}"

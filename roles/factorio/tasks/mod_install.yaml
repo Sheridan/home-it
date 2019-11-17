@@ -86,8 +86,8 @@
       dest: "{{ target_filepath }}"
       checksum: "sha1:{{ target_release.sha1 }}"
       mode: 0644
-      owner: "{{ merged_vars.factorio.user }}"
-      group: users
+      owner: "{{ merged_vars.factorio.user.name }}"
+      group: "{{ merged_vars.factorio.user.name }}"
     register: download_status
     notify:
     - restart factorio

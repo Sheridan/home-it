@@ -1,7 +1,8 @@
 ---
-  minecraft_java_max_memory: "{{ 1024 * 8 }}"
+  minecraft_java_max_memory: "{{ ((2 | pow(23)) + (2 | pow(21))) * (2 | pow(10)) }}"
   minecraft:
-    debug: false
+    active: no
+    debug: no
     network:
       port: 25565
       send_stat_to_devs: yes
@@ -49,10 +50,10 @@
       name: minecraft
       pw: "{{ minecraft_secrets.system_user_pw }}"
     memory:
-      max: "{{ minecraft_java_max_memory | default(1024*4) }}M"
-      initial: "{{ (minecraft_java_max_memory | default(1024*4) | int / 100 * 10) | int }}M"
-      heap_young_gen: "{{ (minecraft_java_max_memory | default(1024*4) | int  / 100 * 5) | int }}M"
-      thread_stack_size: "{{ 1024 }}k"
+      max: "{{ minecraft_java_max_memory | default(1024*4) | int }}"
+      initial: "{{ (minecraft_java_max_memory | default(1024*4) | int / 100 * 10) | int }}"
+      heap_young_gen: "{{ (minecraft_java_max_memory | default(1024*4) | int  / 100 * 5) | int }}"
+      thread_stack_size: "{{ 2 | pow(20) | int }}"
     java_options:
     # - 'ParallelGCThreads={{ (ansible_processor_vcpus | int  - 1) | int }}'
     # - '+UseNUMA'
@@ -70,16 +71,15 @@
     - 'G1HeapRegionSize=32M'
     - 'G1NewSizePercent=20'
     - 'G1ReservePercent=20'
+    - 'TargetSurvivorRatio=90'
+    - 'SurvivorRatio=20'
+    - 'InitiatingHeapOccupancyPercent=50'
     # - '+UseCompressedOops'
     # - '+UseParallelGC'
     # - '+UseAdaptiveSizePolicy'
-    # - 'InitiatingHeapOccupancyPercent=50'
     # - 'InitiatingOccupancyFraction'
-    # - 'SurvivorRatio=20'
-    # - 'TargetSurvivorRatio=90'
     # - '+PrintGCDetails'
     # - '+PrintAdaptiveSizePolicy'
-    # - '+EliminateLocks'
     - '+OptimizeStringConcat'
     - '-UseBiasedLocking'
     # - '+AggressiveHeap'

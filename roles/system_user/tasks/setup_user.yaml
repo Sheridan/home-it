@@ -1,0 +1,15 @@
+---
+  - name: "{{ user.name }} : Setup user group"
+    group:
+      name: '{{ user.name }}'
+      state: present
+
+  - name: "{{ user.name }} : Setup user"
+    user:
+      name: '{{ user.name }}'
+      comment: '{{ user.comment | default("Created by ansible") }}'
+      shell: '{{ user.shell | default("/bin/false") }}'
+      group: '{{ user.name }}'
+      groups: '{{ user.groups | default([]) }}'
+      create_home: '{{ user.create_hone | default(False) }}'
+      password: "{{ user.password | default((user.name + default_salt) | md5) | password_hash('sha512', default_salt)}}"
