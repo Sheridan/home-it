@@ -8,7 +8,8 @@
     type: 'dhcp'
 
   firewall:
-    sber_online:
-      name: "Sber online"
-      ports:
-      - 4477
+    host_to_internet:
+      sber_online:
+        name: "Sber online"
+        ports:
+        - 4477
