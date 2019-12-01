@@ -18,6 +18,13 @@
         - 115
         - 989
         - 990
+      fantasyradio:
+        name: "fantasyradio.ru streams"
+        ports:
+        - 8000
+        - 8002
+        - 8008
+        - 8016
 
   ballance:
     mark:

@@ -1,7 +1,7 @@
 ---
   factorio:
     active: yes
-    version: 0.17.78
+    version: 0.17.79
     user:
       name: factorio
       pw: "{{ factorio_secrets.system_user_pw }}"
@@ -13,7 +13,7 @@
       description: "Sheridan personal factorio server"
       password: "{{ factorio_secrets.server_password }}"
       max_players: 16
-      auto_pause: yes
+      auto_pause: no
       autosave:
         interval: 8
         slots: 512
