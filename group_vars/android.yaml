@@ -14,3 +14,7 @@
         - 1325
         - 5004
         - 1192
+      minecraft_earth:
+        name: "Minecraft Earth"
+        ports:
+        - 30000-31000
