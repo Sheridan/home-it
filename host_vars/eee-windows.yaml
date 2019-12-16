@@ -15,3 +15,16 @@
     ip: "{{ query('ship', 'ip', 23) }}"
     network: 'home'
     type: 'dhcp'
+
+  firewall:
+    host_to_internet:
+      sber_online:
+        name: "Torrent"
+        ports:
+        - 1030
+        - 3800
+        - 6892
+        - 6992
+        - 7466
+        - 8999
+        - 10000-60000

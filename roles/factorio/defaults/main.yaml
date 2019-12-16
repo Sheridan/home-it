@@ -1,6 +1,6 @@
 ---
   factorio:
-    active: yes
+    active: no
     version: 0.17.79
     user:
       name: factorio
