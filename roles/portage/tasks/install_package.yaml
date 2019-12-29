@@ -1,4 +1,7 @@
 ---
+  - name: Подготавливаем portage
+    include_tasks: prepare_portage.yaml
+
   - name: Определение параметров пакета
     set_fact:
       pkg:
@@ -16,7 +19,6 @@
             defined: "{{ package.use is defined and package.use.disabled is defined }}"
         x86_as_amd64: "{{ package.x86_as_amd64 | default(False) }}"
         match_regexp: '^{{ package.name }}\s.*$'
-
 
   - name: "{{ pkg.name }} : Установка use флагов пакета"
     lineinfile:
@@ -75,3 +77,4 @@
       state: "{{ pkg.state }}"
       newuse: yes
       update: yes
+    ignore_errors: "{{ ansible_check_mode }}"

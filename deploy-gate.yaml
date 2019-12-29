@@ -31,6 +31,7 @@
   - { role: bind_exporter, tags: [ bind_exporter, monitoring ] }
   - { role: smartctl_exporter, tags: smartctl_exporter }
   - { role: nftables_exporter, tags: nftables_exporter }
+  - { role: mikrotik_exporter, tags: mikrotik_exporter }
   - { role: telegraf, tags: [ telegraf, monitoring ] }
   - { role: tor, tags: tor }
   - { role: 3proxy, tags: 3proxy }

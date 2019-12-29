@@ -5,31 +5,12 @@
     check_mode: no
     changed_when: false
 
-  - name: Собираем факты
+  - name: Замоминаем флаги cpu
     set_fact:
       cpu_flags: "{{ cpu_flags_out.stdout  }}"
-      portage_fact:
-        directoryes:
-          portdir: "{{ merged_vars.portage.directoryes.portdir | default('/var/db/repos/gentoo') }}"
-          distdir: "{{ merged_vars.portage.directoryes.distdir | default('/var/cache/distfiles') }}"
-          pkgdir: "{{ merged_vars.portage.directoryes.pkgdir | default('/var/cache/binpkgs') }}"
-          tmp: "{{ merged_vars.portage.directoryes.tmp | default('/var/tmp') }}"
 
-  - name: Создаём каталоги для нужд portage
-    file:
-      dest: "{{ item }}"
-      state: directory
-      owner: portage
-      group: root
-    with_items:
-      - /etc/portage/package.use
-      - /etc/portage/package.accept_keywords
-      - /etc/portage/package.mask
-      - /etc/portage/package.unmask
-      - "{{ portage_fact.directoryes.portdir }}"
-      - "{{ portage_fact.directoryes.distdir }}"
-      - "{{ portage_fact.directoryes.pkgdir }}"
-      # - "{{ portage_fact.directoryes.tmp }}"
+  - name: Подготавливаем portage
+    include_tasks: prepare_portage.yaml
 
   - name: Сужествует ли layman.conf?
     stat:

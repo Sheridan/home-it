@@ -1,0 +1,27 @@
+---
+  - name: Собираем факты
+    set_fact:
+      portage_fact:
+        directoryes:
+          portdir: "{{ merged_vars.portage.directoryes.portdir | default('/var/db/repos/gentoo') }}"
+          distdir: "{{ merged_vars.portage.directoryes.distdir | default('/var/cache/distfiles') }}"
+          pkgdir: "{{ merged_vars.portage.directoryes.pkgdir | default('/var/cache/binpkgs') }}"
+          tmp: "{{ merged_vars.portage.directoryes.tmp | default('/var/tmp') }}"
+
+  - name: Создаём каталоги для нужд portage
+    file:
+      dest: "{{ i_path }}"
+      state: directory
+      owner: portage
+      group: root
+    loop:
+      - /etc/portage/package.use
+      - /etc/portage/package.accept_keywords
+      - /etc/portage/package.mask
+      - /etc/portage/package.unmask
+      - "{{ portage_fact.directoryes.portdir }}"
+      - "{{ portage_fact.directoryes.distdir }}"
+      - "{{ portage_fact.directoryes.pkgdir }}"
+      - "{{ portage_fact.directoryes.tmp }}"
+    loop_control:
+      loop_var: i_path

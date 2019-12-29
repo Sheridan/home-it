@@ -1,0 +1,21 @@
+---
+  devices:
+{% for hostname in groups.mikrotik -%}
+{{- '\n' }}
+    - name: {{ hostname }}
+      address: {{ hostvars[hostname].network.0.ip.ipv4.ip }}
+      user: '{{ mikrotik_secrets.monitoring_user.login }}'
+      password: '{{ mikrotik_secrets.monitoring_user.password }}'
+{{ '\n' -}}
+{%- endfor %}
+
+  features:
+    bgp: {{ merged_vars.mikrotik_exporter.features.bgp | string | lower }}
+    dhcp: {{ merged_vars.mikrotik_exporter.features.dhcp | string | lower }}
+    dhcpv6: {{ merged_vars.mikrotik_exporter.features.dhcpv6 | string | lower }}
+    dhcpl: {{ merged_vars.mikrotik_exporter.features.dhcpl | string | lower }}
+    routes: {{ merged_vars.mikrotik_exporter.features.routes | string | lower }}
+    pools: {{ merged_vars.mikrotik_exporter.features.pools | string | lower }}
+    optics: {{ merged_vars.mikrotik_exporter.features.optics | string | lower }}
+    wlansta: {{ merged_vars.mikrotik_exporter.features.wlansta | string | lower }}
+    wlanif: {{ merged_vars.mikrotik_exporter.features.wlanif | string | lower }}

@@ -1,0 +1,78 @@
+---
+  - name: Устанавливаем необходимые ебилды
+    include_role:
+      name: portage
+      tasks_from: install_ebuild
+    vars:
+      ebuild:
+        name: mikrotik_exporter
+        category: app-metrics
+        version: "9999"
+        src: "roles/mikrotik_exporter/files/app-metrics/mikrotik_exporter.ebuild"
+    tags:
+    - packages
+
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop:
+    - { name: app-metrics/mikrotik_exporter, unstable: yes }
+    tags:
+    - packages
+
+  - name: Устанавливаем конфигурацию
+    template:
+      src: etc/mikrotik_exporter.yaml.j2
+      dest: /etc/mikrotik_exporter.yaml
+      owner: root
+      group: root
+      mode: 0644
+    notify:
+    - restart mikrotik_exporter
+
+  - name: Добавляем пользователя
+    import_role:
+      name: system_user
+      tasks_from: setup_user
+    vars:
+      user:
+        name: mikrotik_exporter
+        comment: mikrotik_exporter runner
+        groups:
+        - users
+
+  - name: Установка сервиса mikrotik_exporter
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: mikrotik_exporter
+        description: MikroTik exporter service
+        restart: on-failure
+        user: mikrotik_exporter
+        exec_start: >
+          /usr/bin/mikrotik_exporter
+          -port [::1]:{{ merged_vars.mikrotik_exporter.listen.port }}
+          -config-file /etc/mikrotik_exporter.yaml
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes
+
+  - name: Connect exporter to prometheus
+    import_role:
+      name: prometheus
+      tasks_from: connect_exporter
+    vars:
+      target:
+        name: "{{ inventory_hostname }}_mikrotik_exporter"
+        addr: "{{ '[::1]' if inventory_hostname == 'gate' else inventory_hostname }}"
+        port: "{{ merged_vars.mikrotik_exporter.listen.port }}"
+        job: mikrotik_exporter
