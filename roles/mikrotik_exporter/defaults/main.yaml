@@ -1,0 +1,14 @@
+---
+  mikrotik_exporter:
+    listen:
+      port: 9436
+    features:
+      bgp: no
+      dhcp: no
+      dhcpv6: no
+      dhcpl: no
+      routes: no
+      pools: no
+      optics: no
+      wlansta: yes
+      wlanif: yes

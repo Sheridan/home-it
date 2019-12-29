@@ -4,6 +4,7 @@
       ebld:
         name: "{{ ebuild.name }}"
         url: "{{ ebuild.url | default('') }}"
+        src: "{{ ebuild.src | default('') }}"
         version: "{{ ebuild.version }}"
         category: "{{ ebuild.category }}"
         filename: "{{ ebuild.name }}-{{ ebuild.version }}.ebuild"
@@ -29,6 +30,16 @@
     when: ebld.url != ""
     register: r_need_reinit_ebuild
 
+  - name: "{{ ebuild.name }} Копирование"
+    copy:
+      src: "{{ ebld.src }}"
+      dest: "{{ ebld.ebuild_directory }}/{{ ebld.filename }}"
+      owner: portage
+      group: root
+      mode: 0644
+    when: ebld.src != ""
+    register: r_need_reinit_ebuild
+
   - name: "{{ ebuild.name }} : Скачивание дополнительных файлов"
     block:
     - name: "{{ ebuild.name }} : Создаём каталог файлов"
@@ -51,10 +62,11 @@
       set_fact:
         v_need_reinit_files: "{{ v_need_reinit_files or item.changed }}"
       loop: "{{ r_need_reinit_file.results }}"
-    when: ebld.files | length > 0
+    when: ebld.files | default([]) | length > 0
 
   - name: "{{ ebuild.name }} : Инициализвция"
     shell: "ebuild {{ ebld.filename }} digest"
     args:
       chdir: "{{ ebld.ebuild_directory }}"
+    ignore_errors: "{{ ansible_check_mode }}"
     when: r_need_reinit_ebuild.changed or v_need_reinit_files

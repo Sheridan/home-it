@@ -14,4 +14,5 @@
 
     # - name: Debug
     #   debug:
-    #     msg: "{{ r_mikrotik_facts }}"
+    #     msg: "{{ ansible_user }} {{ ansible_password }}"
+    #   delegate_to: localhost
