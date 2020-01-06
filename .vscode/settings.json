@@ -3,5 +3,7 @@
     "editor.fontSize": 12,
     "editor.tabSize": 2,
     "files.autoSave": "onFocusChange",
-    "ansibleVault.keyfile": ".vault-password"
+    "ansibleVault.keyfile": ".vault-password",
+    "python.pythonPath": "/usr/bin/python",
+    "python.formatting.provider": "yapf"
 }

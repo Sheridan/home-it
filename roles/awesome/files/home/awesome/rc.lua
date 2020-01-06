@@ -130,7 +130,7 @@ awful.rules.rules = {
             maximized = false
         }
     },
-    { rule = { class = "code" }         , properties = { tag = get_tag("Work")    , switchtotag = true, floating = true } },
+    { rule = { class = "Code" }         , properties = { tag = get_tag("Work")    , switchtotag = true } },
     { rule = { class = "audacious" }    , properties = { tag = get_tag("Media")   , switchtotag = true, screen = 1 } },
     { rule = { class = "shutter" }      , properties = { tag = get_tag("Media")   , switchtotag = true, screen = 1 } },
     { rule = { class = "Pidgin", role = "buddy_list" },
@@ -236,6 +236,6 @@ awful.spawn("setxkbmap -layout 'us,ru' -variant ',winkeys,winkeys' -option grp:c
 awful.spawn("numlockx on")
 
 run_once("pasystray")
-run_once("xcompmgr -n -F -f -c -D 3")
+-- run_once("xcompmgr -n -F -f -c -D 3")
 
 init_wallpapers()

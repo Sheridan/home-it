@@ -1,0 +1,25 @@
+---
+  - hosts: all
+    gather_facts: no
+    vars_files:
+    - vars/vault.yaml
+    - vars/network.yaml
+    vars:
+      f_interfaces: []
+    tasks:
+
+    - name: Network interfaces prepare
+      set_fact:
+        f_interfaces: "{{ f_interfaces + [v_interface] }}"
+      vars:
+        v_interface: "{{ inventory_hostname }} {{ i_interface.name }} {{ i_interface.ifname | default('none') }} {{ i_interface.ip.ipv4.ip }}"
+      loop: "{{ network }}"
+      loop_control:
+        loop_var: i_interface
+      delegate_to: localhost
+
+    - name: Network interfaces print
+      debug:
+        msg: "{{ f_interfaces }}"
+      delegate_to: localhost
+      # run_once: yes

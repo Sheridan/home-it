@@ -1,8 +1,8 @@
 screen_layout = {
   left=3,
   center=1,
-  right=2,
-  top=4
+  right=4,
+  top=2
 }
 
 widgets_layouts = {

@@ -1,5 +1,5 @@
 require("defines")
-monitors_count = {{ merged_vars.Xorg.monitors | length }}
+monitors_count = {{ merged_vars.Xorg.options.init_order | length }}
 
 font = {
   regular = {

@@ -1,3 +1,5 @@
 lookup_plugins/__pycache__
+lookup_plugins/*pyc
 vars_plugins/__pycache__
+vars_plugins/*pyc
 .vault-password

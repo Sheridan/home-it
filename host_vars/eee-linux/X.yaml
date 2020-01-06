@@ -1,5 +1,9 @@
 ---
   Xorg:
+    options:
+      dpi: 96
+      init_order:
+      - main
     videocards:
       first:
         name: "Intel Corporation Mobile 945GSE Express Integrated Graphics Controller"
