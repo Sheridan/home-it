@@ -7,7 +7,7 @@
 
   - name: Замоминаем флаги cpu
     set_fact:
-      cpu_flags: "{{ cpu_flags_out.stdout  }}"
+      cpu_flags: "{{ cpu_flags_out.stdout }}"
 
   - name: Подготавливаем portage
     include_tasks: prepare_portage.yaml
