@@ -12,8 +12,8 @@
     - { name: sys-firmware/bluez-firmware }
     tags:
     - packages
-    notify:
-    - restart bluetooth
+    # notify:
+    # - restart bluetooth
 
   - name: Enabling services
     systemd:

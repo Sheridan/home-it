@@ -20,7 +20,7 @@
         maximum: 4
         flight: no
         pvp: no
-        registered: no
+        registered_only: yes
       spawn:
         monsters: yes
         npcs: yes

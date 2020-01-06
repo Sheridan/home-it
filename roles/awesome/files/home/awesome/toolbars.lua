@@ -84,7 +84,7 @@ function context_menu(c)
     menu_items = {
             { cli_min     , function() c.minimized = not c.minimized end   , beautiful.titlebar_minimize_button_focus},
             { "Fullscreen", function() c.fullscreen = not c.fullscreen end , beautiful.layout_fullscreen },
-            { cli_float   , function() awful.client.floating.toggle(c) end, beautiful.titlebar_floating_button_focus_active },
+            { cli_float   , function() awful.client.floating.toggle(c) end , beautiful.titlebar_floating_button_focus_active },
             { cli_top     , function() c.ontop = not c.ontop end           , beautiful.titlebar_ontop_button_focus_active },
             { "Close"     , function() c:kill() end                        , beautiful.titlebar_close_button_focus}
         }
