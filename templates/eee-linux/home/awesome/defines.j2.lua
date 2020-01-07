@@ -2,6 +2,8 @@ screen_layout = {
   center=1
 }
 
+default_screen_index = screen_layout.center
+
 widgets_layouts = {
   clock=screen_layout.center,
   launch_button=screen_layout.center,

@@ -5,6 +5,7 @@
     code:
     - rc
     - menu
+    - screens
     - helpers
     - keybindings
     - toolbars

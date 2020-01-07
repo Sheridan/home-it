@@ -5,6 +5,8 @@ screen_layout = {
   top=2
 }
 
+default_screen_index = screen_layout.center
+
 widgets_layouts = {
   clock=screen_layout.left,
   launch_button=screen_layout.left,
