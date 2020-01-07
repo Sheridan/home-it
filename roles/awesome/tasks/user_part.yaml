@@ -56,6 +56,8 @@
       owner: no
     become_user: "{{ user.name }}"
     ignore_errors: "{{ ansible_check_mode }}"
+    tags:
+    - awesome_icons
 
   - name: Копируем тему
     synchronize:

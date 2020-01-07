@@ -3,6 +3,7 @@ awful = require("awful")
 if monitors_count > 1 then
     awful.spawn("xrandrapply.sh")
 end
+require("screens")
 
 gears = require("gears")
 wibox = require("wibox")
@@ -130,9 +131,17 @@ awful.rules.rules = {
             maximized = false
         }
     },
-    { rule = { class = "Code" }         , properties = { tag = get_tag("Work")    , switchtotag = true } },
-    { rule = { class = "audacious" }    , properties = { tag = get_tag("Media")   , switchtotag = true, screen = 1 } },
-    { rule = { class = "shutter" }      , properties = { tag = get_tag("Media")   , switchtotag = true, screen = 1 } },
+    { rule = { class = "Steam" }          , properties = { tag = get_tag("Home") , switchtotag = true } },
+    { rule = { class = "Code" }           , properties = { tag = get_tag("Work") , switchtotag = true } },
+    { rule = { class = "Audacious" }      , properties = { tag = get_tag("Media"), switchtotag = true, screen = get_screen_index("top") } },
+    { rule = { class = "Deadbeef" }       , properties = { tag = get_tag("Media"), switchtotag = true, screen = get_screen_index("top") } },
+    { rule = { class = "discord" }        , properties = { tag = get_tag("Home") , switchtotag = true, screen = get_screen_index("top") } },
+    { rule = { class = "Hexchat" }        , properties = { tag = get_tag("Home") , switchtotag = true, screen = get_screen_index("top") } },
+    { rule = { class = "Skype" }          , properties = { tag = get_tag("Other"), switchtotag = true, screen = get_screen_index("top") } },
+    { rule = { class = "VK" }             , properties = { tag = get_tag("Other"), switchtotag = true, screen = get_screen_index("top") } },
+    { rule = { class = "KeePassXC" }      , properties = { tag = get_tag("Home") , switchtotag = true, screen = get_screen_index("left") } },
+    { rule = { class = "TelegramDesktop" }, properties = { tag = get_tag("Work") , switchtotag = true, screen = get_screen_index("top") } },
+    -- { rule = { class = "shutter" }      , properties = { tag = get_tag("Media"), switchtotag = true, screen = 1 } },
     { rule = { class = "Pidgin", role = "buddy_list" },
     properties = {floating=true,
                   maximized_vertical=true, maximized_horizontal=false },
@@ -235,7 +244,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 awful.spawn("setxkbmap -layout 'us,ru' -variant ',winkeys,winkeys' -option grp:caps_toggle -option grp_led:scroll -option terminate:ctrl_alt_bksp -option compose:menu -option keypad:pointerkeys")
 awful.spawn("numlockx on")
 
-run_once("pasystray")
--- run_once("xcompmgr -n -F -f -c -D 3")
+run_once("pasystray", "")
+run_once("xcompmgr", "-n -F -f -c -D 3")
 
 init_wallpapers()

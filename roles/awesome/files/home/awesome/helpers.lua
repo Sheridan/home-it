@@ -1,8 +1,8 @@
-function run_once(prg)
+function run_once(prg, params)
   if not prg then
       do return nil end
   end
-  awful.spawn.with_shell("x=" .. prg .. "; pgrep -u $USERNAME -x " .. prg .. " || (" .. prg .. ")")
+  awful.spawn.with_shell("x=" .. prg .. "; pgrep -u $USERNAME -x " .. prg .. " || (" .. prg .. " " .. params .. ")")
 end
 
 function split(str, sep)
