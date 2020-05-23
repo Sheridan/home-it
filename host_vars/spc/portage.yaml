@@ -22,5 +22,4 @@
       abi:
         need_32_on_64: yes
       video_cards:
-      - nouveau
       - nvidia

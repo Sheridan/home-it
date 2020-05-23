@@ -21,6 +21,7 @@
   - { role: ntp, tags: ntp }
   - { role: node_exporter, tags: [ node_exporter, monitoring ] }
   - { role: telegraf, tags: [ telegraf, monitoring ] }
+  - { role: video, tags: video }
   - { role: smartctl_exporter, tags: smartctl_exporter }
   - { role: observer, tags: observer }
   - { role: portage, tags: portage }

@@ -7,3 +7,5 @@
     - device: /dev/sdd
     - device: /dev/sde
     - device: /dev/sdf
+    video:
+    - nvidia

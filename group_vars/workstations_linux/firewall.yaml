@@ -1,7 +1,6 @@
 ---
   firewall:
     host_to_internet:
-      http:
       http_extented:
         name: "Default http extended"
         ports:

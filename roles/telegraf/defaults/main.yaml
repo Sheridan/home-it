@@ -1,4 +1,5 @@
 ---
+  video_nvidia_smi_location: /opt/bin/nvidia-smi
   telegraf:
     listen:
       port: 9101

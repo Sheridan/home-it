@@ -22,13 +22,12 @@
     - fixlafiles
     targets:
       python:
-        single: python3_6
+        single: python3_7
         enabled:
         - python2_7
-        - python3_6
+        - python3_7
       ruby:
         enabled:
-        - ruby24
         - ruby25
       php:
         enabled:
@@ -85,7 +84,6 @@
         enabled:
         - net45
         - net40
-        - net35
     linguas:
     - ru
     - en

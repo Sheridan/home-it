@@ -270,19 +270,20 @@ table ip nat {
 }
 
 {# nat, ipv6 -#}
+{#
 table ip6 nat {
 
   chain onion_to_tor {
     {% for protocol in ['tcp', 'udp'] -%}
     ip6 daddr {{ merged_vars.tor.network.ipv6.net }}/{{ merged_vars.tor.network.ipv6.mask }} ip6 nexthdr {{ protocol }} counter dnat to [::1]:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv6 DNAT {{ protocol }}"
-    {# -#}
+    {# -#
     {%- endfor -%}
   }
 
   chain guests_to_tor {
     {% for protocol in ['tcp', 'udp'] -%}
     ip6 saddr { {{ networks.home.ranges.guests.first.ipv6.ip }}-{{ networks.home.ranges.guests.last.ipv6.ip }} } ip6 nexthdr {{ protocol }} counter dnat to [::1]:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv6 DNAT guests {{ protocol }}"
-    {# -#}
+    {# -#
     {%- endfor -%}
   }
 
@@ -308,3 +309,5 @@ table ip6 nat {
     counter comment "count accepted packets"
   }
 }
+
+#}

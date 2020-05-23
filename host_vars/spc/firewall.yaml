@@ -1,0 +1,12 @@
+---
+  firewall:
+    host_to_internet:
+      quake_champions:
+        name: "Quake champions"
+        ports:
+        - 48800-48900
+        - 11700-11725
+      heroes_vi:
+        name: "Heroes VI"
+        ports:
+        - 23900-24000

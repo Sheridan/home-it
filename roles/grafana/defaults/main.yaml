@@ -2,6 +2,7 @@
   grafana:
     login: "{{ grafana_secrets.login }}"
     password: "{{ grafana_secrets.password }}"
+    debug: no
     listen:
       addr: ::1
       port: 3000

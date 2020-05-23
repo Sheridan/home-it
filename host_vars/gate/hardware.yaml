@@ -5,3 +5,5 @@
     - device: /dev/sdb
     - device: /dev/sdc
     - device: /dev/sdd
+    video:
+    - nouveau
