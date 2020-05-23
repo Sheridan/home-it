@@ -86,7 +86,6 @@
     with_filetree: templates/etc/observer/templates/
     when: item.state == 'file'
 
-
   - name: Install observer service
     import_role:
       name: systemd_unit

@@ -1,0 +1,8 @@
+---
+  - name: Установка nvidia
+    include_tasks: nvidia.yaml
+    when: '"nvidia" in merged_vars.hardware.video'
+
+  - name: Установка nvidia (nouveau)
+    include_tasks: nouveau.yaml
+    when: '"nouveau" in merged_vars.hardware.video'

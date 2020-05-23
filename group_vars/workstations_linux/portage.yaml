@@ -7,75 +7,77 @@
         development:
         - designer
         graphic:
-        - X
-        - xcb
-        - xkb
-        - xrandr
-        - xinerama
-        - wayland
-        - qt
-        - qt5
+        - applet
+        - cairo
         - gtk
         - gtk3
-        - cairo
-        - applet
-        - skins
-        - javafx
-        - libkms
         - gtkstyle
-        - legacy-systray
         - imagemagick
+        - javafx
+        - legacy-systray
+        - libglvnd
+        - libkms
+        - qt
+        - qt5
+        - skins
+        - wayland
+        - X
+        - xcb
+        - xinerama
+        - xkb
+        - xrandr
         hardware:
-        - opengl
-        - egl
-        - vdpau
-        - v4l
         - bluetooth
         - cups
-        - printsupport
+        - egl
+        - opengl
         - postscript
+        - printsupport
+        - v4l
+        - vdpau
         media:
-        - mp3
-        - vorbis
-        - ogg
-        - mpeg
-        - equalizer
-        - ffmpeg
-        - vlc
         - aac
+        - aalib
         - cdda
         - cddb
-        - flac
-        - lame
-        - x264
-        - xvid
-        - twolame
-        - libcaca
-        - x265
-        - gstreamer
-        - aalib
-        - modplug
-        - visualizer
-        - sdl
-        - mplayer
-        - xine
-        - rtsp
-        - rtmp
-        - cue
-        - matroska
-        - id3tag
-        - midi
-        - mod
-        - taglib
-        - encode
-        - mad
         - chromecast
-        - theora
-        - wavpack
-        - mjpeg
-        - mikmod
-        - smpeg
+        - cue
+        - encode
+        - equalizer
+        - ffmpeg
+        - flac
         - gsm
+        - gstreamer
+        - id3tag
+        - lame
+        - libcaca
+        - mad
+        - matroska
+        - midi
+        - mikmod
+        - mjpeg
+        - mod
+        - modplug
+        - mp3
+        - mpeg
+        - mplayer
+        - ogg
+        - opus
+        - rtmp
+        - rtsp
+        - sdl
+        - smpeg
+        - taglib
+        - theora
+        - twolame
+        - visualizer
+        - vlc
+        - vorbis
+        - wavpack
+        - x264
+        - x265
+        - xine
+        - xvid
         documents:
         - pdf
         - djvu

@@ -1,0 +1,16 @@
+---
+  - name: Выставляем права для nvidia_smi
+    file:
+      path: "{{ video_nvidia_smi_location }}"
+      owner: root
+      group: telegraf
+      mode: '04755'
+
+  - name: Устанавливаем телеграфу конфиг для nginx sub_status
+    template:
+      owner: telegraf
+      src: etc/telegraf/telegraf.d/nvidia_smi.conf.j2
+      dest: /etc/telegraf/telegraf.d/nvidia_smi.conf
+      mode: 0644
+    notify:
+    - restart telegraf

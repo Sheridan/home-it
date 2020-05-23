@@ -1,0 +1,17 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: "{{ item }}"
+    loop:
+    - { name: x11-drivers/nvidia-drivers }
+    # - { name: media-video/nvidia-settings }
+    tags:
+    - packages
+
+  - name: Прикручиваем мониторинг
+    include_role:
+      name: telegraf
+      tasks_from: deploy_nvidia_smi_status_plugin

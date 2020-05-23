@@ -33,6 +33,7 @@
   - { role: nftables_exporter, tags: nftables_exporter }
   - { role: mikrotik_exporter, tags: mikrotik_exporter }
   - { role: telegraf, tags: [ telegraf, monitoring ] }
+  - { role: video, tags: video }
   - { role: tor, tags: tor }
   - { role: 3proxy, tags: 3proxy }
   - { role: observer, tags: observer }

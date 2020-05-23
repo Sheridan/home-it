@@ -19,6 +19,7 @@
       - meminfo
       - meminfo_numa
       - mountstats
+      - netclass
       - netdev
       - netstat
       - sockstat
@@ -53,6 +54,7 @@
   - meminfo
   - meminfo_numa
   - mountstats
+  - netclass
   - netdev
   - netstat
   - nfs
