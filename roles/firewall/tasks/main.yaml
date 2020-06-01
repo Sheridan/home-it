@@ -64,6 +64,7 @@
       owner: root
       group: root
       mode: 0744
+    when: inventory_hostname in groups.gateways
 
   - name: Установка конфигурации firewall'а
     template:
