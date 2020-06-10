@@ -39,3 +39,7 @@
         ports:
         - 5228 # Market, sync
         - 5222 # Talk
+      discord:
+        name: "Discord"
+        ports:
+        - 50000-50500

@@ -1,7 +1,7 @@
 ---
   factorio:
     active: yes
-    version: 0.18.29
+    version: 0.18.31
     user:
       name: factorio
       pw: "{{ factorio_secrets.system_user_pw }}"
@@ -38,7 +38,7 @@
         version: latest
       - name: Turbwhine
         version: latest
-      - name: CarLightFix
+      - name: JKIL-CarLight
         version: latest
-      # - name: mlp-sounds
+      # - name: factoryplanner
       #   version: latest
