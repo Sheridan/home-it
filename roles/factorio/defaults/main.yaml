@@ -1,7 +1,7 @@
 ---
   factorio:
     active: yes
-    version: 0.18.31
+    version: 0.18.32
     user:
       name: factorio
       pw: "{{ factorio_secrets.system_user_pw }}"
