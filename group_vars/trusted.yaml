@@ -43,3 +43,11 @@
         name: "Discord"
         ports:
         - 50000-50500
+      ultima_online:
+        name: "Ultima Online"
+        ports:
+        - 5001-5010
+        - 7775-7777
+        - 7875
+        - 8800-8900
+        - 9999

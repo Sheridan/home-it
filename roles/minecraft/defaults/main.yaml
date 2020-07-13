@@ -1,7 +1,7 @@
 ---
   minecraft_java_max_memory: "{{ ((2 | pow(23)) + (2 | pow(21))) * (2 | pow(10)) }}"
   minecraft:
-    active: no
+    active: yes
     debug: no
     network:
       port: 25565
