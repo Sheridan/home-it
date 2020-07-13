@@ -11,7 +11,7 @@
       email:
         name: "Mail"
         ports:
-        - 645
+        - 465
       ntp:
         name: "NTP"
         ports:

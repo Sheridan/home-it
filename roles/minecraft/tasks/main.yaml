@@ -4,7 +4,8 @@
       name: portage
       tasks_from: install_package
     vars:
-      package: { name: dev-java/oracle-jre-bin, use: { disabled: [fontconfig, nsplugin, alsa, javafx], enabled: [headless-awt] } }
+      # package: { name: dev-java/oracle-jre-bin, use: { disabled: [fontconfig, nsplugin, alsa, javafx], enabled: [headless-awt] } }
+      package: { name: dev-java/openjdk-bin, use: { disabled: [cups, alsa, examples, source], enabled: [headless-awt] } }
     tags:
     - packages
 
