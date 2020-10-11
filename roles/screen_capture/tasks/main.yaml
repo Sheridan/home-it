@@ -13,7 +13,6 @@
 
   - name: Устанавливаем скрипт
     template:
-      owner: telegraf
       src: templates/usr/local/bin/screen-capture.pl
       dest: /usr/local/bin/screen-capture
       mode: 0755

@@ -6,10 +6,10 @@
     vars:
       package: "{{ item }}"
     loop:
-    - { name: x11-wm/awesome, unstable: yes, use: { enabled: [dbus, luajit], disabled: [gnome, test] } }
+    - { name: x11-wm/awesome, unstable: yes, use: { enabled: [dbus], disabled: [gnome, test, luajit] } }
     - { name: x11-misc/lightdm, use: { enabled: [gtk, introspection, qt5, vala], disabled: [gnome, audit] }}
-    - { name: media-fonts/emojione-color-font }
-    - { name: media-fonts/twemoji-color-font }
+    - { name: media-fonts/emojione-color-font, unstable: yes }
+    - { name: media-fonts/twemoji-color-font, unstable: yes }
     - { name: sci-calculators/speedcrunch }
     - { name: app-admin/keepassxc, use: { enabled: [autotype, browser, network, yubikey], disabled: [debug, test] } }
     - { name: x11-misc/qtfm }

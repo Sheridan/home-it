@@ -1,5 +1,8 @@
 ---
   wiki:
+    user:
+      name: wiki
+      pw: "{{ wiki_secrets.system_user_pw }}"
     path:
       work: /data/wiki/packages/mediawiki
       prod: /data/wiki/production/mediawiki

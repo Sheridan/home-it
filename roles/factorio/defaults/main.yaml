@@ -1,7 +1,7 @@
 ---
   factorio:
     active: yes
-    version: 0.18.40
+    version: 1.0.0
     user:
       name: factorio
       pw: "{{ factorio_secrets.system_user_pw }}"
@@ -28,17 +28,23 @@
     mods:
       - name: blueprint_flip_and_turn
         version: latest
-      - name: Enhanced_Map_Colors
-        version: latest
-      - name: LightCone
-        version: latest
+      # - name: Enhanced_Map_Colors
+      #   version: latest
+      # - name: LightCone
+      #   version: latest
       - name: Soundpack-alerts-and-sirens
         version: latest
-      - name: NightvisionToggles
-        version: latest
+      # - name: NightvisionToggles
+      #   version: latest
       - name: Turbwhine
         version: latest
-      - name: JKIL-CarLight
-        version: latest
+      # - name: JKIL-CarLight
+      #   version: latest
+      # - name: GirlCharacter
+      #   version: latest
+      # - name: bullet-trails
+      #   version: latest
+      # - name: SolarRatio
+      #   version: latest
       # - name: factoryplanner
       #   version: latest

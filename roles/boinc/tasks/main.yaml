@@ -1,0 +1,9 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: sci-misc/boinc, unstable: yes, use: { enabled: [cuda] } }
+    tags:
+    - packages

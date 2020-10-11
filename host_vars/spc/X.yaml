@@ -13,41 +13,85 @@
         pci: "01:00.0"
     monitors:
       center:
-        name: "LG 22MP55"
-        video_out: "HDMI-0"
+        name: "LG 27UL500-W"
+        video_out: "DP-0"
         position:
           base: yes
         mode:
-          width: 1920
-          height: 1080
+          width: 3840
+          height: 2160
           rate: 60
       left:
-        name: "LG L1740BQ"
-        video_out: "HDMI-1"
-        position:
-          where: left-of
-          from: center
-        mode:
-          width: 1280
-          height: 1024
-          rate: 60
-      right:
-        name: "LG L1740PQ"
-        video_out: "DP-1"
-        position:
-          where: right-of
-          from: center
-        mode:
-          width: 1280
-          height: 1024
-          rate: 60
-      top:
         name: "ViewSonic WX2235WM-EU"
         video_out: "DVI-D-0"
         position:
-          where: above
+          where: left-of
           from: center
         mode:
           width: 1680
           height: 1050
           rate: 60
+        rotate: left
+      right:
+        name: "LG 22MP55"
+        video_out: "HDMI-0"
+        position:
+          where: right-of
+          from: center
+        mode:
+          width: 1920
+          height: 1080
+          rate: 60
+        rotate: right
+      top:
+        name: "LG L1740PQ"
+        video_out: "HDMI-1"
+        position:
+          where: above
+          from: center
+        mode:
+          width: 1280
+          height: 1024
+          rate: 60
+
+
+    # monitors:
+    #   center:
+    #     name: "LG 22MP55"
+    #     video_out: "HDMI-0"
+    #     position:
+    #       base: yes
+    #     mode:
+    #       width: 1920
+    #       height: 1080
+    #       rate: 60
+    #   left:
+    #     name: "LG L1740BQ"
+    #     video_out: "HDMI-1"
+    #     position:
+    #       where: left-of
+    #       from: center
+    #     mode:
+    #       width: 1280
+    #       height: 1024
+    #       rate: 60
+    #   right:
+    #     name: "LG L1740PQ"
+    #     video_out: "DP-1"
+    #     position:
+    #       where: right-of
+    #       from: center
+    #     mode:
+    #       width: 1280
+    #       height: 1024
+    #       rate: 60
+    #   top:
+    #     name: "ViewSonic WX2235WM-EU"
+    #     video_out: "DVI-D-0"
+    #     position:
+    #       where: above
+    #       from: center
+    #     mode:
+    #       width: 1680
+    #       height: 1050
+    #       rate: 60

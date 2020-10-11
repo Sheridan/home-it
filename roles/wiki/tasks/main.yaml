@@ -1,0 +1,28 @@
+---
+  - name: Добавляем пользователя
+    import_role:
+      name: system_user
+      tasks_from: setup_user
+    vars:
+      user:
+        name: "{{ merged_vars.wiki.user.name }}"
+        password: "{{ merged_vars.wiki.user.pw  }}"
+        comment: wiki runner
+        create_home: yes
+        groups:
+        - users
+        - nginx
+
+  - name: Создание директорий
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: 0755
+      owner: "{{ merged_vars.wiki.user.name }}"
+      group: nginx
+    loop:
+      - "{{ merged_vars.wiki.path.work }}"
+      - "{{ merged_vars.wiki.path.prod }}"
+      - "{{ merged_vars.wiki.path.skins }}"
+      - "{{ merged_vars.wiki.path.extensions }}"
+      - "{{ merged_vars.wiki.path.upload }}"
