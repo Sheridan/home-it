@@ -11,6 +11,6 @@
       shell: '{{ user.shell | default("/bin/false") }}'
       group: '{{ user.name }}'
       groups: '{{ user.groups | default([]) }}'
-      create_home: '{{ user.create_hone | default(False) }}'
+      create_home: '{{ user.create_home | default(False) }}'
       password: "{{ user.password | default((user.name + default_salt) | md5) | password_hash('sha512', default_salt)}}"
     ignore_errors: "{{ ansible_check_mode }}"

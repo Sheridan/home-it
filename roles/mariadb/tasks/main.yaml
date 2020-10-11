@@ -1,0 +1,9 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: dev-db/mariadb, use: { enabled: [pam, systemd, server], disabled: [backup, debug]  } }
+    tags:
+    - packages
