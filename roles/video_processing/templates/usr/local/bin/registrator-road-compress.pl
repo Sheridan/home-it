@@ -7,17 +7,17 @@ binmode(STDERR, ":utf8");
 use Data::Dumper;
 use Getopt::Long;
 my $source_path = '';
-my $output_dir = '~';
+my $output_file = '~/result.mp4';
 my $fade_secunds = 5;
 my $time_multiplier = 10;
 my $target_fps = 60;
 GetOptions(
-    "sourcepath=s" => \$source_path,
-    "out=s"        => \$output_dir,
+    "sourcepath=s"      => \$source_path,
+    "out=s"             => \$output_file,
     "time-multiplier=i" => \$time_multiplier,
-    "fade-secunds=i" => \$fade_secunds,
-    "target-fps=i" => \$target_fps,
-    "help"         => \&help
+    "fade-secunds=i"    => \$fade_secunds,
+    "target-fps=i"      => \$target_fps,
+    "help"              => \&help
     ) or die('wrong commandline');
 my $tmppath = sprintf('%s/trash', $source_path);
 mkdir($tmppath);
@@ -26,7 +26,15 @@ my $cpu_count = get_cpu_count();
 
 sub help
 {
-  print "TODO: help\n";
+  print <<_;
+  registrator-road-compress.pl --sourcepath=/path/to/folder --out=/path/to/result.mp4
+  Options:
+    --sourcepath     : Path to a folder containing the source files (mp4, avi, mpg)
+    --out            : Path to result file (will be created)
+    --time-multiplier: Time multiplier of video (speedup), integer [2-100]
+    --fade-secunds   : secunds of fide in at beginning of video and fade out at end
+    --target-fps     : FPS of resulting video
+_
   exit (0);
 }
 
@@ -36,17 +44,23 @@ sub echo_log
   print sprintf("---------------------------------------------------------------\n%s\n---------------------------------------------------------------\n", $str);
 }
 
+sub get_cmd_output
+{
+  my $cmd = $_[0];
+  echo_log(sprintf('Executing "%s"', $cmd));
+  my $result = `$cmd`;
+  chomp  $result;
+  return $result;
+}
+
 sub get_cpu_count
 {
-  my $cpu_count = `cat /proc/cpuinfo | grep vendor_id | wc -l`;
-  chomp $cpu_count;
-  return int($cpu_count);
+  return int(get_cmd_output('cat /proc/cpuinfo | grep vendor_id | wc -l'));
 }
 
 sub get_filelist
 {
   my $dir = $_[0];
-  print Dumper($dir);
   my $file;
   my @files;
   opendir (DIR, "$dir");
@@ -71,17 +85,14 @@ sub get_video_length
 {
   my $file = $_[0];
   echo_log(sprintf('Getting duration of %s', $file));
-  my $cmd = sprintf('ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 %s', $file);
-  my $len = `$cmd`;
-  chomp $len;
-  return int($len);
+  return int(get_cmd_output(sprintf('ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 %s', $file)));
 }
 
 sub run_ffmpeg
 {
   my $options = $_[0];
   my $cmd = sprintf('nice -n 20 ffmpeg -hide_banner -threads %s -y -hwaccel cuda -c:v h264_cuvid  %s', $cpu_count, $options);
-  echo_log($cmd);
+  echo_log(sprintf('Executing "%s"', $cmd));
   system($cmd);
 }
 
@@ -90,11 +101,23 @@ sub run_ffmpeg_encode
   my $source_file = $_[0];
   my $filters     = $_[1];
   my $result_file = $_[2];
-  run_ffmpeg(sprintf('-i %s -filter_complex "%s;[tmp_video]fps=fps=%s,pp=al,hqdn3d[v]" -map "[v]" -map "[a]" -c:v h264_nvenc -preset lossless -profile:v high444p -2pass 1 %s',
+  # run_ffmpeg(sprintf('-i %s -filter_complex "%s;[tmp_video]fps=fps=%s,pp=al,hqdn3d[v]" -map "[v]" -map "[a]" -c:v libx264 -profile:v high -pix_fmt yuv420p -preset:v slow -bf 2 -g 30 %s',
+  #                   $source_file,
+  #                   $filters,
+  #                   $target_fps,
+  #                   $result_file));
+  # run_ffmpeg(sprintf('-i %s -filter_complex "%s;[tmp_video]fps=fps=%s,pp=al,hqdn3d[v]" -map "[v]" -map "[a]" -c:v libvpx-vp9 %s',
+  #                   $source_file,
+  #                   $filters,
+  #                   $target_fps,
+  #                   $result_file));
+  run_ffmpeg(sprintf('-i %s -filter_complex "%s;[tmp_video]fps=fps=%s,pp=al,hqdn3d[v]" -map "[v]" -map "[a]" -c:v h264_nvenc -preset:v hq -level 5.1 -rc-lookahead %s -surfaces 64 -b:v 32M -bf 3 %s',
                     $source_file,
                     $filters,
                     $target_fps,
+                    $target_fps,
                     $result_file));
+
 }
 
 sub fade_in
@@ -114,10 +137,6 @@ sub fade_in
   run_ffmpeg_encode(sprintf('%s/cut_in.mp4', $tmppath),
                     sprintf('[0:v]fade=t=in:st=0:d=%s[tmp_video];[0:a]afade=t=in:st=0:d=%s[a]', $fade_secunds, $fade_secunds),
                     sprintf('%s/fade_in.mp4', $tmppath));
-  # run_ffmpeg(sprintf('-i %s/cut_in.mp4 -vf "fade=t=in:st=0:d=%s" -af "afade=t=in:st=0:d=%s" %s/fade_in.mp4',
-  #                   $tmppath,
-  #                   $fade_secunds, $fade_secunds,
-  #                   $tmppath));
 }
 
 sub fade_out
@@ -137,15 +156,11 @@ sub fade_out
   run_ffmpeg_encode(sprintf('%s/cut_out.mp4', $tmppath),
                     sprintf('[0:v]fade=t=out:st=1:d=%s[tmp_video];[0:a]afade=t=out:st=1:d=%s[a]', $fade_secunds, $fade_secunds),
                     sprintf('%s/fade_out.mp4', $tmppath));
-#   run_ffmpeg(sprintf('-i %s/cut_out.mp4 -vf "fade=t=out:st=1:d=%s" -af "afade=t=out:st=1:d=%s" %s/fade_out.mp4',
-#                     $tmppath,
-#                     $fade_secunds, $fade_secunds,
-#                     $tmppath));
 }
 
 sub concat
 {
-  my @files = @{$_[0]};
+  my @files       = @{$_[0]};
   my $result_file = $_[1];
   echo_log(sprintf("Concatenating \n%s \nto %s", join("\n", @files), $result_file));
   my $concat_txt_file = sprintf('%s/concat_options.txt', $tmppath);
@@ -176,16 +191,39 @@ sub speed_up
                     $result_file)
 }
 
+sub cleanup
+{
+  for my $file (sprintf('%s/cut_in_suffix.mp4',  $tmppath),
+                sprintf('%s/cut_out_prefix.mp4', $tmppath),
+                sprintf('%s/cut_in.mp4',         $tmppath),
+                sprintf('%s/cut_out.mp4',        $tmppath),
+                sprintf('%s/fade_in.mp4',        $tmppath),
+                sprintf('%s/fade_out.mp4',       $tmppath),
+                sprintf('%s/concat_main.mp4',    $tmppath),
+                sprintf('%s/speed_up_main.mp4',  $tmppath))
+  {
+    unlink($file);
+  }
+  rmdir($tmppath);
+}
 
-my @video_files = get_filelist($source_path);
+sub main
+{
 
-fade_in($video_files[0]);
-fade_out($video_files[-1]);
+  my @video_files = get_filelist($source_path);
 
-my @concat_main_files = (sprintf('%s/cut_in_suffix.mp4', $tmppath), @video_files[1..scalar @video_files - 2], sprintf('%s/cut_out_prefix.mp4', $tmppath));
-concat(\@concat_main_files, sprintf('%s/concat_main.mp4', $tmppath));
+  fade_in($video_files[0]);
+  fade_out($video_files[-1]);
 
-speed_up(sprintf('%s/concat_main.mp4', $tmppath), sprintf('%s/speed_up_main.mp4', $tmppath));
+  my @concat_main_files = (sprintf('%s/cut_in_suffix.mp4', $tmppath), @video_files[1..scalar @video_files - 2], sprintf('%s/cut_out_prefix.mp4', $tmppath));
+  concat(\@concat_main_files, sprintf('%s/concat_main.mp4', $tmppath));
 
-my @concat_result_files = (sprintf('%s/fade_in.mp4', $tmppath), sprintf('%s/speed_up_main.mp4', $tmppath), sprintf('%s/fade_out.mp4', $tmppath));
-concat(\@concat_result_files, sprintf('%s/result.mp4', $tmppath));
+  speed_up(sprintf('%s/concat_main.mp4', $tmppath), sprintf('%s/speed_up_main.mp4', $tmppath));
+
+  my @concat_result_files = (sprintf('%s/fade_in.mp4', $tmppath), sprintf('%s/speed_up_main.mp4', $tmppath), sprintf('%s/fade_out.mp4', $tmppath));
+  concat(\@concat_result_files, $output_file);
+
+  cleanup();
+}
+
+main();
