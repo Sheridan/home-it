@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+{% set camera_vars = hostvars[i_camera].merged_vars %}
+{% set camera_secrets = cameras_secrets[i_camera | replace('-','_')] %}
+{% set camera_net_interface = camera_vars.network | first %}
+{% set camera_ip = camera_net_interface.ip.ipv4.ip %}
+
+ffplay rtsp://{{ camera_secrets.viewer.login }}:{{ camera_secrets.viewer.pw }}@{{ camera_ip }}/{{ camera_vars.stream_paths.high }}

@@ -1,17 +1,11 @@
 ---
-  network:
-  - name: "Internal"
-    mac: "ec:71:db:e9:ce:86"
-    ip: "{{ query('ship', 'ip', 166) }}"
-    network: 'home'
-    type: 'dhcp'
-
   firewall:
     host_to_internet:
       email:
         name: "Mail"
         ports:
         - 465
+        - 25
       ntp:
         name: "NTP"
         ports:
