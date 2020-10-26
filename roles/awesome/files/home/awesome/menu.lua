@@ -15,11 +15,6 @@ function make_menu(terminal)
                 { "Калькулятор"          , "speedcrunch"}
             },
         },
-        { "My",
-            {
-                { "Cam", "ffplay -loglevel panic rtsp://viewer:viewer@ip-camera-garage.sheridan-home.local/h264Preview_01_main" }
-            },
-        },
         { "Awesome",
             {
                 { "restart"    , awesome.restart },

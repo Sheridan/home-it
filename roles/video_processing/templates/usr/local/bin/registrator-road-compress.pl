@@ -7,21 +7,29 @@ binmode(STDERR, ":utf8");
 use Data::Dumper;
 use Getopt::Long;
 my $source_path = '';
+my $scale_to = 'none';
 my $output_file = '~/result.mp4';
 my $fade_secunds = 5;
+my $cut_front_secunds = 0;
+my $cut_back_secunds = 0;
 my $time_multiplier = 10;
 my $target_fps = 60;
 GetOptions(
     "sourcepath=s"      => \$source_path,
     "out=s"             => \$output_file,
+    "scale=s"           => \$scale_to,
     "time-multiplier=i" => \$time_multiplier,
     "fade-secunds=i"    => \$fade_secunds,
+    "cut-front=i"       => \$cut_front_secunds,
+    "cut-back=i"        => \$cut_back_secunds,
     "target-fps=i"      => \$target_fps,
     "help"              => \&help
     ) or die('wrong commandline');
 my $tmppath = sprintf('%s/trash', $source_path);
 mkdir($tmppath);
 
+my $scale_template = ',scale=%s:-1:flags=lanczos+full_chroma_inp';
+my $scale_bitrate_step = 32;
 my $cpu_count = get_cpu_count();
 
 sub help
@@ -33,7 +41,10 @@ sub help
     --out            : Path to result file (will be created)
     --time-multiplier: Time multiplier of video (speedup), integer [2-100]
     --fade-secunds   : secunds of fide in at beginning of video and fade out at end
+    --cut-front      : cut some secunds from beginning of video
+    --cut-back       : cut some secunds from ending of video
     --target-fps     : FPS of resulting video
+    --scale          : Scale. Values: none,1080,2k,4k; default: none
 _
   exit (0);
 }
@@ -96,28 +107,51 @@ sub run_ffmpeg
   system($cmd);
 }
 
+
 sub run_ffmpeg_encode
 {
   my $source_file = $_[0];
   my $filters     = $_[1];
   my $result_file = $_[2];
-  # run_ffmpeg(sprintf('-i %s -filter_complex "%s;[tmp_video]fps=fps=%s,pp=al,hqdn3d[v]" -map "[v]" -map "[a]" -c:v libx264 -profile:v high -pix_fmt yuv420p -preset:v slow -bf 2 -g 30 %s',
-  #                   $source_file,
-  #                   $filters,
-  #                   $target_fps,
-  #                   $result_file));
-  # run_ffmpeg(sprintf('-i %s -filter_complex "%s;[tmp_video]fps=fps=%s,pp=al,hqdn3d[v]" -map "[v]" -map "[a]" -c:v libvpx-vp9 %s',
-  #                   $source_file,
-  #                   $filters,
-  #                   $target_fps,
-  #                   $result_file));
-  run_ffmpeg(sprintf('-i %s -filter_complex "%s;[tmp_video]fps=fps=%s,pp=al,hqdn3d[v]" -map "[v]" -map "[a]" -c:v h264_nvenc -preset:v hq -level 5.1 -rc-lookahead %s -surfaces 64 -b:v 32M -bf 3 %s',
+  my $scale_filter = '';
+  my $scale_bitrate_mult = 1;
+     if($scale_to eq '1080') { $scale_filter = sprintf($scale_template, 1920); $scale_bitrate_mult = 1; }
+  elsif($scale_to eq '2k'  ) { $scale_filter = sprintf($scale_template, 2560); $scale_bitrate_mult = 2; }
+  elsif($scale_to eq '4k'  ) { $scale_filter = sprintf($scale_template, 3840); $scale_bitrate_mult = 4; }
+  run_ffmpeg(sprintf('-i %s -filter_complex "%s;[tmp_video]fps=fps=%s%s,pp=al,hqdn3d[v]" -map "[v]" -map "[a]" -c:v h264_nvenc -preset:v hq -rc-lookahead %s -surfaces 64 -b:v %sM -bf 3 %s',
                     $source_file,
                     $filters,
                     $target_fps,
+                    $scale_filter,
                     $target_fps,
+                    $scale_bitrate_mult * $scale_bitrate_step,
                     $result_file));
 
+}
+
+sub cut_front
+{
+  my $file = $_[0];
+  echo_log(sprintf('Cut front %s', $file));
+  my $vid_length_s = get_video_length($file);
+  if( $vid_length_s <= $cut_front_secunds ) { die(sprintf('Too long front cut: %s <= %s', $vid_length_s, $cut_front_secunds)); }
+  run_ffmpeg(sprintf('-i %s -ss %s -to %s -c copy %s/cut_front.mp4',
+                  $file,
+                  parse_duration($cut_front_secunds),
+                  parse_duration($vid_length_s),
+                  $tmppath));
+}
+
+sub cut_back
+{
+  my $file = $_[0];
+  echo_log(sprintf('Cut back %s', $file));
+  my $vid_length_s = get_video_length($file);
+  if( $vid_length_s <= $cut_back_secunds ) { die(sprintf('Too long back cut: %s <= %s', $vid_length_s, $cut_back_secunds)); }
+  run_ffmpeg(sprintf('-i %s -ss 00:00:00 -to %s -c copy %s/cut_back.mp4',
+                    $file,
+                    parse_duration($vid_length_s - $cut_back_secunds),
+                    $tmppath));
 }
 
 sub fade_in
@@ -195,6 +229,8 @@ sub cleanup
 {
   for my $file (sprintf('%s/cut_in_suffix.mp4',  $tmppath),
                 sprintf('%s/cut_out_prefix.mp4', $tmppath),
+                sprintf('%s/cut_front.mp4',      $tmppath),
+                sprintf('%s/cut_back.mp4',       $tmppath),
                 sprintf('%s/cut_in.mp4',         $tmppath),
                 sprintf('%s/cut_out.mp4',        $tmppath),
                 sprintf('%s/fade_in.mp4',        $tmppath),
@@ -211,12 +247,22 @@ sub main
 {
 
   my @video_files = get_filelist($source_path);
+  if($cut_front_secunds > 0)
+  {
+    cut_front($video_files[0]);
+    $video_files[0] = sprintf('%s/cut_front.mp4',  $tmppath);
+  }
 
-  fade_in($video_files[0]);
-  fade_out($video_files[-1]);
+  if($cut_back_secunds > 0)
+  {
+    cut_back($video_files[-1]);
+    $video_files[-1] = sprintf('%s/cut_back.mp4',  $tmppath);
+  }
 
-  my @concat_main_files = (sprintf('%s/cut_in_suffix.mp4', $tmppath), @video_files[1..scalar @video_files - 2], sprintf('%s/cut_out_prefix.mp4', $tmppath));
-  concat(\@concat_main_files, sprintf('%s/concat_main.mp4', $tmppath));
+  fade_in($video_files[0]);   $video_files[0]  = sprintf('%s/cut_in_suffix.mp4',  $tmppath);
+  fade_out($video_files[-1]); $video_files[-1] = sprintf('%s/cut_out_prefix.mp4',  $tmppath);
+
+  concat(\@video_files, sprintf('%s/concat_main.mp4', $tmppath));
 
   speed_up(sprintf('%s/concat_main.mp4', $tmppath), sprintf('%s/speed_up_main.mp4', $tmppath));
 

@@ -11,8 +11,28 @@
     tags:
     - packages
 
-  - name: Устанавливаем скрипт
+  - name: Устанавливаем скрипты
     template:
-      src: templates/usr/local/bin/screen-capture.pl
-      dest: /usr/local/bin/screen-capture
+      src: "templates/usr/local/bin/{{ item }}"
+      dest: "/usr/local/bin/{{ item }}"
       mode: 0755
+    loop:
+    - screen-capture.pl
+    - registrator-road-compress.pl
+
+  - name: Устанавливаем скрипт просмотра камеры
+    template:
+      src: "templates/usr/local/bin/ip-camera-view.sh.j2"
+      dest: "/usr/local/bin/ip-camera-view-{{ i_camera }}.sh"
+      mode: 0755
+    loop: "{{ groups.cameras }}"
+    loop_control:
+      loop_var: i_camera
+
+  - name: Устанавливаем скрипты
+    template:
+      src: "templates/usr/local/bin/{{ item }}.j2"
+      dest: "/usr/local/bin/{{ item }}"
+      mode: 0755
+    loop:
+    - ip-camera-view-wall.sh

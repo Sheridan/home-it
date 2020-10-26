@@ -1,0 +1,11 @@
+---
+  network:
+  - name: "Internal"
+    mac: "ec:71:db:e9:ce:86"
+    ip: "{{ query('ship', 'ip', 166) }}"
+    network: 'home'
+    type: 'dhcp'
+
+  stream_paths:
+    high: h264Preview_01_main
+    low: h264Preview_01_sub
