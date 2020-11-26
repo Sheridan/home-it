@@ -28,10 +28,12 @@ table inet filter {
   chain lo_rules {
     {{ query('nft', 'as_iif', internal_interface) }} ip daddr 127.0.0.1/8 counter accept comment "Accept v4 to lo from internal"
     {{ query('nft', 'as_iif', internal_interface) }} ip6 daddr ::1/128 counter accept comment "Accept v6 to lo from internal"
+    {#
     iif != lo ip daddr 127.0.0.1/8 counter log prefix "drop to loopback not from loopback: "
     iif != lo ip daddr 127.0.0.1/8 counter drop comment "drop connections to loopback not coming from loopback"
     iif != lo ip6 daddr ::1/128 counter log prefix "drop to loopback not from loopback: "
     iif != lo ip6 daddr ::1/128 counter drop comment "drop connections to loopback not coming from loopback6"
+    #}
     oif lo counter accept comment "accept to loopback"
     iif lo counter accept comment "accept from loopback"
   }
