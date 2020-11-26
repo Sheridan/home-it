@@ -34,9 +34,11 @@ ExcludeExitNodes {RU}, {UA}, {BY}
 ## as a relay, and not make any local application connections yourself.
 # Default: Bind to localhost:9050 for local connections.
 #}
+{#
 ORPort 0
-ExtORPort 0
 DirPort 0
+#}
+ExtORPort 0
 ClientUseIPv4 1
 ClientUseIPv6 1
 

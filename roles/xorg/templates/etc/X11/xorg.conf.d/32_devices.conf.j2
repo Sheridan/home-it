@@ -1,0 +1,72 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+{% for videocard_name in merged_vars.Xorg.options.init_order.videocards %}
+  {% set videocard = merged_vars.Xorg.videocards[videocard_name] %}
+  {% set videocard_identifier = (videocard.vendor + ' ' + videocard.model) | lower | regex_replace('[^a-z0-9]', '_') %}
+  {% set videocard_pci = 'PCI:' + ( videocard.pci | regex_replace('\.', ':') ) %}
+
+Section "Device"
+  Identifier "Device_{{ videocard_identifier }}"
+  Driver     "{{ videocard.driver }}"
+  VendorName "{{ videocard.vendor }}"
+  BoardName  "{{ videocard.model }}"
+
+{% if videocard.driver == 'nvidia' %}
+
+{#
+    Option "PixmapCacheSize" "16777216"
+    Option "AllowSHMPixmaps" "on"
+    Option "PrimaryGPU"      "on"
+    Option "MultiGPU"        "Mosaic"
+    Option "SLI"             "Mosaic"
+#}
+
+  Option     "NoRenderExtension"    "off"
+  Option     "IndirectMemoryAccess" "on"
+  Option     "IgnoreEDID"           "off"
+  Option     "UseEDID"              "on"
+  Option     "NoLogo"               "off"
+  Option     "RandRRotation"        "on"
+  Option     "MultiGPU"             "AFR"
+  Option     "SLI"                  "AFR"
+  Option     "Coolbits"             "2"
+
+{% endif %}
+
+  BusID      "{{ videocard_pci }}"
+EndSection
+
+{% endfor %}
+
+
+{% for monitor_name in merged_vars.Xorg.options.init_order.monitors %}
+  {% set monitor = merged_vars.Xorg.monitors[monitor_name] %}
+  {% set videocard = merged_vars.Xorg.videocards[monitor.connector.card] %}
+  {% set videocard_identifier = (videocard.vendor + ' ' + videocard.model) | lower | regex_replace('[^a-z0-9]', '_') %}
+  {% set monitor_identifier = (monitor.vendor + ' ' + monitor.model) | lower | regex_replace('[^a-z0-9]', '_') %}
+
+# {{ monitor_name }}: {{ monitor.vendor }} {{ monitor.model }} -> {{ monitor.mode.width }}x{{ monitor.mode.height }}@{{ monitor.mode.rate }}
+# {{ monitor.connector.card }}: {{ videocard.vendor }} {{ videocard.model }} @ {{ monitor.connector.out }}
+Section "Monitor"
+  Identifier    "Monitor_{{ monitor_identifier }}"
+  VendorName    "{{ monitor.vendor }}"
+  ModelName     "{{ monitor.model }}"
+{#
+    HorizSync     135.0 - 135.0
+    VertRefresh   48.0 - 61.0
+#}
+  Option        "DPMS"
+EndSection
+
+Section "Screen"
+  Identifier   "Screen_{{ videocard_identifier }}_{{ monitor_identifier }}"
+  Device       "Device_{{ videocard_identifier }}"
+  Monitor      "Monitor_{{ monitor_identifier }}"
+  DefaultDepth  24
+  SubSection   "Display"
+    Depth       24
+  EndSubSection
+EndSection
+
+{% endfor %}

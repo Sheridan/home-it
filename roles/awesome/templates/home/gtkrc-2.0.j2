@@ -1,8 +1,0 @@
-include "/usr/share/themes/{{ merged_vars.X.theme.name }}/gtk-2.0/gtkrc"
-style "user-font"
-{
-  font_name="{{ merged_vars.X.fonts.regular.name }} {{ merged_vars.X.fonts.regular.size }}"
-}
-widget_class "*" style "user-font"
-
-gtk-cursor-theme-name={{ merged_vars.X.cursor.name }}

@@ -3,15 +3,23 @@
     options:
       dpi: 96
       init_order:
-      - main
+        monitors:
+        - main
+        videocards:
+        - first
     videocards:
       first:
-        name: "Intel Corporation Mobile 945GSE Express Integrated Graphics Controller"
+        vendor: "Intel Corporation"
+        model: "Mobile 945GSE Express Integrated Graphics Controller"
+        driver: "intel"
         pci: "00:02.0"
     monitors:
       main:
-        name: "LG 22MP55"
-        video_out: "LVDS1"
+        vendor: "Unknown"
+        model: "Unknown"
+        connector:
+          card: first
+          out: "LVDS1"
         position:
           base: yes
         mode:

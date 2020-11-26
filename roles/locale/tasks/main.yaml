@@ -1,0 +1,21 @@
+---
+  - name: Настройка генератора локалей
+    template:
+      src: "etc/locale.gen.j2"
+      dest: "/etc/locale.gen"
+      mode: '0644'
+      owner: root
+      group: root
+    notify:
+    - regen locales
+
+  - name: Установка локали
+    template:
+      src: "{{ item }}.j2"
+      dest: "/{{ item }}"
+      mode: '0644'
+      owner: root
+      group: root
+    loop:
+    - etc/default/locale
+    - etc/locale.conf
