@@ -1,0 +1,3 @@
+---
+  - name: regen locales
+    shell: locale-gen

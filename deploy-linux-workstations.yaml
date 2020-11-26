@@ -9,6 +9,7 @@
   - vars/telegram.yaml
   roles:
   # - { role: firewall, tags: firewall }
+  - { role: locale, tags: locale }
   - { role: network_interfaces, tags: network_interfaces }
   - { role: bluetooth, tags: bluetooth }
   - { role: kernel, tags: kernel }
@@ -29,6 +30,7 @@
   - { role: nsswitch, tags: nsswitch }
   - { role: pulseaudio, tags: pulseaudio }
   - { role: htop, tags: htop }
+  - { role: xorg, tags: xorg }
   - { role: awesome, tags: awesome }
   - { role: video_processing, tags: video_processing}
 

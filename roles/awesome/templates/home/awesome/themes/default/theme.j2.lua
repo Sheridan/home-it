@@ -11,7 +11,7 @@ local themes_path = gfs.get_themes_dir()
 
 local theme = {}
 
-theme.font          = "{{ merged_vars.X.fonts.regular.name }} {{ merged_vars.X.fonts.regular.size }}"
+theme.font          = "{{ merged_vars.Xorg.fonts.regular.name }} {{ merged_vars.Xorg.fonts.regular.size }}"
 
 theme.bg_normal     = "#222222"
 theme.bg_focus      = "#535d6c"
@@ -65,9 +65,9 @@ theme.menu_submenu_icon = themes_path.."default/submenu.png"
 theme.menu_height = dpi(15)
 theme.menu_width  = dpi(200)
 theme.menu_border_width = dpi(1)
-theme.menu_font = "{{ merged_vars.X.fonts.regular.name }} {{ merged_vars.X.fonts.regular.size }}"
-theme.notification_font = "{{ merged_vars.X.fonts.small.name }} {{ merged_vars.X.fonts.small.size }}"
-theme.taglist_font = "{{ merged_vars.X.fonts.small.name }} {{ merged_vars.X.fonts.small.size }}"
+theme.menu_font = "{{ merged_vars.Xorg.fonts.regular.name }} {{ merged_vars.Xorg.fonts.regular.size }}"
+theme.notification_font = "{{ merged_vars.Xorg.fonts.small.name }} {{ merged_vars.Xorg.fonts.small.size }}"
+theme.taglist_font = "{{ merged_vars.Xorg.fonts.small.name }} {{ merged_vars.Xorg.fonts.small.size }}"
 
 -- You can add as many variables as
 -- you wish and access them by using
@@ -129,7 +129,7 @@ theme.awesome_icon = theme_assets.awesome_icon(
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 -- theme.icon_theme = "nimbus"
-theme.icon_theme = "{{ merged_vars.X.icons.name }}"
+theme.icon_theme = "{{ merged_vars.Xorg.icons.name }}"
 
 return theme
 

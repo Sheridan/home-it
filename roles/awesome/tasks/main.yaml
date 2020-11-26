@@ -7,23 +7,12 @@
       package: "{{ item }}"
     loop:
     - { name: x11-wm/awesome, unstable: yes, use: { enabled: [dbus], disabled: [gnome, test, luajit] } }
-    - { name: x11-misc/lightdm, use: { enabled: [gtk, introspection, qt5, vala], disabled: [gnome, audit] }}
-    - { name: media-fonts/emojione-color-font, unstable: yes }
-    - { name: media-fonts/twemoji-color-font, unstable: yes }
     - { name: sci-calculators/speedcrunch }
     - { name: app-admin/keepassxc, use: { enabled: [autotype, browser, network, yubikey], disabled: [debug, test] } }
     - { name: x11-misc/qtfm }
     - { name: media-gfx/flameshot, unstable: yes }
     - { name: x11-terms/kitty, unstable: yes, use: { enabled: [imagemagick], disabled: [debug, doc] } }
     - { name: x11-terms/qterminal }
-    # - { name: x11-themes/adwaita-icon-theme }
-    # - { name: x11-themes/adwaita-qt }
-    # - { name: x11-themes/gtk-engines-adwaita }
-    - { name: x11-themes/qtcurve, use: { enabled: [gtk, nls, qt5] } }
-    - { name: x11-themes/comix-xcursors, use: { enabled: [opaque], disabled: [lefthanded] } }
-    - { name: media-fonts/ubuntu-font-family }
-    - { name: x11-misc/qt5ct, unstable: no, x86_as_amd64: yes }
-    - { name: x11-themes/gtk-chtheme }
     tags:
     - packages
 
@@ -56,13 +45,6 @@
     ignore_errors: "{{ ansible_check_mode }}"
     tags:
     - awesome_icons
-
-  - name: Устанавливаем xrandr скрипт
-    template:
-      src: usr/local/bin/xrandrapply.j2.sh
-      dest: /usr/local/bin/xrandrapply.sh
-      mode: 0755
-    when: merged_vars.Xorg.monitors | length > 1
 
   - name: Деплоим в юзера
     include_tasks: user_part.yaml

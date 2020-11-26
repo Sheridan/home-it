@@ -8,6 +8,7 @@
   - vars/ssh_keys.yaml
   - vars/telegram.yaml
   roles:
+  - { role: locale, tags: locale }
   - { role: network_interfaces, tags: network_interfaces }
   - { role: kernel, tags: kernel }
   - { role: users, tags: users }

@@ -10,6 +10,7 @@
   roles:
   - { role: portage, tags: portage }
   - { role: packages, tags: packages }
+  - { role: locale, tags: locale }
   - { role: apcupsd, tags: apcupsd }
   - { role: network_interfaces, tags: network_interfaces }
   - { role: gps, tags: gps }

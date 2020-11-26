@@ -1,0 +1,27 @@
+---
+  - name: Устанавливаем тему GTK и иксов
+    template:
+      src: "templates/{{ item.src }}"
+      dest: "/home/{{ i_user.name }}/{{ item.dest }}"
+      mode: 0644
+      owner: "{{ i_user.name }}"
+    become_user: "{{ i_user.name }}"
+    loop:
+    - { src: home/gtk-3.0/settings.ini.j2, dest: .config/gtk-3.0/settings.ini }
+    - { src: home/gtkrc-2.0.j2, dest: .gtkrc-2.0 }
+    - { src: home/Xresources.j2, dest: .Xresources }
+
+  - name: Устанавливаем тему Qt
+    ini_file:
+      path: "/home/{{ i_user.name }}/.config/qt5ct/qt5ct.conf"
+      section: "{{ item.section }}"
+      option: "{{ item.key }}"
+      value: "{{ item.value }}"
+      no_extra_spaces: yes
+    loop:
+    - { section: Appearance, key: style, value: "{{ merged_vars.Xorg.theme.name }}" }
+    - { section: Appearance, key: icon_theme, value: "{{ merged_vars.Xorg.icons.name }}" }
+    - { section: Appearance, key: custom_palette, value: "false" }
+    - { section: Appearance, key: standard_dialogs, value: "default" }
+    - { section: Interface, key: menus_have_icons, value: "true" }
+    - { section: Interface, key: dialog_buttons_have_icons, value: 2 }

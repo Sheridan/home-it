@@ -1,0 +1,21 @@
+---
+  Xorg:
+    minimal_vt: 7
+    cursor:
+      name: ComixCursors-Opaque-Red
+      #name: Bibata_Amber
+      size: 32
+    fonts:
+      regular:
+        name: Ubuntu
+        size: 10
+      small:
+        name: Ubuntu
+        size: 8
+      mono:
+        name: Ubuntu Mono
+        size: 10
+    theme:
+      name: QtCurve
+    icons:
+      name: Adwaita
