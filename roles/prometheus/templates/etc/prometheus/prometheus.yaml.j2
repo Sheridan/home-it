@@ -2,6 +2,7 @@
   global:
     scrape_interval: {{ merged_vars.monitoring.collect.interval }}s
     evaluation_interval: {{ merged_vars.monitoring.collect.interval * 2 }}s
+    scrape_timeout: {{ merged_vars.monitoring.collect.interval - 1 }}s
 
   scrape_configs:
   - job_name: 'prometheus'

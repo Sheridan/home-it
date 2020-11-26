@@ -6,25 +6,11 @@
         name: "Default http"
         ports:
         - 80
+        - 8080
       https:
         name: "Default https"
         ports:
         - 443
-      ftp:
-        name: "Default ftp"
-        ports:
-        - 20
-        - 21
-        - 115
-        - 989
-        - 990
-      fantasyradio:
-        name: "fantasyradio.ru streams"
-        ports:
-        - 8000
-        - 8002
-        - 8008
-        - 8016
 
   ballance:
     mark:

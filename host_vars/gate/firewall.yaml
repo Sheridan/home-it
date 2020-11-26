@@ -84,6 +84,7 @@
         interfaces:
         - "internal"
         - "external_kis"
+        - "external_he"
       minecraft:
         name: "Minecraft"
         ports:
@@ -92,3 +93,4 @@
         interfaces:
         - "internal"
         - "external_kis"
+        - "external_he"
