@@ -1,0 +1,8 @@
+---
+  grub2:
+    boot:
+      device: "LABEL=root"
+      fs: "btrfs"
+    video:
+      vga: '0x037e'
+      mtrr: '3'

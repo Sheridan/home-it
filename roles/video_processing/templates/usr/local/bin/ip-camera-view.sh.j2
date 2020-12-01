@@ -6,4 +6,4 @@
 {% set camera_net_interface = camera_vars.network | first %}
 {% set camera_ip = camera_net_interface.ip.ipv4.ip %}
 
-ffplay rtsp://{{ camera_secrets.viewer.login }}:{{ camera_secrets.viewer.pw }}@{{ camera_ip }}/{{ camera_vars.stream_paths.high }}
+ffplay -rtsp_transport tcp rtsp://{{ camera_secrets.viewer.login }}:{{ camera_secrets.viewer.pw }}@{{ camera_ip }}/{{ camera_vars.stream_paths.high }}

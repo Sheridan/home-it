@@ -1,0 +1,11 @@
+---
+  network:
+  - name: "Internal"
+    mac: "ec:71:db:81:e5:57"
+    ip: "{{ query('ship', 'ip', 169) }}"
+    network: 'home'
+    type: 'dhcp'
+
+  stream_paths:
+    high: live0.265
+    low: live1.265

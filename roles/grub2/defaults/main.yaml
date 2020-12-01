@@ -1,0 +1,18 @@
+---
+  grub2:
+    distributor: "Sheridan Gentoo"
+    menu:
+      timeout: 5
+      default: 0
+    boot:
+      device: "auto"
+      fs: "auto"
+    video:
+      vga: '0x11a'
+      resolution: 'auto'
+      colorbits: 'auto'
+      mtrr: '2'
+    theme: '/boot/grub/themes/starfield/theme.txt'
+    sound: '60 800 1'
+    kernel:
+      options: []

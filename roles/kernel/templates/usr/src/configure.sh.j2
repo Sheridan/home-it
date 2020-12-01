@@ -1,12 +1,14 @@
 #!/bin/bash
 
 cd linux
-pre_md5=$(md5sum /usr/src/.config | awk '{print $1}')
+pre_md5=$(md5sum /usr/src/linux/.config | awk '{print $1}')
 make -j{{ ansible_processor_vcpus }} nconfig
-post_md5=$(md5sum /usr/src/.config | awk '{print $1}')
+post_md5=$(md5sum /usr/src/linux/.config | awk '{print $1}')
 
-if [ "$pre_md5" != "$post_md5" ]
+if [[ "$pre_md5" == "$post_md5" ]]
 then
+  echo "Nothing to do"
+else
   mv -f /usr/src/.config /usr/src/.config.$(date '+%d.%m.%Y-%H:%M:%S');
   mv /usr/src/linux/.config /usr/src/.config
   ln -s /usr/src/.config /usr/src/linux/.config

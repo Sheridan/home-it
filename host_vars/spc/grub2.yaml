@@ -1,0 +1,9 @@
+---
+  grub2:
+    video:
+      vga: '0x11a'
+      resolution: '1680x1050'
+      colorbits: '16'
+    kernel:
+      options:
+      - 'saa7134.card=157'

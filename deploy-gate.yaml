@@ -16,6 +16,7 @@
   - { role: gps, tags: gps }
   - { role: pppoe, tags: pppoe }
   - { role: kernel, tags: kernel }
+  - { role: grub2, tags: grub2 }
   - { role: users, tags: users }
   - { role: zsh, tags: zsh }
   - { role: sshd, tags: sshd }

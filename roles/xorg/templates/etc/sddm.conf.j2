@@ -33,7 +33,7 @@ RebootCommand=/usr/bin/systemctl reboot
 Current=breeze
 
 {# Cursor theme used in the greeter #}
-CursorTheme={{ merged_vars.Xorg.cursor.name }}
+CursorTheme={{ merged_vars.xorg.cursor.name }}
 
 {# Number of users to use as threshold #}
 {# above which avatars are disabled #}
@@ -94,7 +94,7 @@ DisplayCommand=/usr/share/sddm/scripts/Xsetup
 DisplayStopCommand=/usr/share/sddm/scripts/Xstop
 
 {# The lowest virtual terminal number that will be used. #}
-MinimumVT={{ merged_vars.Xorg.minimal_vt }}
+MinimumVT={{ merged_vars.xorg.minimal_vt }}
 
 {# Arguments passed to the X server invocation #}
 ServerArguments=-nolisten tcp

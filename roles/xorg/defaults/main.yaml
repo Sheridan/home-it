@@ -1,5 +1,5 @@
 ---
-  Xorg:
+  xorg:
     minimal_vt: 7
     cursor:
       name: ComixCursors-Opaque-Red

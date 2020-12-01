@@ -1,0 +1,8 @@
+---
+  - name: Устанавливаем конфигурацию grub2
+    template:
+      src: etc/default/grub.j2
+      dest: /etc/default/grub
+      mode: 0644
+    notify:
+    - update grub2

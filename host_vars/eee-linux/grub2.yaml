@@ -1,0 +1,6 @@
+---
+  grub2:
+    video:
+      vga: '0x114'
+      resolution: '1024x600'
+      colorbits: '16'

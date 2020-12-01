@@ -13,6 +13,7 @@
   - { role: network_interfaces, tags: network_interfaces }
   - { role: bluetooth, tags: bluetooth }
   - { role: kernel, tags: kernel }
+  - { role: grub2, tags: grub2 }
   - { role: users, tags: users }
   - { role: zsh, tags: zsh }
   - { role: sshd, tags: sshd }
