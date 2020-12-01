@@ -19,8 +19,8 @@
       value: "{{ item.value }}"
       no_extra_spaces: yes
     loop:
-    - { section: Appearance, key: style, value: "{{ merged_vars.Xorg.theme.name }}" }
-    - { section: Appearance, key: icon_theme, value: "{{ merged_vars.Xorg.icons.name }}" }
+    - { section: Appearance, key: style, value: "{{ merged_vars.xorg.theme.name }}" }
+    - { section: Appearance, key: icon_theme, value: "{{ merged_vars.xorg.icons.name }}" }
     - { section: Appearance, key: custom_palette, value: "false" }
     - { section: Appearance, key: standard_dialogs, value: "default" }
     - { section: Interface, key: menus_have_icons, value: "true" }

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ffmpeg \
+  -rtsp_transport tcp \
   -hwaccel cuda -c:v h264_cuvid \
   {% for i_camera in groups.cameras -%}
   {%- set camera_vars = hostvars[i_camera].merged_vars -%}

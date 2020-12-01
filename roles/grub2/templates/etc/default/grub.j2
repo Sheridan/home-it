@@ -1,0 +1,103 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+{#
+To populate all changes in this file you need to regenerate your
+grub configuration file afterwards:
+    'grub2-mkconfig -o /boot/grub/grub.cfg'
+See the grub info page for documentation on possible variables and
+their associated values.
+#}
+
+GRUB_DISTRIBUTOR="{{ merged_vars.grub2.distributor }} : {{ inventory_hostname }}"
+
+{# Default menu entry #}
+GRUB_DEFAULT={{ merged_vars.grub2.menu.default }}
+
+{# Boot the default entry this many seconds after the menu is displayed #}
+GRUB_TIMEOUT={{ merged_vars.grub2.menu.timeout }}
+GRUB_TIMEOUT_STYLE=menu
+
+{#
+GRUB_DEVICE=UUID=f5ea3c18-9066-408e-85b7-359d64c21e98
+GRUB_DEVICE=/dev/sda1
+GRUB_DEVICE_UUID=f5ea3c18-9066-408e-85b7-359d64c21e98
+#}
+{% if merged_vars.grub2.boot.device != 'auto' %}
+GRUB_DEVICE={{ merged_vars.grub2.boot.device }}
+{% endif %}
+
+{% set rootfstype = ( 'rootfstype=' + merged_vars.grub2.boot.fs ) if merged_vars.grub2.boot.fs != 'auto' else '' %}
+
+{# Append parameters to the linux kernel command line #}
+GRUB_CMDLINE_LINUX="init=/usr/lib/systemd/systemd {{ rootfstype }} {{ merged_vars.grub2.kernel.options | join(' ') }}"
+{#
+rootfstype=btrfs rootflags=device=/dev/sda1,device=/dev/sdb1,device=/dev/sdc1,device=/dev/sdd1,subvol=root
+rootflags=subvol=root,degraded
+video=uvesafb:1600x1200-16,mtrr:2,ywrap
+vga=0x318
+video=uvesafb:1600x1200-16,mtrr:2,ywrap
+Examples:
+Boot with network interface renaming disabled
+GRUB_CMDLINE_LINUX="net.ifnames=0"
+Boot with systemd instead of sysvinit (openrc)
+GRUB_CMDLINE_LINUX="init=/usr/lib/systemd/systemd"
+#}
+
+{# Append parameters to the linux kernel command line for non-recovery entries #}
+{% set video = ( 'video=vesafb:' + merged_vars.grub2.video.resolution + '-' + merged_vars.grub2.video.colorbits + ',mtrr:' + merged_vars.grub2.video.mtrr + ',ywrap' ) if merged_vars.grub2.video.resolution != 'auto' else ( 'vga=' + merged_vars.grub2.video.vga ) %}
+GRUB_CMDLINE_LINUX_DEFAULT="{{ video }}"
+
+{# Uncomment to disable graphical terminal (grub-pc only) #}
+#GRUB_TERMINAL=console
+
+{#
+The resolution used on graphical terminal.
+Note that you can use only modes which your graphic card supports via VBE.
+You can see them in real GRUB with the command `vbeinfo'.
+#}
+{% set gfx = ( merged_vars.grub2.video.resolution + 'x' + merged_vars.grub2.video.colorbits ) if merged_vars.grub2.video.resolution != 'auto' else ( 'auto' ) %}
+GRUB_GFXMODE={{ gfx }}
+
+{#
+Set to 'text' to force the Linux kernel to boot in normal text
+mode, 'keep' to preserve the graphics mode set using
+'GRUB_GFXMODE', 'WIDTHxHEIGHT'['xDEPTH'] to set a particular
+graphics mode, or a sequence of these separated by commas or
+semicolons to try several modes in sequence.
+#}
+GRUB_GFXPAYLOAD_LINUX=keep
+
+{#
+Path to theme spec txt file.
+The starfield is by default provided with use truetype.
+NOTE: when enabling custom theme, ensure you have required font/etc.
+#}
+GRUB_THEME="/boot/grub/themes/starfield/theme.txt"
+
+{#
+Background image used on graphical terminal.
+Can be in various bitmap formats.
+#}
+#GRUB_BACKGROUND="/boot/grub/mybackground.png"
+
+{# Uncomment if you don't want GRUB to pass "root=UUID=xxx" parameter to kernel #}
+#GRUB_DISABLE_LINUX_UUID=true
+
+{# Uncomment to disable generation of recovery mode menu entries #}
+#GRUB_DISABLE_RECOVERY=true
+
+{#
+Uncomment to disable generation of the submenu and put all choices on
+the top-level menu.
+Besides the visual affect of no sub menu, this makes navigation of the
+menu easier for a user who can't see the screen.
+#}
+#GRUB_DISABLE_SUBMENU=y
+
+{#
+Uncomment to play a tone when the main menu is displayed.
+This is useful, for example, to allow users who can't see the screen
+to know when they can make a choice on the menu.
+#}
+GRUB_INIT_TUNE="{{ merged_vars.grub2.sound }}"

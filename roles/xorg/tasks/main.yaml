@@ -17,6 +17,9 @@
     tags:
     - packages
 
+  - debug:
+      msg: '{{ merged_vars.xorg }}'
+
   - name: Устанавливаем конфиги xorg
     template:
       src: "etc/X11/xorg.conf.d/{{ i_xorg_conf }}.j2"
@@ -43,7 +46,7 @@
       src: usr/local/bin/xrandrapply.j2.sh
       dest: /usr/local/bin/xrandrapply.sh
       mode: 0755
-    when: merged_vars.Xorg.monitors | length > 1
+    when: merged_vars.xorg.monitors | length > 1
 
   - name: Деплоим в юзера
     include_tasks: user_part.yaml

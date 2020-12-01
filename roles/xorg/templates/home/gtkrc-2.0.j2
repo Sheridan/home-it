@@ -1,8 +1,8 @@
-include "/usr/share/themes/{{ merged_vars.Xorg.theme.name }}/gtk-2.0/gtkrc"
+include "/usr/share/themes/{{ merged_vars.xorg.theme.name }}/gtk-2.0/gtkrc"
 style "user-font"
 {
-  font_name="{{ merged_vars.Xorg.fonts.regular.name }} {{ merged_vars.Xorg.fonts.regular.size }}"
+  font_name="{{ merged_vars.xorg.fonts.regular.name }} {{ merged_vars.xorg.fonts.regular.size }}"
 }
 widget_class "*" style "user-font"
 
-gtk-cursor-theme-name={{ merged_vars.Xorg.cursor.name }}
+gtk-cursor-theme-name={{ merged_vars.xorg.cursor.name }}
