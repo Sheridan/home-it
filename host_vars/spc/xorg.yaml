@@ -78,45 +78,58 @@
           rate: 60
 
 
+#    monitors:
+#      center:
+#        vendor: "LG"
+#        model: "27UL500-W"
+#        connector:
+#          card: first
+#          out: "DP-0"
+#        position:
+#          base: yes
+#        mode:
+#          width: 3840
+#          height: 2160
+#          rate: 60
+#      left:
+#        vendor: "Iiyama"
+#        model: "ProLite XU2395WSU-B1"
+#        connector:
+#          card: first
+#          out: "HDMI-1-0"
+#        position:
+#          where: left-of
+#          from: center
+#        mode:
+#          width: 1920
+#          height: 1200
+#          rate: 60
+#        rotate: right
+#      right:
+#        vendor: "Iiyama"
+#        model: "ProLite XU2395WSU-B1"
+#        connector:
+#          card: first
+#          out: "DP-1-1"
+#        position:
+#          where: right-of
+#          from: center
+#        mode:
+#          width: 1920
+#          height: 1200
+#          rate: 60
+#        rotate: left
+#      top:
+#        vendor: "LG"
+#        model: "22MP55"
+#        connector:
+#          card: first
+#          out: "DVI-D-1-0"
+#        position:
+#          where: above
+#          from: center
+#        mode:
+#          width: 1920
+#          height: 1080
+#          rate: 60
 
-      # left:
-      #   vendor: "ViewSonic"
-      #   model: "WX2235WM-EU"
-      #   connector:
-      #     card: first
-      #     out: "DVI-D-0"
-      #   position:
-      #     where: left-of
-      #     from: center
-      #   mode:
-      #     width: 1680
-      #     height: 1050
-      #     rate: 60
-      #   rotate: left
-      # right:
-      #   vendor: "LG"
-      #   model: "22MP55"
-      #   connector:
-      #     card: first
-      #     out: "HDMI-0"
-      #   position:
-      #     where: right-of
-      #     from: center
-      #   mode:
-      #     width: 1920
-      #     height: 1080
-      #     rate: 60
-      #   rotate: right
-      # top:
-      #   vendor: "LG"
-      #   model: "L1740PQ"
-      #   connector:
-      #     card: first
-      #     out: "HDMI-1"
-      #   position:
-      #     where: above
-      #     from: center
-      #   mode:
-      #     width: 1280
-      #     height: 1024
-      #     rate: 60
