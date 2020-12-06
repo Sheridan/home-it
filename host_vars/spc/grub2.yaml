@@ -2,7 +2,7 @@
   grub2:
     video:
       vga: '0x11a'
-      resolution: '1680x1050'
+      resolution: '1920x1080'
       colorbits: '16'
     kernel:
       options:
