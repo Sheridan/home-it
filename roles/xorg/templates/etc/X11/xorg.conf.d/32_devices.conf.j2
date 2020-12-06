@@ -18,8 +18,9 @@ Section "Device"
     Option "PixmapCacheSize" "16777216"
     Option "AllowSHMPixmaps" "on"
     Option "PrimaryGPU"      "on"
-    Option "MultiGPU"        "Mosaic"
-    Option "SLI"             "Mosaic"
+    Option "MultiGPU"        "Mosaic" "AFR"
+    Option "SLI"             "Mosaic" "AFR"
+    Option "Coolbits"        "2"
 #}
 
   Option     "NoRenderExtension"    "off"
@@ -28,9 +29,9 @@ Section "Device"
   Option     "UseEDID"              "on"
   Option     "NoLogo"               "off"
   Option     "RandRRotation"        "on"
-  Option     "MultiGPU"             "AFR"
-  Option     "SLI"                  "AFR"
-  Option     "Coolbits"             "2"
+  Option     "MultiGPU"             "off"
+  Option     "SLI"                  "off"
+  Option     "AllowSHMPixmaps"      "on"
 
 {% endif %}
 

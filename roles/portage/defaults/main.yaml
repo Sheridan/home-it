@@ -25,10 +25,14 @@
         single: python3_7
         enabled:
         - python2_7
+        - python3_6
         - python3_7
+        # - python3_8
+        # - python3_9
       ruby:
         enabled:
         - ruby25
+        - ruby26
       php:
         enabled:
         - php5-6
@@ -105,7 +109,6 @@
         - bash-completion
         - zsh-completion
         - startup-notification
-        - spell
         - man
         - libnotify
         - pcre16
@@ -117,6 +120,7 @@
         - savedconfig
         - systemd
         - spell
+        - utils
         sequrity:
         - sasl
         - md5sum
