@@ -1,7 +1,7 @@
 screen_layout = {
-  left=3,
+  left=4,
   center=1,
-  right=4,
+  right=3,
   top=2
 }
 

@@ -16,9 +16,9 @@ require("awful.autofocus")
 
 require("helpers")
 require("menu")
+require("wallpapers")
 require("keybindings")
 require("toolbars")
-require("wallpapers")
 require("tags")
 require("set")
 
