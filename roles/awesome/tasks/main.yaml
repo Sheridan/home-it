@@ -50,5 +50,5 @@
     include_tasks: user_part.yaml
     loop: "{{ users }}"
     loop_control:
-      loop_var: user
-    when: user.name != 'root'
+      loop_var: i_user
+    when: i_user.name != 'root'

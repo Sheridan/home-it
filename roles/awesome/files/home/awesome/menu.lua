@@ -6,15 +6,19 @@ function make_menu(terminal)
         { "Usefull",
             {
                 { "Chrome"               , "google-chrome-stable --no-proxy-server" },
+                { "VSCode"               , "vscode --new-window"},
                 { "Skype"                , "skypeforlinux" },
                 { "Telegram"             , "telegram-desktop"},
-                { "VSCode"               , "vscode --new-window"},
+                { "Discord"              , "discord"},
                 { "Скриншотер"           , "flameshot"},
-                { "File manager"         , "qtfm"},
                 { "Passwords"            , "keepassxc"},
                 { "Калькулятор"          , "speedcrunch"}
             },
-        },
+        }
+    }
+
+    awesome_menu =
+    {
         { "Awesome",
             {
                 { "restart"    , awesome.restart },
@@ -24,7 +28,8 @@ function make_menu(terminal)
     }
 
     main_menu = freedesktop.menu.build({
-        before = hand_menu
+        before = hand_menu,
+        after  = awesome_menu
     })
 
     return main_menu
