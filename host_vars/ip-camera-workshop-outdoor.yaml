@@ -9,3 +9,7 @@
   stream_paths:
     high: h264Preview_01_main
     low: h264Preview_01_sub
+
+  dvr:
+    host: dvr-kitchen
+    channel: 3

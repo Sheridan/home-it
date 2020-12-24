@@ -1,0 +1,20 @@
+---
+  network:
+  - name: "Internal"
+    mac: "00:12:41:ac:3c:ee"
+    ip: "{{ query('ship', 'ip', 170) }}"
+    network: 'home'
+    type: 'dhcp'
+
+  firewall:
+    host_to_internet:
+      dvr_kitchen:
+        name: "DVR Kitchen"
+        ports:
+        - 5550-5560
+        - 6500-6700
+        - 7999
+        - 8765
+        - 8000-8200
+        - 10001
+        - 34569

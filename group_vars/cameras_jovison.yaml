@@ -1,0 +1,10 @@
+---
+  firewall:
+    host_to_internet:
+      cameras_jovison:
+        name: "Jovison cameras"
+        ports:
+        - 8090
+        - 19877
+        - 36200
+        - 50000

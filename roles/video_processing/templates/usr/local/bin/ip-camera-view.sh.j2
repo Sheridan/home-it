@@ -1,9 +1,75 @@
 #!/bin/bash
 
-
 {% set camera_vars = hostvars[i_camera].merged_vars %}
 {% set camera_secrets = cameras_secrets[i_camera | replace('-','_')] %}
 {% set camera_net_interface = camera_vars.network | first %}
 {% set camera_ip = camera_net_interface.ip.ipv4.ip %}
 
-ffplay -rtsp_transport tcp rtsp://{{ camera_secrets.viewer.login }}:{{ camera_secrets.viewer.pw }}@{{ camera_ip }}/{{ camera_vars.stream_paths.high }}
+{% set dvr_secrets = dvrs_secrets[camera_vars.dvr.host | replace('-','_')] %}
+{% set dvr_vars = hostvars[camera_vars.dvr.host].merged_vars %}
+{% set dvr_net_interface = dvr_vars.network | first %}
+{% set dvr_ip = dvr_net_interface.ip.ipv4.ip %}
+
+source="cam"
+quality="high"
+
+function view()
+{
+  login=$1
+  pw=$2
+  addr=$3
+  urlpath=$4
+  ffplay -rtsp_transport tcp rtsp://${login}:${pw}@${addr}/${urlpath}
+}
+
+function view_cam()
+{
+  v_quality="{{ camera_vars.stream_paths.high }}"
+  if [[ "$quality" != "high" ]]
+  then
+    v_quality="{{ camera_vars.stream_paths.low }}"
+  fi
+  view "{{ camera_secrets.viewer.login }}" "{{ camera_secrets.viewer.pw }}" "{{ camera_ip }}" "${v_quality}"
+}
+
+function view_dvr()
+{
+  v_quality="0"
+  if [[ "$quality" != "high" ]]
+  then
+    v_quality="1"
+  fi
+  view "{{ dvr_secrets.viewer.login }}" "{{ dvr_secrets.viewer.pw }}" "{{ dvr_ip }}" "user={{ dvr_secrets.viewer.login }}&password={{ dvr_secrets.viewer.pw }}&channel={{ camera_vars.dvr.channel }}&stream=${v_quality}.sdp"
+}
+
+while [ -n "$1" ]
+do
+  case $1 in
+    -s|--source)
+      if [ "$2" ]
+      then
+        source=$2
+        shift
+      else
+        echo 'ERROR: "--source" requires a non-empty option argument'
+        echo
+        exit 1
+      fi
+      ;;
+    -q|--quality)
+      if [ "$2" ]
+      then
+        quality=$2
+        shift
+      else
+        echo 'ERROR: "--quality" requires a non-empty option argument'
+        echo
+        exit 1
+      fi
+      ;;
+  esac
+  shift
+done
+
+echo "View from ${source}"
+view_${source}

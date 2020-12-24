@@ -28,6 +28,7 @@
     loop: "{{ groups.cameras }}"
     loop_control:
       loop_var: i_camera
+    when: "'stream_paths' in hostvars[i_camera].merged_vars"
 
   - name: Устанавливаем скрипты
     template:

@@ -9,3 +9,7 @@
   stream_paths:
     high: live0.265
     low: live1.265
+
+  dvr:
+    host: dvr-kitchen
+    channel: 1
