@@ -8,7 +8,9 @@ ffmpeg \
   {%- set camera_secrets = cameras_secrets[i_camera | replace('-','_')] -%}
   {%- set camera_net_interface = camera_vars.network | first -%}
   {%- set camera_ip = camera_net_interface.ip.ipv4.ip -%}
+    {%- if 'stream_paths' in hostvars[i_camera].merged_vars -%}
 {{ "\t" }} -i rtsp://{{ camera_secrets.viewer.login }}:{{ camera_secrets.viewer.pw }}@{{ camera_ip }}/{{ camera_vars.stream_paths.high }} {{ "\\\n" }}
+    {%- endif -%}
   {%- endfor %}
   -filter_complex "color=s=1920x1080:c=black[bg];[0:v]scale=w=1920:h=1080[v0_scaled];[1:v]scale=w=1920:h=1080[v1_scaled];[2:v]scale=w=1920:h=1080[v2_scaled];[bg][v1_scaled]hstack[top];[v0_scaled][v2_scaled]hstack[bottom];[top][bottom]vstack,format=yuv420p[v];[0:a][1:a][2:a]amerge=inputs=3[a]" \
   -map "[v]" -map "[a]" -r 30 -c:v h264_nvenc -preset:v hq -f avi - | ffplay -
