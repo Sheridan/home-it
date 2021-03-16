@@ -1,0 +1,15 @@
+---
+  network:
+  - name: "Internal"
+    mac: "00:12:41:ca:ce:00"
+    ip: "{{ query('ship', 'ip', 172) }}"
+    network: 'home'
+    type: 'dhcp'
+
+  stream_paths:
+    high: live0.265
+    low: live1.265
+
+  dvr:
+    host: dvr-kitchen
+    channel: 1

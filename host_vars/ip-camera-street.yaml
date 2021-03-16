@@ -1,0 +1,18 @@
+---
+  # G.Craftsman
+  # Hickvision
+  # model: GC-SW608AHZ49EA-TF
+  network:
+  - name: "Internal"
+    mac: "f0:00:00:68:66:92"
+    ip: "{{ query('ship', 'ip', 171) }}"
+    network: 'home'
+    type: 'dhcp'
+
+  stream_paths:
+    high: stream0
+    low: stream1
+
+  dvr:
+    host: dvr-kitchen
+    channel: 4

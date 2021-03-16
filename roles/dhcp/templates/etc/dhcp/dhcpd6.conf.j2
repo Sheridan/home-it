@@ -63,6 +63,9 @@ host {{ inventory_hostname }}_{{ hostname_interface.mac|regex_replace(':', '_') 
   {% if 'duid' in hostname_interface -%}
   host-identifier option dhcp6.client-id {{ hostname_interface.duid }};
   {# -#}
+  {%- else -%}
+  host-identifier v6relopt 33 dhcp6.subscriber-id {{ hostname_interface.mac }};
+  {# -#}
   {%- endif -%}
   fixed-address6 {{ hostname_interface.ip.ipv6.ip }};
   {# fixed-prefix6 {{ hostname_interface.ip.ipv6.network.full }}; -#}
