@@ -1,8 +1,8 @@
 ---
   - name: Деплоим статус для nginx
     template:
-      owner: nginx
-      group: nginx
+      owner: "{{ dist_difference.nginx.user[ansible_distribution] }}"
+      group: "{{ dist_difference.nginx.user[ansible_distribution] }}"
       src: etc/nginx/sites/status.conf.j2
       dest: /etc/nginx/sites/status.conf
       mode: 0644
@@ -24,4 +24,4 @@
         - daily
         - delaycompress
         - sharedscripts
-        postrotate: "test -r /run/nginx.pid && kill -USR1 `cat /run/nginx.pid`"
+        postrotate: "test -r {{ merged_vars.nginx.pid_file }} && kill -USR1 `cat {{ merged_vars.nginx.pid_file }}`"

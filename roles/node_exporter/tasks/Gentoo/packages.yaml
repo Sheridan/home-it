@@ -1,0 +1,7 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_role:
+      name: portage
+      tasks_from: install_package
+    vars:
+      package: { name: app-metrics/node_exporter, x86_as_amd64: yes }

@@ -1,0 +1,64 @@
+---
+  - name: Установка пользователя
+    import_role:
+      name: system_user
+      tasks_from: setup_user
+    vars:
+      user:
+        name: "{{ merged_vars.klipper.username }}"
+        comment: 3d printer manager runner
+        create_home: yes
+        shell: /bin/bash
+        groups:
+        - users
+
+  - name: Устанавливаем необходимые пакеты
+    include_tasks: "{{ ansible_distribution }}/packages.yaml"
+    tags:
+    - packages
+
+  - name: Создание директории для логов
+    file:
+      path: /var/log/klipper
+      state: directory
+      owner: "{{ merged_vars.klipper.username }}"
+
+  - name: Настраиваем ротацию логов
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: klipper
+        files:
+        - /var/log/klipper/main.log
+        options:
+        - missingok
+        - nocreate
+        - rotate 7
+        - daily
+        - compress
+        - copytruncate
+
+  - name: Установка сервиса
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: klipper
+        description: 3d printer manager
+        restart: on-failure
+        user: "{{ merged_vars.klipper.username }}"
+        exec_start: >
+          {{ merged_vars.klipper.virtualenv.path }}/bin/python
+          {{ merged_vars.klipper.source_path }}/klippy/klippy.py
+          {{ merged_vars.klipper.virtualenv.path }}/klipper.cfg
+          -l /var/log/klipper/main.log
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

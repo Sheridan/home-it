@@ -1,0 +1,5 @@
+---
+  onvif_srvd_build_path: /root/build/onvif_srvd
+
+  onvif:
+    port: 6667

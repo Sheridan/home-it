@@ -1,10 +1,6 @@
 ---
   - name: Устанавливаем необходимые пакеты
-    include_role:
-      name: portage
-      tasks_from: install_package
-    vars:
-      package: { name: www-servers/nginx }
+    include_tasks: "{{ ansible_distribution }}/packages.yaml"
     tags:
     - packages
 
@@ -12,17 +8,18 @@
     file:
       dest: "{{ item }}"
       state: directory
-      owner: nginx
+      owner: "{{ dist_difference.nginx.user[ansible_distribution] }}"
     with_items:
       - /etc/nginx/sites
       - /var/log/nginx
       - /var/www
       - /var/www/files
+      - /run/nginx
 
   - name: deploy nginx configuration
     template:
-      owner: nginx
-      group: nginx
+      owner: "{{ dist_difference.nginx.user[ansible_distribution] }}"
+      group: "{{ dist_difference.nginx.user[ansible_distribution] }}"
       src: etc/nginx/nginx.conf.j2
       dest: /etc/nginx/nginx.conf
       mode: 0644
@@ -54,7 +51,7 @@
         - rotate 4
         - daily
         - compress
-        postrotate: "test -r /run/nginx.pid && kill -USR1 `cat /run/nginx.pid`"
+        postrotate: "test -r {{ merged_vars.nginx.pid_file }} && kill -USR1 `cat {{ merged_vars.nginx.pid_file }}`"
 
   - name: Прикручиваем мониторинг
     include_role:
@@ -72,11 +69,13 @@
         name: nginx-daemon
         description: The nginx HTTP and reverse proxy server
         type: forking
-        pid_file: "{{ nginx.pid_file }}"
+        pid_file: "{{ merged_vars.nginx.pid_file }}"
         exec_start_pre: /usr/sbin/nginx -t
         exec_start: /usr/sbin/nginx
         exec_stop: /bin/kill -QUIT $MAINPID
         exec_reload: /bin/kill -HUP $MAINPID
+        directoryes:
+        - /run/nginx
         after:
         - network-online.target
         wanted_by:

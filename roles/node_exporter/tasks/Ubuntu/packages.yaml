@@ -1,0 +1,6 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - prometheus-node-exporter
+      state: present

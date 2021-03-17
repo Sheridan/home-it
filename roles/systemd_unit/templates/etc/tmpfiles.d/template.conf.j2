@@ -1,0 +1,3 @@
+{% for directory in service.directoryes -%}
+d {{ directory }} 0755 {{ service.user | default('root') }} {{ service.group | default('root') }}
+{%- endfor %}

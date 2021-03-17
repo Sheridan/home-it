@@ -1,0 +1,12 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - ssh
+      - openssh-server
+      state: present
+
+  - name: Создание директорий
+    file:
+      path: /run/sshd
+      state: directory

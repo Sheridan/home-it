@@ -1,0 +1,8 @@
+---
+  klipper_username: klipper
+  klipper:
+    virtualenv:
+      path: /home/klipper/klipper_environment
+      python: /usr/bin/python
+    username: "{{ klipper_username }}"
+    source_path: "/home/{{ klipper_username }}/klipper_sources"

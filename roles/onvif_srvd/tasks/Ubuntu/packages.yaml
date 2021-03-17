@@ -1,0 +1,43 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - flex
+      - bison
+      - byacc
+      - make
+      - m4
+      state: present
+
+  - name: Создание директории для сборки
+    file:
+      path: "{{ onvif_srvd_build_path }}"
+      state: directory
+
+  - name: Клонируем onvif_srvd
+    git:
+      repo: https://github.com/Sheridan/onvif_srvd.git
+      version: patch-1
+      dest: "{{ onvif_srvd_build_path }}"
+    register: r_onvif_srvd_clone
+
+  - block:
+    - name: Очистка
+      shell:
+        cmd: make distclean
+        chdir: "{{ onvif_srvd_build_path }}"
+
+    - name: Сборка
+      shell:
+        cmd: make release
+        chdir: "{{ onvif_srvd_build_path }}"
+
+    - name: Копирование результата сборки
+      copy:
+        src: "{{ onvif_srvd_build_path }}/onvif_srvd"
+        dest: /usr/local/bin/onvif_srvd
+        remote_src: yes
+        mode: "0755"
+      notify:
+      - restart onvif-daemon
+    when: r_onvif_srvd_clone.changed

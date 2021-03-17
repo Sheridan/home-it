@@ -1,0 +1,52 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_tasks: "{{ ansible_distribution }}/packages.yaml"
+    tags:
+    - packages
+
+  - name: Установка пользователя
+    import_role:
+      name: system_user
+      tasks_from: setup_user
+    vars:
+      user:
+        name: onvif
+        comment: onvif daemon runner
+        groups:
+        - users
+
+  - name: Установка сервиса
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: onvif-daemon
+        description: Onvif daemon
+        type: forking
+        restart: on-failure
+        user: onvif
+        pid_file: /run/onvif/onvif.pid
+        directoryes:
+        - /run/onvif
+        exec_start: >
+          /usr/local/bin/onvif_srvd
+          --pid_file /run/onvif/onvif.pid
+          --port {{ onvif.port }}
+          --ifs ethernet_0
+          --scope 'onvif://www.onvif.org/name/TestDev'
+          --scope 'onvif://www.onvif.org/location/Unknow'
+          --scope 'onvif://www.onvif.org/Profile/Streaming'
+          --scope 'onvif://www.onvif.org/Profile/S'
+          --name RTSP
+          --width 3840
+          --height 2160
+          --url 'rtsp://admin:admin@10.0.0.42:8554/ip-camera-4k/mainStream'
+          --type H264
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

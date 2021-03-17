@@ -18,6 +18,22 @@
       mode: 0644
     register: r_service_template_result
 
+  - name: "{{ service.name }} : Настройка создания каталогов"
+    template:
+      src: "etc/tmpfiles.d/template.conf.j2"
+      dest: "/etc/tmpfiles.d/{{ service.name }}.conf"
+      owner: root
+      group: root
+      mode: 0644
+    when: service.directoryes is defined
+
+  - name: "{{ service.name }} : Создание каталогов"
+    file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ service.user | default('root') }}"
+    loop: "{{ service.directoryes | default([]) }}"
+
   - name: "{{ service.name }} : Перезагрузка сервиса"
     systemd:
       daemon_reload: yes
@@ -43,3 +59,4 @@
     loop: "{{ service.replaces }}"
     when: service.replaces is defined and
           (service.standalone | default(True))
+    ignore_errors: yes

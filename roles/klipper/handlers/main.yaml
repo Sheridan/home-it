@@ -1,0 +1,5 @@
+---
+  - name: restart neolink
+    systemd:
+      name: klipper
+      state: restarted

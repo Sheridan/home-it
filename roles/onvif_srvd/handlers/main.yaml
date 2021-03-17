@@ -1,0 +1,5 @@
+---
+  - name: restart onvif-daemon
+    systemd:
+      name: onvif-daemon
+      state: restarted

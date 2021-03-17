@@ -1,10 +1,6 @@
 ---
   - name: Устанавливаем необходимые пакеты
-    include_role:
-      name: portage
-      tasks_from: install_package
-    vars:
-      package: { name: app-admin/logrotate, use: { disabled: [cron] } }
+    include_tasks: "{{ ansible_distribution }}/packages.yaml"
     tags:
     - packages
 

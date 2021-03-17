@@ -1,0 +1,79 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - avr-libc
+      - avrdude
+      - binutils-arm-none-eabi
+      - binutils-avr
+      - build-essential
+      - gcc-arm-none-eabi
+      - gcc-avr
+      - libffi-dev
+      - libncurses-dev
+      - libnewlib-arm-none-eabi
+      - libusb-1.0-0
+      - libusb-dev
+      - python-dev
+      - stm32flash
+      - virtualenv
+      state: present
+
+  - name: Создание директорий
+    file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ merged_vars.klipper.username }}"
+      group: "{{ merged_vars.klipper.username }}"
+    loop:
+    - "{{ merged_vars.klipper.source_path }}"
+    - "{{ merged_vars.klipper.virtualenv.path }}"
+
+  - name: Клонируем klipper
+    git:
+      repo: https://github.com/KevinOConnor/klipper
+      dest: "{{ merged_vars.klipper.source_path }}"
+    become: yes
+    become_user: "{{ merged_vars.klipper.username }}"
+
+  - name: Создание окружения
+    shell:
+      cmd: >
+        virtualenv
+        --python {{ merged_vars.klipper.virtualenv.python }}
+        {{ merged_vars.klipper.virtualenv.path }}
+      creates: "{{ merged_vars.klipper.virtualenv.path }}/pyvenv.cfg"
+    become: yes
+    become_user: "{{ merged_vars.klipper.username }}"
+
+  - name: Install requirements
+    pip:
+      requirements: "{{ merged_vars.klipper.source_path }}/scripts/klippy-requirements.txt"
+      virtualenv: "{{ merged_vars.klipper.virtualenv.path }}"
+    become: yes
+    become_user: "{{ merged_vars.klipper.username }}"
+
+    # register: r_neolink_clone
+
+
+  # - name: Создание директории для сборки
+  #   file:
+  #     path: /root/build/neolink
+  #     state: directory
+
+
+  # - block:
+  #   - name: Сборка
+  #     shell:
+  #       cmd: cargo build --release
+  #       chdir: /root/build/neolink
+
+  #   - name: Копирование результата сборки
+  #     copy:
+  #       src: /root/build/neolink/target/release/neolink
+  #       dest: /usr/local/bin/neolink
+  #       remote_src: yes
+  #       mode: "0755"
+  #     notify:
+  #     - restart neolink
+  #   when: r_neolink_clone.changed

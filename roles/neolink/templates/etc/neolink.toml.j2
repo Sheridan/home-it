@@ -1,0 +1,20 @@
+{% for camera in groups.cameras -%}
+{% if hostvars[camera].neolink | default(False) %}
+{% set camera_interface = hostvars[camera].merged_vars.network | selectattr('name', 'match', 'Internal') | first %}
+
+[[cameras]]
+name = "{{ camera }}"
+username = "admin"
+password = ""
+address = "{{ camera_interface.ip.ipv4.ip }}:9000"
+{#
+stream = "mainStream"
+format = "h265"
+#}
+
+{% endif %}
+{% endfor %}
+
+[[users]]
+name = "admin"
+pass = "admin"

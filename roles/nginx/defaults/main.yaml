@@ -1,3 +1,9 @@
 ---
   nginx:
-    pid_file: /run/nginx.pid
+    pid_file: /run/nginx/nginx.pid
+
+  dist_difference:
+    nginx:
+      user:
+        Ubuntu: www-data
+        Gentoo: nginx

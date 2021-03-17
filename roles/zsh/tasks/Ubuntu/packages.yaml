@@ -1,0 +1,7 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - zsh
+      - zsh-autosuggestions
+      state: present

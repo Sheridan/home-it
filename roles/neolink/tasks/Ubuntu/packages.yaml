@@ -1,0 +1,45 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - golang
+      - libgstrtspserver-1.0-0
+      - libgstreamer1.0-0
+      - libgstreamer-plugins-bad1.0-0
+      - gstreamer1.0-plugins-good
+      - gstreamer1.0-plugins-bad
+      - gstreamer1.0-rtsp
+      - libgstreamer1.0-dev
+      - libgstreamer-plugins-base1.0-dev
+      - gir1.2-gst-rtsp-server-1.0
+      - libgstrtspserver-1.0-dev
+      - cargo
+      - libglib2.0-dev
+      state: present
+
+  - name: Создание директории для сборки
+    file:
+      path: /root/build/neolink
+      state: directory
+
+  - name: Клонируем neolink
+    git:
+      repo: https://github.com/thirtythreeforty/neolink.git
+      dest: /root/build/neolink
+    register: r_neolink_clone
+
+  - block:
+    - name: Сборка
+      shell:
+        cmd: cargo build --release
+        chdir: /root/build/neolink
+
+    - name: Копирование результата сборки
+      copy:
+        src: /root/build/neolink/target/release/neolink
+        dest: /usr/local/bin/neolink
+        remote_src: yes
+        mode: "0755"
+      notify:
+      - restart neolink
+    when: r_neolink_clone.changed

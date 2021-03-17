@@ -1,0 +1,46 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_tasks: "{{ ansible_distribution }}/packages.yaml"
+    tags:
+    - packages
+
+  - name: Установка пользователя
+    import_role:
+      name: system_user
+      tasks_from: setup_user
+    vars:
+      user:
+        name: neolink
+        comment: neolink camera rtsp provider runner
+        groups:
+          - users
+
+  - name: Установка конфига
+    template:
+      src: etc/neolink.toml.j2
+      dest: /etc/neolink.toml
+      owner: neolink
+      mode: 0644
+    notify:
+    - restart neolink
+
+  - name: Установка сервиса
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: neolink
+        description: neolink camera rtsp provider
+        restart: on-failure
+        user: neolink
+        exec_start: >
+          /usr/local/bin/neolink
+          --config /etc/neolink.toml
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

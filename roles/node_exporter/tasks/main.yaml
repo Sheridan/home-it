@@ -1,18 +1,19 @@
 ---
   - name: Устанавливаем необходимые пакеты
-    include_role:
-      name: portage
-      tasks_from: install_package
-    vars:
-      package: { name: app-metrics/node_exporter, x86_as_amd64: yes }
+    include_tasks: "{{ ansible_distribution }}/packages.yaml"
     tags:
     - packages
+
+  - name: Определение имени юзера
+    set_fact:
+      f_node_exporter_user: "{{ 'node_exporter' if ansible_distribution == 'Gentoo' else 'prometheus' }}"
+      f_node_exporter_binary: "{{ '/usr/bin/node_exporter' if ansible_distribution == 'Gentoo' else '/usr/bin/prometheus-node-exporter' }}"
 
   - name: create dirs for node_exporter
     file:
       dest: "{{ item }}"
       state: directory
-      owner: node_exporter
+      owner: "{{ dist_difference.node_exporter.user[ansible_distribution] }}"
     with_items:
       - /var/lib/node_exporter/textfile_collector
 
@@ -32,9 +33,9 @@
         name: node_exporter
         description: Node exporter service
         restart: on-failure
-        user: node_exporter
+        user: "{{ dist_difference.node_exporter.user[ansible_distribution] }}"
         exec_start: >
-          /usr/bin/node_exporter
+          {{ dist_difference.node_exporter.binary_path[ansible_distribution] }}
           {{ enabled_collectors }}
           {{ disabled_collectors }}
           --web.listen-address=[::]:{{ merged_vars.node_exporter.listen.port }}
