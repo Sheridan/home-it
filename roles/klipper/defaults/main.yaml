@@ -1,5 +1,4 @@
 ---
-  klipper_username: klipper
   klipper:
     virtualenv:
       path: /home/klipper/klipper_environment

@@ -2,4 +2,20 @@
   onvif_srvd_build_path: /root/build/onvif_srvd
 
   onvif:
-    port: 6667
+    cameras:
+    - name: reolink
+      port: 6667
+      stream:
+        main: 'rtsp://admin:admin@10.0.0.42:8554/ip-camera-4k/mainStream'
+        sub: 'rtsp://admin:admin@10.0.0.42:8554/ip-camera-4k/subStream'
+      width: 3840
+      height: 2160
+      type: H264
+    - name: usb-endoscope
+      port: 6668
+      stream:
+        main: 'rtsp://admin:admin@10.0.0.42:8556/video0'
+        sub: 'rtsp://admin:admin@10.0.0.42:8556/video0'
+      width: 640
+      height: 480
+      type: JPEG

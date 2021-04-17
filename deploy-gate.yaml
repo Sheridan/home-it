@@ -13,6 +13,7 @@
   - { role: locale, tags: locale }
   - { role: apcupsd, tags: apcupsd }
   - { role: network_interfaces, tags: network_interfaces }
+  - { role: hostname, tags: hostname }
   - { role: gps, tags: gps }
   - { role: pppoe, tags: pppoe }
   - { role: kernel, tags: kernel }

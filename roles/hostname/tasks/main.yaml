@@ -1,0 +1,10 @@
+---
+  - name: Определение имени хоста
+    shell: hostname
+    register: r_host_name
+    changed_when: no
+    check_mode: no
+
+  - name: Установка имени хоста
+    shell: "hostnamectl set-hostname {{ inventory_hostname }}.{{ networks.home.domain }}"
+    when: r_host_name.stdout_lines[0] != inventory_hostname + '.' + networks.home.domain

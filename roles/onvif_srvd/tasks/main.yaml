@@ -16,33 +16,33 @@
         - users
 
   - name: Установка сервиса
-    import_role:
+    include_role:
       name: systemd_unit
       tasks_from: setup_service
     vars:
       service:
-        name: onvif-daemon
-        description: Onvif daemon
+        name: "onvif-daemon-{{ i_camera.name }}"
+        description: "Onvif daemon of {{ i_camera.name }}"
         type: forking
         restart: on-failure
         user: onvif
-        pid_file: /run/onvif/onvif.pid
+        pid_file: "/run/onvif/onvif-{{ i_camera.name }}.pid"
         directoryes:
         - /run/onvif
         exec_start: >
           /usr/local/bin/onvif_srvd
-          --pid_file /run/onvif/onvif.pid
-          --port {{ onvif.port }}
+          --pid_file /run/onvif/onvif-{{ i_camera.name }}.pid
+          --port {{ i_camera.port }}
           --ifs ethernet_0
           --scope 'onvif://www.onvif.org/name/TestDev'
           --scope 'onvif://www.onvif.org/location/Unknow'
           --scope 'onvif://www.onvif.org/Profile/Streaming'
           --scope 'onvif://www.onvif.org/Profile/S'
-          --name RTSP
-          --width 3840
-          --height 2160
-          --url 'rtsp://admin:admin@10.0.0.42:8554/ip-camera-4k/mainStream'
-          --type H264
+          --name {{ i_camera.name }}_main
+          --width {{ i_camera.width }}
+          --height {{ i_camera.height }}
+          --url '{{ i_camera.stream.main }}'
+          --type {{ i_camera.type }}
         after:
         - network-online.target
         wanted_by:
@@ -50,3 +50,6 @@
         on_changed: restarted
         state: started
         enabled: yes
+    loop: "{{ onvif.cameras}}"
+    loop_control:
+        loop_var: i_camera

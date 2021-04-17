@@ -1,0 +1,49 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_tasks: "{{ ansible_distribution }}/packages.yaml"
+    tags:
+    - packages
+
+  - name: Установка пользователя
+    import_role:
+      name: system_user
+      tasks_from: setup_user
+    vars:
+      user:
+        name: rtspserver
+        comment: v4l2-rtsp daemon runner
+        groups:
+        - users
+        - video
+
+  - name: Установка сервиса
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: v4l2-rtsp-daemon
+        description: RTSP daemon
+        restart: on-failure
+        user: rtspserver
+        group: video
+        # pid_file: /run/onvif/onvif.pid
+        working_dir: /run/v4l2rtspserver
+        directoryes:
+        - /run/v4l2rtspserver
+        exec_start: >
+          /usr/local/bin/v4l2rtspserver
+          -u video0
+          -P 8556
+          -U admin:admin
+          -fMJPG
+          -W 1920
+          -H 1080
+          /dev/video0
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

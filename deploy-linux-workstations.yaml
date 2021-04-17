@@ -11,6 +11,7 @@
   # - { role: firewall, tags: firewall }
   - { role: locale, tags: locale }
   - { role: network_interfaces, tags: network_interfaces }
+  - { role: hostname, tags: hostname }
   - { role: bluetooth, tags: bluetooth }
   - { role: kernel, tags: kernel }
   - { role: grub2, tags: grub2 }

@@ -10,6 +10,7 @@
   roles:
   - { role: locale, tags: locale }
   - { role: network_interfaces, tags: network_interfaces }
+  - { role: hostname, tags: hostname }
   - { role: kernel, tags: kernel }
   - { role: users, tags: users }
   - { role: zsh, tags: zsh }

@@ -1,0 +1,47 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - v4l-utils
+      - livemedia-utils
+      - cmake
+      - v4l2loopback-utils
+      state: present
+
+  - name: Создание директории для сборки
+    file:
+      path: "{{ v4l2rtspserver_build_path }}/src"
+      state: directory
+
+  - name: Клонируем v4l2rtspserver
+    git:
+      repo: https://github.com/mpromonet/v4l2rtspserver.git
+      dest: "{{ v4l2rtspserver_build_path }}/src"
+    register: r_v4l2rtspserver_clone
+
+  - block:
+    - name: Создание директории для сборки
+      file:
+        path: "{{ v4l2rtspserver_build_path }}/build"
+        state: directory
+
+    - name: Конфигурирование
+      shell:
+        cmd: cmake -DCMAKE_BUILD_TYPE=Release ../src
+        chdir: "{{ v4l2rtspserver_build_path }}/build"
+
+    - name: Сборка
+      shell:
+        cmd: make
+        chdir: "{{ v4l2rtspserver_build_path }}/build"
+
+    - name: Копирование результата сборки
+      copy:
+        src: "{{ v4l2rtspserver_build_path }}/build/v4l2rtspserver"
+        dest: /usr/local/bin/v4l2rtspserver
+        remote_src: yes
+        mode: "0755"
+      notify:
+      - restart v4l2-rtsp-daemon
+    # block
+    when: r_v4l2rtspserver_clone.changed

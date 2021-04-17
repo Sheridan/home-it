@@ -1,0 +1,5 @@
+---
+  - name: restart v4l2-rtsp-daemon
+    systemd:
+      name: v4l2-rtsp-daemon
+      state: restarted

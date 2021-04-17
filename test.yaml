@@ -1,12 +1,20 @@
 ---
 # - hosts: workstations_linux,gate,without_internet
-- hosts: spc
-  gather_facts: False
-  vars_files:
-  - vars/vault.yaml
-  - vars/network.yaml
+- hosts: pi-game
+  remote_user: root
+  # gather_facts: False
+  # vars_files:
+  # - vars/vault.yaml
+  # - vars/network.yaml
 
   tasks:
+  - name: Distribution
+    debug: msg="{{ ansible_distribution }}"
+  - name: Distribution version
+    debug: msg="{{ ansible_distribution_version}}"
+  - name: Distribution major version
+    debug: msg="{{ ansible_distribution_major_version }}"
+
 
   # - name: strings
   #   debug:
@@ -26,13 +34,13 @@
   #   debug:
   #     msg: "Merged: {{ merged_vars.ntpd }}"
 
-  - name: ship net test
-    debug:
-      msg: "{{ query('ship', 'tor_ip', 'ipv4', 1) }}"
+  # - name: ship net test
+  #   debug:
+  #     msg: "{{ query('ship', 'tor_ip', 'ipv4', 1) }}"
 
-  - name: ship net test
-    debug:
-      msg: "{{ query('ship', 'tor_ip', 'ipv6', 1) }}"
+  # - name: ship net test
+  #   debug:
+  #     msg: "{{ query('ship', 'tor_ip', 'ipv6', 1) }}"
 
   # - name: merge test
   #   debug:

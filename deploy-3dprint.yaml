@@ -10,6 +10,7 @@
     roles:
     - { role: locale, tags: locale }
     - { role: network_interfaces, tags: network_interfaces }
+    - { role: hostname, tags: hostname }
     - { role: resolved, tags: resolved }
     - { role: sshd, tags: sshd }
     - { role: ntp, tags: ntp }
@@ -22,6 +23,7 @@
     - { role: nginx, tags: nginx }
     - { role: neolink, tags: neolink }
     - { role: onvif_srvd, tags: onvif_srvd }
+    - { role: v4l2rtspserver, tags: v4l2rtspserver }
 
     # - { role: klipper, tags: klipper }
 
