@@ -1,0 +1,39 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - python3-pip
+      - python3-dev
+      - python3-setuptools
+      - python3-venv
+      - git
+      - libyaml-dev
+      - build-essential
+      - virtualenv
+      state: present
+
+  - name: Создание директорий
+    file:
+      path: "{{ item }}"
+      state: directory
+      owner: "{{ merged_vars.octoprint.username }}"
+      group: "{{ merged_vars.octoprint.username }}"
+    loop:
+    - "{{ merged_vars.octoprint.virtualenv.path }}"
+
+  - name: Создание окружения
+    shell:
+      cmd: >
+        virtualenv
+        --python {{ merged_vars.octoprint.virtualenv.python }}
+        {{ merged_vars.octoprint.virtualenv.path }}
+      creates: "{{ merged_vars.octoprint.virtualenv.path }}/pyvenv.cfg"
+    become: yes
+    become_user: "{{ merged_vars.octoprint.username }}"
+
+  - name: Установка octoprint
+    pip:
+      name: octoprint
+      virtualenv: "{{ merged_vars.octoprint.virtualenv.path }}"
+    become: yes
+    become_user: "{{ merged_vars.octoprint.username }}"

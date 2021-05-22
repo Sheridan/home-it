@@ -1,6 +1,6 @@
 ---
 # - hosts: workstations_linux,gate,without_internet
-- hosts: pi-game
+- hosts: spc
   remote_user: root
   # gather_facts: False
   # vars_files:
@@ -14,6 +14,9 @@
     debug: msg="{{ ansible_distribution_version}}"
   - name: Distribution major version
     debug: msg="{{ ansible_distribution_major_version }}"
+
+  - debug:
+      var: groups.all
 
 
   # - name: strings

@@ -1,0 +1,9 @@
+---
+  - name: Устанавливаем телеграфу конфиг для nginx sub_status
+    template:
+      owner: telegraf
+      src: etc/telegraf/telegraf.d/ping.conf.j2
+      dest: /etc/telegraf/telegraf.d/nginx.conf
+      mode: 0644
+    notify:
+    - restart telegraf

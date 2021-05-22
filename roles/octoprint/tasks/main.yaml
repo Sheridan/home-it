@@ -1,0 +1,55 @@
+---
+  - name: Установка пользователя
+    import_role:
+      name: system_user
+      tasks_from: setup_user
+    vars:
+      user:
+        name: "{{ merged_vars.octoprint.username }}"
+        comment: 3d printer manager runner
+        create_home: yes
+        shell: /bin/bash
+        groups:
+        - users
+        - dialout
+        - tty
+
+  - name: Устанавливаем необходимые пакеты
+    include_tasks: "{{ ansible_distribution }}/packages.yaml"
+    tags:
+    - packages
+
+  - name: deploy nginx proxy configuration
+    import_role:
+      name: nginx
+      tasks_from: simple_proxy
+    vars:
+      target:
+        name: octoprint
+        addr: "{{ merged_vars.octoprint.listen.host }}"
+        port: "{{ merged_vars.octoprint.listen.port }}"
+        to: internal
+
+  - name: Установка сервиса
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: octoprint
+        description: 3d printer manager
+        restart: on-failure
+        user: "{{ merged_vars.octoprint.username }}"
+        group: dialout
+        exec_start: >
+          {{ merged_vars.octoprint.virtualenv.path }}/bin/octoprint
+          serve
+          --host {{ merged_vars.octoprint.listen.host }}
+          --port {{ merged_vars.octoprint.listen.port }}
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

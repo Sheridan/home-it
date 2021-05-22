@@ -10,6 +10,14 @@
     file_sd_configs:
     - files:
       - '/etc/prometheus/file_sd_configs/*.yaml'
+  - job_name: 'octoprint'
+    scrape_interval: {{ (merged_vars.monitoring.collect.interval / 2) | int }}s
+    metrics_path: '/plugin/prometheus_exporter/metrics'
+    params:
+      apikey: ['80ACA68ABC39447AA33187B709E23513']
+    static_configs:
+      - targets:
+        - 'octoprint'
 
   rule_files:
   - '/etc/prometheus/rules/*.conf'

@@ -1,0 +1,34 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - libavformat-dev
+      - libavcodec-dev
+      - libavdevice-dev
+      state: present
+
+  - name: Создание директории для сборки
+    file:
+      path: "{{ v4l2rtspserver_build_path }}/src"
+      state: directory
+
+  - name: Клонируем videostreamer
+    git:
+      repo: https://github.com/horgh/videostreamer.git
+      dest: "{{ videostreamer_build_path }}/src"
+    register: r_videostreamer_clone
+
+  - block:
+    - name: Сборка
+      shell:
+        cmd: go build
+        chdir: "{{ videostreamer_build_path }}/src"
+
+    - name: Копирование результата сборки
+      copy:
+        src: "{{ videostreamer_build_path }}/src/videostreamer"
+        dest: /usr/local/bin/videostreamer
+        remote_src: yes
+        mode: "0755"
+    # block
+    when: r_videostreamer_clone.changed

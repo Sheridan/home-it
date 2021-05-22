@@ -1,0 +1,50 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    include_tasks: "{{ ansible_distribution }}/packages.yaml"
+    tags:
+    - packages
+
+  - name: Установка пользователя
+    import_role:
+      name: system_user
+      tasks_from: setup_user
+    vars:
+      user:
+        name: videostreamer
+        comment: rtsp to http streamer
+        groups:
+        - users
+        - video
+
+  - name: Установка сервиса
+    include_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: 'videostreamer-{{ i_stream.name }}'
+        description: 'RTSP-to-HTTP daemon 4 {{ i_stream.name }} ({{ i_stream.stream }})'
+        restart: on-failure
+        user: videostreamer
+        group: video
+        working_dir: /run/videostreamer
+        directoryes:
+        - /run/videostreamer
+        exec_start: >
+          /usr/local/bin/videostreamer
+          -format rtsp
+          -fcgi=false
+          -port {{ i_stream.port }}
+          -input '{{ i_stream.stream }}'
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes
+    loop:
+    - { name: 'headcam', port: 6543, stream: 'rtsp://admin:admin@10.0.0.42:8556/video0' }
+    - { name: 'sidecam', port: 6542, stream: 'rtsp://viewer:viewer@10.0.0.172:554/live0.265' }
+    loop_control:
+      loop_var: i_stream

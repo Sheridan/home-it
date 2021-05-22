@@ -1,8 +1,8 @@
 ---
   - name: "{{ target.name }} : Deploying nginx configuration"
     template:
-      owner: "{{ dist_difference.nginx.user[ansible_distribution] }}"
-      group: "{{ dist_difference.nginx.user[ansible_distribution] }}"
+      owner: "{{ merged_vars.dist_difference.nginx.user[ansible_distribution] }}"
+      group: "{{ merged_vars.dist_difference.nginx.user[ansible_distribution] }}"
       src: etc/nginx/sites/simple_proxy.conf.j2
       dest: "/etc/nginx/sites/{{ target.name }}.conf"
       mode: 0644
