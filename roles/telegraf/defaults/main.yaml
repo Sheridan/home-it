@@ -3,3 +3,21 @@
   telegraf:
     listen:
       port: 9101
+    plugins:
+      ping:
+        count: 8
+        interval: 0.2
+        timeout: 1
+        deadline: '{{ (monitoring.collect.interval / 2) | int }}'
+
+# ---
+#   video_nvidia_smi_location: /opt/bin/nvidia-smi
+#   telegraf:
+#     listen:
+#       port: 9101
+#     plugins:
+#       ping:
+#         count: 2
+#         interval: 1
+#         timeout: 2
+#         deadline: 8

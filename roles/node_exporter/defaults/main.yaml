@@ -83,4 +83,4 @@
         Gentoo: node_exporter
       binary_path:
         Ubuntu: /usr/bin/prometheus-node-exporter
-        Gentoo: /usr/bin/node_exporter
+        Gentoo: /usr/sbin/node_exporter

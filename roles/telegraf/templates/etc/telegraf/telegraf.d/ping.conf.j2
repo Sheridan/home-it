@@ -1,7 +1,94 @@
+# home network ipv4
 [[inputs.ping]]
-urls = ["example.org"]
-count = 1
-ping_interval = 1.0
-timeout = 1.0
-deadline = 10
-interface = ""
+  urls = [ "{{ groups.all | join('","')}}" ]
+  arguments = [
+    "-4",
+    "-c", "{{ merged_vars.telegraf.plugins.ping.count }}",
+    "-i", "{{ merged_vars.telegraf.plugins.ping.interval }}",
+    "-W", "{{ merged_vars.telegraf.plugins.ping.timeout }}",
+    "-w", "{{ merged_vars.telegraf.plugins.ping.deadline }}",
+    "-I", "internal_0"
+  ]
+  [inputs.ping.tags]
+    interface = "internal_0"
+    ip_version = "4"
+    network = "home"
+
+# home network ipv6
+[[inputs.ping]]
+  urls = [ "{{ groups.all | join('","')}}" ]
+  arguments = [
+    "-6",
+    "-c", "{{ merged_vars.telegraf.plugins.ping.count }}",
+    "-i", "{{ merged_vars.telegraf.plugins.ping.interval }}",
+    "-W", "{{ merged_vars.telegraf.plugins.ping.timeout }}",
+    "-w", "{{ merged_vars.telegraf.plugins.ping.deadline }}",
+    "-I", "internal_0"
+  ]
+  [inputs.ping.tags]
+    interface = "internal_0"
+    ip_version = "6"
+    network = "home"
+
+# Provider ipv4
+[[inputs.ping]]
+  urls = [
+    "91.210.98.61",
+    "192.168.200.1"
+  ]
+  arguments = [
+    "-4",
+    "-c", "{{ merged_vars.telegraf.plugins.ping.count }}",
+    "-i", "{{ merged_vars.telegraf.plugins.ping.interval }}",
+    "-W", "{{ merged_vars.telegraf.plugins.ping.timeout }}",
+    "-w", "{{ merged_vars.telegraf.plugins.ping.deadline }}",
+    "-I", "external_kis_0"
+  ]
+  [inputs.ping.tags]
+    interface = "external_kis_0"
+    ip_version = "4"
+    network = "provider"
+
+# External ipv4
+[[inputs.ping]]
+  urls = [
+    "google.com",
+    "ya.ru",
+    "ansible.com",
+    "8.8.8.8",
+    "8.8.4.4"
+  ]
+  arguments = [
+    "-4",
+    "-c", "{{ merged_vars.telegraf.plugins.ping.count }}",
+    "-i", "{{ merged_vars.telegraf.plugins.ping.interval }}",
+    "-W", "{{ merged_vars.telegraf.plugins.ping.timeout }}",
+    "-w", "{{ merged_vars.telegraf.plugins.ping.deadline }}",
+    "-I", "external_kis_0"
+  ]
+  [inputs.ping.tags]
+    interface = "external_kis_0"
+    ip_version = "4"
+    network = "external"
+
+# External ipv6
+[[inputs.ping]]
+  urls = [
+    "google.com",
+    "ya.ru",
+    "ansible.com",
+    "2001:4860:4860::8888",
+    "2001:4860:4860::8844"
+  ]
+  arguments = [
+    "-6",
+    "-c", "{{ merged_vars.telegraf.plugins.ping.count }}",
+    "-i", "{{ merged_vars.telegraf.plugins.ping.interval }}",
+    "-W", "{{ merged_vars.telegraf.plugins.ping.timeout }}",
+    "-w", "{{ merged_vars.telegraf.plugins.ping.deadline }}",
+    "-I", "external_he_0"
+  ]
+  [inputs.ping.tags]
+    interface = "external_he_0"
+    ip_version = "6"
+    network = "external"

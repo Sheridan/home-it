@@ -10,3 +10,12 @@
         name: "Heroes VI"
         ports:
         - 23900-24000
+      dsp:
+        name: "Dyson Sphere Program"
+        ports:
+        - 10001
+      gfn:
+        name: "Geforce NOW"
+        ports:
+        - 49000-50000
+        - 10000-20000

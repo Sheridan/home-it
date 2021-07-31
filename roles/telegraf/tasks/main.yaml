@@ -15,6 +15,12 @@
     notify:
     - restart telegraf
 
+  - block:
+    - name: Устанавливаем ping экспортер
+      include_tasks: deploy_ping_plugin.yaml
+    # block
+    when: inventory_hostname == 'gate'
+
   - name: Подключаем к прометею
     import_role:
       name: prometheus

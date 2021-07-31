@@ -19,8 +19,8 @@
 
   - name: Creating collectors lists
     set_fact:
-      enabled_collectors: "{{ prepared_enabled_collectors | map('regex_replace', '(.*)', '--collector.\\1') | list | join(' ')}}"
-      disabled_collectors: "{{ node_exporter_all_collectors|difference(prepared_enabled_collectors) | sort | unique | map('regex_replace', '(.*)', '--no-collector.\\1') | list | join(' ') }}"
+      enabled_collectors: "--collector.{{ prepared_enabled_collectors | sort | unique | join(' --collector.')}}"
+      disabled_collectors: "--no-collector.{{ node_exporter_all_collectors|difference(prepared_enabled_collectors) | sort | unique | join(' --no-collector.') }}"
     vars:
       prepared_enabled_collectors: "{{ merged_vars.node_exporter.collectors.enabled | sort | unique }}"
 
@@ -39,12 +39,12 @@
           {{ enabled_collectors }}
           {{ disabled_collectors }}
           --web.listen-address=[::]:{{ merged_vars.node_exporter.listen.port }}
-          --collector.diskstats.ignored-devices="^(ram|loop|fd)\d+$"
-          --collector.filesystem.ignored-mount-points="^/(sys|proc|dev|run)($|/)"
+          --collector.diskstats.ignored-devices='(ram|loop|fd)\d+'
+          --collector.filesystem.ignored-mount-points='/(sys|proc|dev|run)($|/)'
           --collector.systemd.enable-start-time-metrics
           --collector.systemd.enable-restarts-metrics
           --collector.systemd.enable-task-metrics
-          --collector.textfile.directory="{{ merged_vars.node_exporter.textfile_dir }}/"
+          --collector.textfile.directory='{{ merged_vars.node_exporter.textfile_dir }}/'
         after:
         - network-online.target
         wanted_by:
@@ -52,6 +52,8 @@
         on_changed: restarted
         state: started
         enabled: yes
+        replaces:
+        - prometheus-node-exporter
 
   - name: Connect exporter to prometheus
     import_role:

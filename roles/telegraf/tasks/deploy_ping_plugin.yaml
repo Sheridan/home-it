@@ -3,7 +3,7 @@
     template:
       owner: telegraf
       src: etc/telegraf/telegraf.d/ping.conf.j2
-      dest: /etc/telegraf/telegraf.d/nginx.conf
+      dest: /etc/telegraf/telegraf.d/ping.conf
       mode: 0644
     notify:
     - restart telegraf
