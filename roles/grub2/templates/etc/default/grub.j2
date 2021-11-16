@@ -28,9 +28,9 @@ GRUB_DEVICE={{ merged_vars.grub2.boot.device }}
 {% endif %}
 
 {% set rootfstype = ( 'rootfstype=' + merged_vars.grub2.boot.fs ) if merged_vars.grub2.boot.fs != 'auto' else '' %}
-
+{% set dobtrfs = 'dobtrfs' if merged_vars.grub2.boot.fs == 'btrfs' else '' %}
 {# Append parameters to the linux kernel command line #}
-GRUB_CMDLINE_LINUX="init=/usr/lib/systemd/systemd {{ rootfstype }} {{ merged_vars.grub2.kernel.options | join(' ') }}"
+GRUB_CMDLINE_LINUX="init=/usr/lib/systemd/systemd {{ rootfstype }} {{ dobtrfs }} {{ merged_vars.grub2.kernel.options | join(' ') }}"
 {#
 rootfstype=btrfs rootflags=device=/dev/sda1,device=/dev/sdb1,device=/dev/sdc1,device=/dev/sdd1,subvol=root
 rootflags=subvol=root,degraded
