@@ -1,0 +1,40 @@
+---
+  - name: "{{ target.name }} : Deploying nginx configuration"
+    template:
+      owner: "{{ merged_vars.dist_difference.nginx.user[ansible_distribution] }}"
+      group: "{{ merged_vars.dist_difference.nginx.user[ansible_distribution] }}"
+      src: etc/nginx/sites/simple_site.conf.j2
+      dest: "/etc/nginx/sites/{{ target.name }}.conf"
+      mode: 0644
+    notify:
+    - reload nginx
+
+  - name: "{{ target.name }} : Deploying nginx auth"
+    htpasswd:
+      path: "/etc/nginx/sites/{{ target.name }}.auth"
+      name: "{{ target.auth.login }}"
+      password: "{{ target.auth.pw }}"
+      owner: root
+      group: "{{ merged_vars.dist_difference.nginx.user[ansible_distribution] }}"
+      mode: 0640
+    when: "'auth' in target"
+
+  - name: "{{ target.name }} : Настройка ротации"
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: "nginx-{{ target.name }}"
+        files:
+        - "/var/log/nginx/{{ target.name }}.access.log"
+        - "/var/log/nginx/{{ target.name }}.error.log"
+        - "/var/log/nginx/{{ target.name }}.internet.access.log"
+        - "/var/log/nginx/{{ target.name }}.internet.error.log"
+        options:
+        - missingok
+        - rotate 7
+        - daily
+        - delaycompress
+        - sharedscripts
+        postrotate: "test -r {{ merged_vars.nginx.pid_file }} && kill -USR1 `cat {{ merged_vars.nginx.pid_file }}`"

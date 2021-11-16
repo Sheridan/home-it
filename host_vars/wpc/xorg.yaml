@@ -1,0 +1,42 @@
+---
+  xorg:
+    options:
+      dpi: 96
+      init_order:
+        monitors:
+        - left
+        - right
+        videocards:
+        - first
+    videocards:
+      first:
+        vendor: "NVidia Corporation"
+        model: "GeForce GTX 630 (GF108)"
+        driver: "nvidia"
+        pci: "01:00.0"
+    monitors:
+      left:
+        vendor: "LG"
+        model: "27UL500-W"
+        connector:
+          card: first
+          out: "DVI-0"
+        position:
+          base: yes
+        mode:
+          width: 2180
+          height: 1024
+          rate: 60
+      right:
+        vendor: "LG"
+        model: "27UL500-W"
+        connector:
+          card: first
+          out: "VGA-0"
+        position:
+          where: right-of
+          from: left
+        mode:
+          width: 1280
+          height: 1024
+          rate: 60

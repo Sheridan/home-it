@@ -1,0 +1,49 @@
+---
+  - set_fact:
+      f_camera_secrets: "{{ cameras_secrets[i_camera | replace('-','_')] }}"
+      f_camera_ip: "{{ v_camera_net_interface.ip.ipv4.ip }}"
+      f_stream_path: "{{ v_camera.stream_paths.high }}"
+    vars:
+      v_camera_net_interface: "{{ v_camera.network | first }}"
+
+  - name: "{{ i_camera }} : Создаём каталоги"
+    file:
+      dest: "/var/www/cameras/{{ i_camera }}"
+      state: directory
+      owner: "{{ dist_difference.nginx.user[ansible_distribution] }}"
+      group: "{{ dist_difference.nginx.user[ansible_distribution] }}"
+      mode: 0755
+
+  - name: "{{ i_camera }} : Установка сервиса"
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: "stream-to-m3u8-{{ i_camera }}"
+        description: "Stream to m3u8 4 camera {{ i_camera }}"
+        restart: on-failure
+        user: "{{ dist_difference.nginx.user[ansible_distribution] }}"
+        group: "{{ dist_difference.nginx.user[ansible_distribution] }}"
+        working_dir: "/var/www/cameras/{{ i_camera }}"
+        exec_start: >
+          /usr/local/bin/video_stream_to_m3u8.sh
+          "rtsp://{{ f_camera_secrets.viewer.login }}:{{ f_camera_secrets.viewer.pw }}@{{ f_camera_ip }}:{{ f_stream_path.port }}/{{ f_stream_path.path }}"
+          "/var/www/cameras/{{ i_camera }}"
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: stopped
+        state: stopped
+        enabled: yes
+
+  - name: "{{ i_camera }} : Deploying html"
+    template:
+      src: var/www/cameras/camera.html.j2
+      dest: "/var/www/cameras/{{ i_camera }}/index.html"
+      mode: 0644
+    loop:
+    - var/www/cameras/camera.html
+    loop_control:
+      loop_var: i_script

@@ -1,7 +1,7 @@
 ---
-  - name: Определяем переменные
+  - name: "{{ mod.name }} : Определяем переменные"
     set_fact:
-      target_version: 0
+      target_version: "0"
       login_key_file: "/tmp/factorio_login.key"
       module:
         name: "{{ mod.name }}"
@@ -10,7 +10,7 @@
           url: "https://mods.factorio.com/api/mods/{{ mod.name }}/full"
           tmpfile: "/tmp/factorio_module_{{ mod.name }}.json"
 
-  - name: Выкачиваем инфо
+  - name: "{{ mod.name }} : Выкачиваем инфо"
     get_url:
       url: "{{ module.json.url }}"
       dest: "{{ module.json.tmpfile }}"
@@ -19,23 +19,23 @@
     check_mode: no
     delegate_to: localhost
 
-  - name: Вычитываем инфо
+  - name: "{{ mod.name }} : Вычитываем инфо"
     set_fact:
       json_string: "{{lookup('file', module.json.tmpfile) }}"
 
-  - name: Доступные версии
+  - name: "{{ mod.name }} : Доступные версии"
     debug:
       var: ver
     loop: "{{ json_string | json_query('releases[*].version') }}"
     loop_control:
       loop_var: ver
 
-  - name: Устанавливаем целевую версию
+  - name: "{{ mod.name }} : Устанавливаем целевую версию"
     set_fact:
       target_version: "{{ module.version }}"
     when: module.version != 'latest'
 
-  - name: Определяем целевую версию
+  - name: "{{ mod.name }} : Определяем целевую версию"
     set_fact:
       target_version: "{{ ver }}"
     loop: "{{ json_string | json_query('releases[*].version') }}"
@@ -43,7 +43,7 @@
       loop_var: ver
     when: module.version == 'latest' and target_version is version(ver, '<=')
 
-  - name: Определяем целевой релиз
+  - name: "{{ mod.name }} : Определяем целевой релиз"
     set_fact:
       target_release: "{{ release }}"
       target_filepath: "{{ merged_vars.factorio.paths.home }}/mods/{{ release.file_name }}"
@@ -52,13 +52,13 @@
       loop_var: release
     when: release.version is version(target_version, '==')
 
-  - name: Проверяем есть ли уже ключ
+  - name: "{{ mod.name }} : Проверяем есть ли уже ключ"
     stat:
       path: "{{ login_key_file }}"
     register: stat_key_result
     delegate_to: localhost
 
-  - name: Логинимся...
+  - name: "{{ mod.name }} : Логинимся..."
     uri:
       url: https://auth.factorio.com/api-login
       method: POST
@@ -72,7 +72,7 @@
     when: stat_key_result.stat.exists == False
     delegate_to: localhost
 
-  - name: Сохраняем ключик
+  - name: "{{ mod.name }} : Сохраняем ключик"
     copy:
       content: "{{ login.content|regex_replace('[^a-z0-9]', '') }}"
       dest: "{{ login_key_file }}"
@@ -80,7 +80,7 @@
     check_mode: no
     when: stat_key_result.stat.exists == False
 
-  - name: Выкачиваем мод
+  - name: "{{ mod.name }} : Выкачиваем мод"
     get_url:
       url: "https://mods.factorio.com/{{ target_release.download_url }}?username={{ merged_vars.factorio.server.auth.login }}&token={{ lookup('file', login_key_file) }}"
       dest: "{{ target_filepath }}"
@@ -92,13 +92,13 @@
     notify:
     - restart factorio
 
-  - name: Ищем старые релизы
+  - name: "{{ mod.name }} : Ищем старые релизы"
     find:
       paths: "{{ merged_vars.factorio.paths.home }}/mods/"
       patterns: "{{ module.name }}*.zip"
     register: all_versions
 
-  - name: Подчищаем старые релизы
+  - name: "{{ mod.name }} : Подчищаем старые релизы"
     file:
       path: "{{ file.path }}"
       state: absent
@@ -107,7 +107,7 @@
       loop_var: file
     when: file.path != target_filepath
 
-  - name: Подчищаем временные файлы
+  - name: "{{ mod.name }} : Подчищаем временные файлы"
     file:
       path: "{{ module.json.tmpfile }}"
       state: absent

@@ -1,6 +1,5 @@
 {
     "lua.format.indentCount": 2,
-    "editor.fontSize": 12,
     "editor.tabSize": 2,
     "files.autoSave": "onFocusChange",
     "ansibleVault.keyfile": ".vault-password",

@@ -1,0 +1,30 @@
+---
+  portage:
+    use:
+      enabled:
+        main:
+        - headless
+        filesystems:
+        - btrfs
+        hardware:
+        - initramfs
+        - hamlib
+        - radio
+        - rtlsdr
+        network:
+        - nftables
+      disabled:
+        network:
+        - wifi
+        - iptables
+        hardware:
+        - cups
+    hardware:
+      video_cards:
+      - nouveau
+      - nvidia
+    directoryes:
+      portdir: /usr/portage
+      distdir: /usr/portage/distfiles
+      pkgdir: /usr/portage/packages
+      tmp: /var/tmp/portage

@@ -44,3 +44,4 @@
   - { role: htop, tags: htop }
   - { role: minecraft, tags: minecraft }
   - { role: factorio, tags: factorio }
+  - { role: cameras_site, tags: cameras_site }

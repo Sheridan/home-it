@@ -7,8 +7,12 @@
     type: 'dhcp'
 
   stream_paths:
-    high: live0.265
-    low: live1.265
+    high:
+      port: 8554
+      path: live0.265
+    low:
+      port: 8554
+      path: live1.265
 
   dvr:
     host: dvr-kitchen

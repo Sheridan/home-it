@@ -7,8 +7,12 @@
     type: 'dhcp'
 
   stream_paths:
-    high: h264Preview_01_main
-    low: h264Preview_01_sub
+    high:
+      port: 554
+      path: h264Preview_01_main
+    low:
+      port: 554
+      path: h264Preview_01_sub
 
   dvr:
     host: dvr-kitchen

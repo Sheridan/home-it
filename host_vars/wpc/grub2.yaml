@@ -1,0 +1,11 @@
+---
+  grub2:
+    video:
+      vga: '0x31a'
+      resolution: '1280x1024'
+      colorbits: '16'
+    kernel:
+      options: []
+    boot:
+      device: "/dev/sda1"
+      fs: "btrfs"

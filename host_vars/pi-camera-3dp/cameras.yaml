@@ -1,0 +1,19 @@
+---
+  v4l2rtspserver_cameras:
+  - name: printer_head
+    login: "{{ printer_head_camera_secrets.login }}"
+    pw: "{{ printer_head_camera_secrets.pw }}"
+    device: /dev/video0
+    port: 8556
+    stream:
+      type: MJPG
+      width: 1920
+      height: 1080
+
+  stream_paths:
+    high:
+      port: 8556
+      path: printer_head
+    low:
+      port: 8556
+      path: printer_head

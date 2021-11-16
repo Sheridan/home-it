@@ -12,6 +12,7 @@
   - { role: locale, tags: locale }
   - { role: network_interfaces, tags: network_interfaces }
   - { role: hostname, tags: hostname }
+  - { role: portage, tags: portage }
   - { role: bluetooth, tags: bluetooth }
   - { role: kernel, tags: kernel }
   - { role: grub2, tags: grub2 }
@@ -27,7 +28,6 @@
   - { role: video, tags: video }
   - { role: smartctl_exporter, tags: smartctl_exporter }
   - { role: observer, tags: observer }
-  - { role: portage, tags: portage }
   - { role: packages, tags: packages }
   - { role: nsswitch, tags: nsswitch }
   - { role: pulseaudio, tags: pulseaudio }

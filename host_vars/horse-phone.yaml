@@ -1,7 +1,7 @@
 ---
   network:
   - name: "Internal"
-    mac: "9a:b9:a7:f5:9b:25"
-    ip: "{{ query('ship', 'ip', 87) }}"
+    mac: "2c:fd:a1:4f:82:5b"
+    ip: "{{ query('ship', 'ip', 86) }}"
     network: 'home'
     type: 'dhcp'

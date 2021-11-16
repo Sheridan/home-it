@@ -2,7 +2,6 @@
   octoprint:
     virtualenv:
       path: "/home/{{ octoprint_username }}/application"
-      python: /usr/bin/python
     username: "{{ octoprint_username }}"
     listen:
       host: 127.0.0.1

@@ -1,0 +1,31 @@
+---
+  - name: Установка сервиса
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: "v4l2-rtsp-daemon-{{ i_camera.name }}"
+        description: "RTSP daemon 4 camera {{ i_camera.name }}"
+        restart: on-failure
+        user: rtspserver
+        group: video
+        working_dir: "/run/v4l2rtspserver_{{ i_camera.name }}"
+        directoryes:
+        - "/run/v4l2rtspserver_{{ i_camera.name }}"
+        exec_start: >
+          /usr/local/bin/v4l2rtspserver
+          -u {{ i_camera.name }}
+          -P {{ i_camera.port }}
+          -U {{ i_camera.login }}:{{ i_camera.pw }}
+          -f{{ i_camera.stream.type }}
+          -W {{ i_camera.stream.width }}
+          -H {{ i_camera.stream.height }}
+          {{ i_camera.device }}
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

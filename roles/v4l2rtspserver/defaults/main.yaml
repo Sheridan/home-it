@@ -1,2 +1,12 @@
 ---
   v4l2rtspserver_build_path: /root/build/v4l2rtspserver
+  v4l2rtspserver_cameras:
+  - name: name
+    login: login
+    pw: password
+    device: /dev/video0
+    port: 8556
+    stream:
+      type: MJPG
+      width: 1920
+      height: 1080

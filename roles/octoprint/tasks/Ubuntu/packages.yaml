@@ -21,19 +21,20 @@
     loop:
     - "{{ merged_vars.octoprint.virtualenv.path }}"
 
-  - name: Создание окружения
-    shell:
-      cmd: >
-        virtualenv
-        --python {{ merged_vars.octoprint.virtualenv.python }}
-        {{ merged_vars.octoprint.virtualenv.path }}
-      creates: "{{ merged_vars.octoprint.virtualenv.path }}/pyvenv.cfg"
-    become: yes
-    become_user: "{{ merged_vars.octoprint.username }}"
+  # - name: Создание окружения
+  #   shell:
+  #     cmd: >
+  #       virtualenv
+  #       --python {{ merged_vars.octoprint.virtualenv.python }}
+  #       {{ merged_vars.octoprint.virtualenv.path }}
+  #     creates: "{{ merged_vars.octoprint.virtualenv.path }}/pyvenv.cfg"
+  #   become: yes
+  #   become_user: "{{ merged_vars.octoprint.username }}"
 
   - name: Установка octoprint
     pip:
       name: octoprint
       virtualenv: "{{ merged_vars.octoprint.virtualenv.path }}"
+      virtualenv_python: python3
     become: yes
     become_user: "{{ merged_vars.octoprint.username }}"

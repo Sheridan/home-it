@@ -11,12 +11,17 @@ server
   server_name          {{ target.name }}.sheridan-home.ru;
   access_log           /var/log/nginx/{{ target.name }}.access.log combined gzip=9;
   error_log            /var/log/nginx/{{ target.name }}.error.log warn;
-  client_max_body_size 1024g;
+  client_max_body_size 1024m;
+
+  {% if 'auth' in target -%}
+  auth_basic "{{ target.name }} restricted area";
+  auth_basic_user_file /etc/nginx/sites/{{ target.name }}.auth;
+  {%- endif %}
 
   location /
   {
     root /var/www/{{ target.name }}/;
     index {{ target.index | default('index.html') }};
-    autoindex on;
+    autoindex off;
   }
 }

@@ -10,8 +10,12 @@
     type: 'dhcp'
 
   stream_paths:
-    high: stream0
-    low: stream1
+    high:
+      port: 554
+      path: stream0
+    low:
+      port: 554
+      path: stream1
 
   dvr:
     host: dvr-kitchen

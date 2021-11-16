@@ -26,8 +26,8 @@ USE="${USE}{{ " " if use_state == 'enabled' else " -" }}{{ merged_vars.portage.u
   {%- endfor -%}
 {%- endfor %}
 
-PYTHON_TARGETS="{{ merged_vars.portage.targets.python.enabled | sort | join(" ") }}"
-PYTHON_SINGLE_TARGET="{{ merged_vars.portage.targets.python.single }}"
+# PYTHON_TARGETS="{{ merged_vars.portage.targets.python.enabled | sort | join(" ") }}"
+# PYTHON_SINGLE_TARGET="{{ merged_vars.portage.targets.python.single }}"
 
 RUBY_TARGETS="{{ ( merged_vars.portage.targets.ruby.enabled | default([]) ) | sort | join(" ") }}"
 

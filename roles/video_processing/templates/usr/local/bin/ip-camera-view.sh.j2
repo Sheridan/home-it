@@ -18,18 +18,21 @@ function view()
   login=$1
   pw=$2
   addr=$3
-  urlpath=$4
-  ffplay -rtsp_transport tcp rtsp://${login}:${pw}@${addr}/${urlpath}
+  port=$4
+  urlpath=$5
+  ffplay -rtsp_transport tcp rtsp://${login}:${pw}@${addr}:${port}/${urlpath}
 }
 
 function view_cam()
 {
-  v_quality="{{ camera_vars.stream_paths.high }}"
+  v_quality="{{ camera_vars.stream_paths.high.path }}"
+  v_port="{{ camera_vars.stream_paths.high.port }}"
   if [[ "$quality" != "high" ]]
   then
-    v_quality="{{ camera_vars.stream_paths.low }}"
+    v_quality="{{ camera_vars.stream_paths.low.path }}"
+    v_port="{{ camera_vars.stream_paths.low.port }}"
   fi
-  view "{{ camera_secrets.viewer.login }}" "{{ camera_secrets.viewer.pw }}" "{{ camera_ip }}" "${v_quality}"
+  view "{{ camera_secrets.viewer.login }}" "{{ camera_secrets.viewer.pw }}" "{{ camera_ip }}" "${v_port}" "${v_quality}"
 }
 
 function view_dvr()

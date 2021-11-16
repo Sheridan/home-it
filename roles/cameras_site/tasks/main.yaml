@@ -1,0 +1,48 @@
+---
+  - name: Deploying camera script
+    template:
+      src: "{{ i_script }}.j2"
+      dest: "/{{ i_script }}"
+      mode: 0755
+    loop:
+    - usr/local/bin/video_stream_to_m3u8.sh
+    loop_control:
+      loop_var: i_script
+    # notify:
+    # - restart all streams
+
+  - name: Создаём каталоги
+    file:
+      dest: /var/www/cameras
+      state: directory
+      owner: "{{ dist_difference.nginx.user[ansible_distribution] }}"
+      group: "{{ dist_difference.nginx.user[ansible_distribution] }}"
+      mode: 0755
+
+  - name: Цикл по камерам
+    include_tasks: camera.yaml
+    loop: "{{ groups.cameras }}"
+    loop_control:
+      loop_var: i_camera
+    when: "'stream_paths' in hostvars[i_camera].merged_vars"
+    vars:
+      v_camera: "{{ hostvars[i_camera].merged_vars }}"
+
+  - name: Deploying html
+    template:
+      src: "{{ i_script }}.j2"
+      dest: "/{{ i_script }}"
+      mode: 0644
+    loop:
+    - var/www/cameras/index.html
+    loop_control:
+      loop_var: i_script
+
+  - name: Deploy nginx site
+    import_role:
+      name: nginx
+      tasks_from: simple_site
+    vars:
+      target:
+        name: cameras
+        auth: "{{ sites_auth_secrets.cameras }}"

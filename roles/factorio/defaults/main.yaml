@@ -1,7 +1,7 @@
 ---
   factorio:
     active: yes
-    version: 1.1.6
+    version: 1.1.46
     user:
       name: factorio
       pw: "{{ factorio_secrets.system_user_pw }}"
@@ -18,7 +18,7 @@
         interval: 8
         slots: 512
       visibility:
-        public: yes,
+        public: yes
         lan: yes
       auth:
         login: "{{ factorio_secrets.auth.login }}"
@@ -26,7 +26,45 @@
       admins:
       - Sheridan
     mods:
-      - name: Soundpack-alerts-and-sirens
+      - name: Soundpack-alerts-and-sirens-updated-v1-1
         version: latest
       - name: Turbwhine
+        version: latest
+      - name: darker-lamp
+        version: latest
+      - name: RealisticFlashlight
+        version: latest
+      - name: emoji-signals
+        version: latest
+      - name: snouz-useful-icons
+        version: latest
+      - name: custom-map-colors
+        version: latest
+      - name: GirlCharacter
+        version: latest
+      - name: BetterAlertArrows
+        version: latest
+      - name: Ki_Alerts
+        version: latest
+      - name: BigLight
+        version: latest
+      - name: flib
+        version: latest
+      - name: StatsGui
+        version: latest
+      - name: Spidertron-Inventory-Sorter
+        version: latest
+      - name: Shortcuts-ick
+        version: latest
+      - name: AlertsList2
+        version: latest
+      - name: SchallEntityInspector
+        version: latest
+      - name: showTileGridLite
+        version: latest
+      - name: SchallSatelliteController
+        version: latest
+      - name: HallOfFame
+        version: latest
+      - name: RecipeBook
         version: latest
