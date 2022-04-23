@@ -2,14 +2,14 @@
   portage:
     directoryes:
       portdir: /usr/portage
-      distdir: /data/usr/portage/distfiles
-      pkgdir: /data/usr/portage/packages
-      tmp: /data/tmp
+      distdir: /storage/hdd/portage/distfiles
+      pkgdir: /storage/hdd/portage/packages
+      tmp: /storage/hdd/tmp
+
     use:
       enabled:
-        databases:
-        - mysql
-        - postgres
+        filesystems:
+        - btrfs
         hardware:
         - mdadm
         - hamlib

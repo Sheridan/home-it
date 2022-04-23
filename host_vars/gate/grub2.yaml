@@ -5,4 +5,4 @@
       fs: "btrfs"
     video:
       vga: '0x037e'
-      mtrr: '3'
+      

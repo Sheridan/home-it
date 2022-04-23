@@ -133,33 +133,14 @@ awful.rules.rules = {
     },
     { rule = { class = "Steam" }          , properties = { tag = get_tag("Home") , switchtotag = true } },
     { rule = { class = "Code" }           , properties = { tag = get_tag("Work") , switchtotag = true } },
-    { rule = { class = "Audacious" }      , properties = { tag = get_tag("Media"), switchtotag = true, screen = get_screen_index("top") } },
-    { rule = { class = "Deadbeef" }       , properties = { tag = get_tag("Media"), switchtotag = true, screen = get_screen_index("top") } },
-    { rule = { class = "discord" }        , properties = { tag = get_tag("Home") , switchtotag = true, screen = get_screen_index("top") } },
-    { rule = { class = "Hexchat" }        , properties = { tag = get_tag("Home") , switchtotag = true, screen = get_screen_index("top") } },
-    { rule = { class = "Skype" }          , properties = { tag = get_tag("Other"), switchtotag = true, screen = get_screen_index("top") } },
-    { rule = { class = "VK" }             , properties = { tag = get_tag("Other"), switchtotag = true, screen = get_screen_index("top") } },
+    { rule = { class = "Audacious" }      , properties = { tag = get_tag("Media"), switchtotag = true, screen = get_screen_index("top" ) } },
+    { rule = { class = "Deadbeef" }       , properties = { tag = get_tag("Media"), switchtotag = true, screen = get_screen_index("top" ) } },
+    { rule = { class = "discord" }        , properties = { tag = get_tag("Home") , switchtotag = true, screen = get_screen_index("top" ) } },
+    { rule = { class = "Hexchat" }        , properties = { tag = get_tag("Home") , switchtotag = true, screen = get_screen_index("top" ) } },
+    { rule = { class = "Skype" }          , properties = { tag = get_tag("Other"), switchtotag = true, screen = get_screen_index("top" ) } },
+    { rule = { class = "VK" }             , properties = { tag = get_tag("Other"), switchtotag = true, screen = get_screen_index("top" ) } },
     { rule = { class = "KeePassXC" }      , properties = { tag = get_tag("Home") , switchtotag = true, screen = get_screen_index("left") } },
-    { rule = { class = "TelegramDesktop" }, properties = { tag = get_tag("Work") , switchtotag = true, screen = get_screen_index("top") } },
-    -- { rule = { class = "shutter" }      , properties = { tag = get_tag("Media"), switchtotag = true, screen = 1 } },
-    { rule = { class = "Pidgin", role = "buddy_list" },
-    properties = {floating=true,
-                  maximized_vertical=true, maximized_horizontal=false },
-    callback = function (c)
-        local cl_width = dpi(250)    -- width of buddy list window
-
-        local scr_area = screen[c.screen].workarea
-        local cl_strut = c:struts()
-
-        -- scr_area is affected by this client's struts, so we have to adjust for that
-        if c:isvisible() and cl_strut ~= nil and cl_strut.left > 0 then
-            c:geometry({x=scr_area.x-cl_strut.left, y=scr_area.y, width=cl_strut.left})
-        -- scr_area is unaffected, so we can use the naive coordinates
-        else
-            c:struts({left=cl_width, right=0})
-            c:geometry({x=scr_area.x, y=scr_area.y, width=cl_width})
-        end
-    end }
+    { rule = { class = "TelegramDesktop" }, properties = { tag = get_tag("Work") , switchtotag = true, screen = get_screen_index("top" ) } }
 }
 -- }}}
 
@@ -240,7 +221,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- }}}
 
 
-
+awful.spawn("setxkbmap -option")
 awful.spawn("setxkbmap -layout 'us,ru' -variant ',winkeys,winkeys' -option grp:caps_toggle -option grp_led:scroll -option terminate:ctrl_alt_bksp -option compose:menu -option keypad:pointerkeys")
 awful.spawn("numlockx on")
 

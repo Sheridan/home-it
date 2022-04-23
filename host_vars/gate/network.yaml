@@ -19,6 +19,8 @@
       aliases:
         - www
         - cameras
+        - test
+        - minecraft
     mac: "50:3e:aa:04:8f:b0"
     ip:
       ipv4: "{{ query('ship', 'kis_ip', 2) }}"
@@ -46,6 +48,8 @@
       aliases:
         - www
         - cameras
+        - test
+        - minecraft
     ifname: "external_he_0"
     need_netdev: yes
     ip:

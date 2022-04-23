@@ -9,10 +9,8 @@
     - { name: x11-wm/awesome, unstable: yes, use: { enabled: [dbus], disabled: [gnome, test, luajit] } }
     - { name: sci-calculators/speedcrunch }
     - { name: app-admin/keepassxc, use: { enabled: [autotype, browser, network, yubikey], disabled: [debug, test] } }
-    - { name: x11-misc/qtfm }
     - { name: media-gfx/flameshot, unstable: yes }
     - { name: x11-terms/kitty, unstable: yes, use: { enabled: [imagemagick], disabled: [debug, doc] } }
-    - { name: x11-terms/qterminal }
     tags:
     - packages
 
@@ -27,7 +25,7 @@
 
   - name: Скачиваем иконки
     get_url:
-      url: https://www.fatcow.com/images/fatcow-icons/fatcow-hosting-icons-3.9.2-all.zip
+      url: https://www.fatcow.com/images/fatcow-icons/fatcow-hosting-icons-3.9.2.zip
       dest: "{{ tmp_workdir }}/awesome/fatcow.zip"
     delegate_to: localhost
     ignore_errors: "{{ ansible_check_mode }}"
@@ -40,7 +38,6 @@
       dest: "{{ tmp_workdir }}/awesome/fatcow"
     loop:
     - "{{ tmp_workdir }}/awesome/fatcow.zip"
-    - "{{ tmp_workdir }}/awesome/fatcow/fatcow-hosting-icons-3.9.2.zip"
     delegate_to: localhost
     ignore_errors: "{{ ansible_check_mode }}"
     tags:

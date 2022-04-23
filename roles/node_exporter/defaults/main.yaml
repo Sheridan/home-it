@@ -9,6 +9,7 @@
       - buddyinfo
       - conntrack
       - cpu
+      - cpufreq
       - diskstats
       - entropy
       - filefd
@@ -22,10 +23,13 @@
       - netclass
       - netdev
       - netstat
+      - powersupplyclass
       - sockstat
       - stat
       - systemd
+      - tcpstat
       - textfile
+      - thermal_zone
       - time
       - uname
       - vmstat
@@ -34,13 +38,16 @@
   - arp
   - bcache
   - bonding
+  - btrfs
   - buddyinfo
   - conntrack
   - cpu
+  - cpufreq
   - diskstats
   - drbd
   - edac
   - entropy
+  - fibrechannel
   - filefd
   - filesystem
   - hwmon
@@ -57,24 +64,35 @@
   - netclass
   - netdev
   - netstat
+  - network_route
   - nfs
   - nfsd
   - ntp
+  - perf
+  - powersupplyclass
+  - pressure
+  - processes
   - qdisc
+  - rapl
   - runit
+  - schedstat
   - sockstat
+  - softnet
   - stat
   - supervisord
   - systemd
   - tcpstat
   - textfile
+  - thermal_zone
   - time
   - timex
+  - udp_queues
   - uname
   - vmstat
   - wifi
   - xfs
   - zfs
+  - zoneinfo
 
   dist_difference:
     node_exporter:

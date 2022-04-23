@@ -11,3 +11,7 @@
         ports:
         - 563
         - 119
+      telegram_media:
+        name: "Telegram media"
+        ports:
+        - 32000-32100

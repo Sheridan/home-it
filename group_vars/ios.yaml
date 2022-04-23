@@ -6,23 +6,6 @@
         ports:
         - 5223
         - 2195-2196
-      telegram:
-        name: "Telegram"
-        ports:
-        - 3561
-        - 9935
-        - 3036
-        - 1325
-        - 5004
-      ntp:
-        name: "NTP"
-        ports:
-        - 123
-      wifi_call:
-        name: "WiFi calls"
-        ports:
-        - 500
-        - 4500
       apple_share:
         name: "Apple share"
         ports:

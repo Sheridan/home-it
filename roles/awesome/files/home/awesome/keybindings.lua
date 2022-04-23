@@ -77,8 +77,9 @@ function bind_keyboard(modkey, mainmenu, switcher)
         awful.key({ modkey,           }, "space", function () awful.layout.inc(layouts,  1) end),
         awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
 
-        awful.key({ modkey, "Control" }, "n", awful.client.restore),
-        awful.key({ modkey }, "p", function() menubar.show() end)
+        awful.key({ modkey, "Control" }, "n",     awful.client.restore),
+        awful.key({ modkey            }, "p",     function() menubar.show() end),
+        awful.key({                   }, "Print", function() awful.util.spawn("flameshot gui",false) end)
     )
 
     clientkeys = awful.util.table.join(
@@ -90,20 +91,25 @@ function bind_keyboard(modkey, mainmenu, switcher)
                                             c.fullscreen = false
                                         else
                                             c.floating = true
-                                            local geo = screen[1].geometry
-                                            geo.x2 = geo.x + geo.width
+                                            local geo = screen[screen_layout.center].geometry
+                                            local geo_left = screen[screen_layout.left].geometry
+                                            local geo_right = screen[screen_layout.right].geometry
+                                            geo.x = geo.x - geo_left.width
+                                            geo.x2 = geo.x + geo.width + geo_left.width + geo_right.width
                                             geo.y2 = geo.y + geo.height
-                                            for si = 1, screen.count() do
-                                            -- for s in screen do
-                                                if screen_layout["top"] and si ~= screen_layout.top then
-                                                    s = screen[si]
-                                                    local geo2 = s.geometry
-                                                    geo.x = math.min(geo.x, geo2.x)
-                                                    geo.y = math.min(geo.y, geo2.y)
-                                                    geo.x2 = math.max(geo.x2, geo2.x + geo2.width)
-                                                    geo.y2 = math.max(geo.y2, geo2.y + geo2.height)
-                                                end
-                                            end
+
+                                            -- for si = 1, screen.count() do
+                                            -- for si,sn in ipairs({"left", "right"}) do
+                                            -- -- for s in screen do
+                                            --     if screen_layout["top"] and si ~= screen_layout.top then
+                                            --         s = screen[si]
+                                            --         local geo2 = s.geometry
+                                            --         geo.x = math.min(geo.x, geo2.x)
+                                            --         geo.y = math.min(geo.y, geo2.y)
+                                            --         geo.x2 = math.max(geo.x2, geo2.x + geo2.width)
+                                            --         geo.y2 = math.max(geo.y2, geo2.y + geo2.height)
+                                            --     end
+                                            -- end
                                             c:geometry{
                                                 x = geo.x,
                                                 y = geo.y,

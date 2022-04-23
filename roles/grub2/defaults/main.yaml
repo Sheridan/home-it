@@ -2,12 +2,13 @@
   grub2:
     distributor: "Sheridan Gentoo"
     menu:
-      timeout: 5
+      timeout: 4
       default: 0
     boot:
       device: "auto"
       fs: "auto"
     video:
+      uefi: no
       vga: '0x11a'
       resolution: 'auto'
       colorbits: 'auto'

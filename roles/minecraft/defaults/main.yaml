@@ -31,9 +31,11 @@
         level_name: 'Babylon 5'
         motd: 'A Sheridan`s Minecraft Server'
         size:
-          height: 256
           side: 29999984
-          view: 16
+        distances:
+          view: 32
+          entityes_percentage: 60
+          simulation: 10
       game:
         gamemode: survival
         level_type: default
@@ -59,8 +61,8 @@
     # - '+UseNUMA'
     # - '+UseConcMarkSweepGC'
     # - '+UseParNewGC'
-    - '-UseParNewGC'
-    - '-UseConcMarkSweepGC'
+    #- '-UseParNewGC'
+    #- '-UseConcMarkSweepGC'
     - '+UseG1GC'
     # - '+UseSHM'
     # - '+ParallelRefProcEnabled'
@@ -83,7 +85,7 @@
     - '+OptimizeStringConcat'
     - '-UseBiasedLocking'
     # - '+AggressiveHeap'
-    - '+AggressiveOpts'
+    #- '+AggressiveOpts'
     users:
     - name: capitan_Sheridan
       uuid: '66394e6e-24d3-3ccf-b8c2-c297ed33cf68'

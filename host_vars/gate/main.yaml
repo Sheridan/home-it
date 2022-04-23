@@ -3,6 +3,7 @@
     collectors:
       enabled:
       - ntp
+      - btrfs
 
   kernel:
     genkernel:

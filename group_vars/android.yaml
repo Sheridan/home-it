@@ -5,23 +5,3 @@
         name: "Android"
         ports:
         - 5228
-      telegram:
-        name: "Telegram"
-        ports:
-        - 3561
-        - 9935
-        - 3036
-        - 1325
-        - 5004
-        - 1192
-      whatsapp:
-        name: "Whatsapp"
-        ports:
-        - 3400-3500
-        - 5200-5300
-        - 4200-4300
-        - 20000-60000
-      minecraft_earth:
-        name: "Minecraft Earth"
-        ports:
-        - 30000-31000

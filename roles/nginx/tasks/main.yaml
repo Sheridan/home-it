@@ -36,6 +36,14 @@
   #   notify:
   #   - reload nginx
 
+  - name: Deploy nginx site
+    import_role:
+      name: nginx
+      tasks_from: simple_site
+    vars:
+      target:
+        name: test
+
   - name: Настройка ротации логов nginx
     import_role:
       name: logrotate

@@ -81,50 +81,60 @@
       regexp: "^{{ item.name }}="
       line: "{{ item.name }}={{ item.value }}"
     loop:
-    - { name: 'allow-cheats',                  value: '{{ merged_vars.minecraft.options.cheats                  |    string | lower }}'  }
-    - { name: 'allow-flight',                  value: '{{ merged_vars.minecraft.options.players.flight          |    string | lower }}'  }
-    - { name: 'allow-nether',                  value: '{{ merged_vars.minecraft.options.game.dimensions.nether  |    string | lower }}'  }
-    - { name: 'broadcast-console-to-ops',      value: 'true'                                                                             }
-    - { name: 'broadcast-rcon-to-ops',         value: 'true'                                                                             }
-    - { name: 'debug',                         value: '{{ merged_vars.minecraft.debug                           |    string | lower }}'  }
-    - { name: 'difficulty',                    value: '{{ merged_vars.minecraft.options.game.difficulty                             }}'  }
-    - { name: 'enable-command-block',          value: '{{ merged_vars.minecraft.options.game.command_block      |    string | lower }}'  }
-    - { name: 'enable-query',                  value: '{{ merged_vars.minecraft.network.query.enabled           |    string | lower }}'  }
-    - { name: 'enable-rcon',                   value: '{{ merged_vars.minecraft.network.rcon.enabled            |    string | lower }}'  }
-    - { name: 'force-gamemode',                value: 'true'                                                                             }
-    - { name: 'gamemode',                      value: '{{ merged_vars.minecraft.options.game.gamemode                               }}'  }
-    - { name: 'generate-structures',           value: '{{ merged_vars.minecraft.options.spawn.structures        |    string | lower }}'  }
-    - { name: 'generator-settings',            value: ''                                                                                 }
-    - { name: 'hardcore',                      value: '{{ merged_vars.minecraft.options.game.hardcore           |    string | lower }}'  }
-    - { name: 'level-name',                    value: '{{ merged_vars.minecraft.options.world.level_name                            }}'  }
-    - { name: 'level-seed',                    value: '{{ merged_vars.minecraft.options.world.seed                                  }}'  }
-    - { name: 'level-type',                    value: '{{ merged_vars.minecraft.options.game.level_type                             }}'  }
-    - { name: 'max-build-height',              value: '{{ merged_vars.minecraft.options.world.size.height                           }}'  }
-    - { name: 'max-players',                   value: '{{ merged_vars.minecraft.options.players.maximum                             }}'  }
-    - { name: 'max-tick-time',                 value: '-1'                                                                               }
-    - { name: 'max-world-size',                value: '{{ merged_vars.minecraft.options.world.size.side                             }}'  }
-    - { name: 'motd',                          value: '{{ merged_vars.minecraft.options.world.motd                                  }}'  }
-    - { name: 'network-compression-threshold', value: '{{ merged_vars.minecraft.network.compression_threshold                       }}'  }
-    - { name: 'online-mode',                   value: '{{ merged_vars.minecraft.options.players.registered_only|     string | lower }}'  }
-    - { name: 'op-permission-level',           value: '4'                                                                                }
-    - { name: 'player-idle-timeout',           value: '0'                                                                                }
-    - { name: 'prevent-proxy-connections',     value: 'false'                                                                            }
-    - { name: 'pvp',                           value: '{{ merged_vars.minecraft.options.players.pvp             |    string | lower }}'  }
-    - { name: 'query.port',                    value: '{{ merged_vars.minecraft.network.query.port                                  }}'  }
-    - { name: 'rcon.password',                 value: '{{ merged_vars.minecraft.network.rcon.pw                                     }}'  }
-    - { name: 'rcon.port',                     value: '{{ merged_vars.minecraft.network.rcon.port                                   }}'  }
-    - { name: 'resource-pack-sha1',            value: ''                                                                                 }
-    - { name: 'resource-pack',                 value: ''                                                                                 }
-    - { name: 'server-ip',                     value: ''                                                                                 }
-    - { name: 'server-port',                   value: '{{ merged_vars.minecraft.network.port                                        }}'  }
-    - { name: 'snooper-enabled',               value: '{{ merged_vars.minecraft.network.send_stat_to_devs       |    string | lower }}'  }
-    - { name: 'spawn-animals',                 value: '{{ merged_vars.minecraft.options.spawn.animals           |    string | lower }}'  }
-    - { name: 'spawn-monsters',                value: '{{ merged_vars.minecraft.options.spawn.monsters          |    string | lower }}'  }
-    - { name: 'spawn-npcs',                    value: '{{ merged_vars.minecraft.options.spawn.npcs              |    string | lower }}'  }
-    - { name: 'spawn-protection',              value: '0'                                                                                }
-    - { name: 'use-native-transport',          value: 'true'                                                                             }
-    - { name: 'view-distance',                 value: '{{ merged_vars.minecraft.options.world.size.view                             }}'  }
-    - { name: 'white-list',                    value: '{{ merged_vars.minecraft.options.players.whitelisted     |    string | lower }}'  }
+    - { name: 'allow-cheats',                      value: '{{ merged_vars.minecraft.options.cheats                  |    string | lower }}'  }
+    - { name: 'allow-flight',                      value: '{{ merged_vars.minecraft.options.players.flight          |    string | lower }}'  }
+    - { name: 'allow-nether',                      value: '{{ merged_vars.minecraft.options.game.dimensions.nether  |    string | lower }}'  }
+    - { name: 'broadcast-console-to-ops',          value: 'true'                                                                             }
+    - { name: 'broadcast-rcon-to-ops',             value: 'true'                                                                             }
+    - { name: 'debug',                             value: '{{ merged_vars.minecraft.debug                           |    string | lower }}'  }
+    - { name: 'difficulty',                        value: '{{ merged_vars.minecraft.options.game.difficulty                             }}'  }
+    - { name: 'enable-command-block',              value: '{{ merged_vars.minecraft.options.game.command_block      |    string | lower }}'  }
+    - { name: 'enable-jmx-monitoring',             value: 'false'                                                                            }
+    - { name: 'enable-query',                      value: '{{ merged_vars.minecraft.network.query.enabled           |    string | lower }}'  }
+    - { name: 'enable-rcon',                       value: '{{ merged_vars.minecraft.network.rcon.enabled            |    string | lower }}'  }
+    - { name: 'enable-status',                     value: 'true'                                                                             }
+    - { name: 'enforce-whitelist',                 value: '{{ merged_vars.minecraft.options.players.whitelisted     |    string | lower }}'  }
+    - { name: 'entity-broadcast-range-percentage', value: '{{ merged_vars.minecraft.options.world.distances.entityes_percentage         }}'  }
+    - { name: 'force-gamemode',                    value: 'true'                                                                             }
+    - { name: 'function-permission-level',         value: '2'                                                                                }
+    - { name: 'gamemode',                          value: '{{ merged_vars.minecraft.options.game.gamemode                               }}'  }
+    - { name: 'generate-structures',               value: '{{ merged_vars.minecraft.options.spawn.structures        |    string | lower }}'  }
+    - { name: 'generator-settings',                value: ''                                                                                 }
+    - { name: 'hardcore',                          value: '{{ merged_vars.minecraft.options.game.hardcore           |    string | lower }}'  }
+    - { name: 'level-name',                        value: '{{ merged_vars.minecraft.options.world.level_name                            }}'  }
+    - { name: 'level-seed',                        value: '{{ merged_vars.minecraft.options.world.seed                                  }}'  }
+    - { name: 'level-type',                        value: '{{ merged_vars.minecraft.options.game.level_type                             }}'  }
+    - { name: 'max-players',                       value: '{{ merged_vars.minecraft.options.players.maximum                             }}'  }
+    - { name: 'max-tick-time',                     value: '-1'                                                                               }
+    - { name: 'max-world-size',                    value: '{{ merged_vars.minecraft.options.world.size.side                             }}'  }
+    - { name: 'motd',                              value: '{{ merged_vars.minecraft.options.world.motd                                  }}'  }
+    - { name: 'network-compression-threshold',     value: '{{ merged_vars.minecraft.network.compression_threshold                       }}'  }
+    - { name: 'online-mode',                       value: '{{ merged_vars.minecraft.options.players.registered_only|     string | lower }}'  }
+    - { name: 'op-permission-level',               value: '4'                                                                                }
+    - { name: 'player-idle-timeout',               value: '0'                                                                                }
+    - { name: 'prevent-proxy-connections',         value: 'false'                                                                            }
+    - { name: 'pvp',                               value: '{{ merged_vars.minecraft.options.players.pvp             |    string | lower }}'  }
+    - { name: 'query.port',                        value: '{{ merged_vars.minecraft.network.query.port                                  }}'  }
+    - { name: 'rate-limit',                        value: '0'                                                                                }
+    - { name: 'rcon.password',                     value: '{{ merged_vars.minecraft.network.rcon.pw                                     }}'  }
+    - { name: 'rcon.port',                         value: '{{ merged_vars.minecraft.network.rcon.port                                   }}'  }
+    - { name: 'resource-pack-prompt',              value: ''                                                                                 }
+    - { name: 'resource-pack-sha1',                value: ''                                                                                 }
+    - { name: 'resource-pack',                     value: ''                                                                                 }
+    - { name: 'seed',                              value: '{{ merged_vars.minecraft.options.world.seed                                  }}'  }
+    - { name: 'server-ip',                         value: ''                                                                                 }
+    - { name: 'server-port',                       value: '{{ merged_vars.minecraft.network.port                                        }}'  }
+    - { name: 'simulation-distance',               value: '{{ merged_vars.minecraft.options.world.distances.simulation                  }}'  }
+    - { name: 'snooper-enabled',                   value: '{{ merged_vars.minecraft.network.send_stat_to_devs       |    string | lower }}'  }
+    - { name: 'spawn-animals',                     value: '{{ merged_vars.minecraft.options.spawn.animals           |    string | lower }}'  }
+    - { name: 'spawn-monsters',                    value: '{{ merged_vars.minecraft.options.spawn.monsters          |    string | lower }}'  }
+    - { name: 'spawn-npcs',                        value: '{{ merged_vars.minecraft.options.spawn.npcs              |    string | lower }}'  }
+    - { name: 'spawn-protection',                  value: '0'                                                                                }
+    - { name: 'sync-chunk-writes',                 value: 'false'                                                                            }
+    - { name: 'text-filtering-config',             value: ''                                                                                 }
+    - { name: 'use-native-transport',              value: 'true'                                                                             }
+    - { name: 'view-distance',                     value: '{{ merged_vars.minecraft.options.world.distances.view                        }}'  }
+    - { name: 'white-list',                        value: '{{ merged_vars.minecraft.options.players.whitelisted     |    string | lower }}'  }
 
   - name: Генерируем конфиги
     template:
@@ -160,8 +170,8 @@
         - { name: MINECRAFT_JAVA_OPTIONS, value: "{{ f_java_options }}" }
         exec_start: >
           /bin/sh -c "
-          /usr/bin/java
-          -server -d64
+          /opt/openjdk-bin-17/bin/java
+          -server
           -Xmx${MINECRAFT_JAVA_MAX_MEMORY}
           -Xms${MINECRAFT_JAVA_INITIAL_MEMORY}
           -Xss${MINECRAFT_JAVA_THREAD_STACK_SIZE_MEMORY}

@@ -4,8 +4,11 @@
       vga: '0x31a'
       resolution: '1280x1024'
       colorbits: '16'
+      uefi: yes
     kernel:
-      options: []
+      options:
+      - 'mitigations=off'
     boot:
-      device: "/dev/sda1"
+      #device: "/dev/sda1"
+      device: "LABEL=efi-boot"
       fs: "btrfs"

@@ -46,7 +46,7 @@ GRUB_CMDLINE_LINUX="init=/usr/lib/systemd/systemd"
 
 {# Append parameters to the linux kernel command line for non-recovery entries #}
 {% set video = ( 'video=vesafb:' + merged_vars.grub2.video.resolution + '-' + merged_vars.grub2.video.colorbits + ',mtrr:' + merged_vars.grub2.video.mtrr + ',ywrap' ) if merged_vars.grub2.video.resolution != 'auto' else ( 'vga=' + merged_vars.grub2.video.vga ) %}
-GRUB_CMDLINE_LINUX_DEFAULT="{{ video }}"
+GRUB_CMDLINE_LINUX_DEFAULT="{{ video if not merged_vars.grub2.video.uefi else 'video=efifb:' + merged_vars.grub2.video.resolution + '-' + merged_vars.grub2.video.colorbits }}"
 
 {# Uncomment to disable graphical terminal (grub-pc only) #}
 #GRUB_TERMINAL=console
@@ -101,3 +101,5 @@ This is useful, for example, to allow users who can't see the screen
 to know when they can make a choice on the menu.
 #}
 GRUB_INIT_TUNE="{{ merged_vars.grub2.sound }}"
+
+GRUB_DISABLE_OS_PROBER=1

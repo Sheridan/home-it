@@ -6,6 +6,9 @@
     vars:
       package: "{{ item }}"
     loop:
+    - { name: media-sound/alsa-tools }
+    - { name: media-sound/alsa-utils }
+    - { name: media-sound/alsaplayer }
     - { name: media-sound/pulseaudio, use: { enabled: [alsa, alsa-plugin, bluetooth, ipv6, systemd, equalizer, udev, asyncns, webrtc-aec, libsamplerate], disabled: [gconf, lirc] } }
     - { name: media-plugins/calf, use: { enabled: [lv2] } }
     - { name: media-sound/pulseeffects, use: { enabled: [bs2b, calf, mda-lv2, rubberband] } }

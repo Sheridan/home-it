@@ -1,10 +1,23 @@
 ---
   kernel:
     genkernel:
-      enabled: no
+      enabled: yes
+      options:
+      - btrfs
+      - no-zfs
+      - no-lvm
+      - no-dmraid
+      - no-luks
 
   zsh:
     theme: "gentoo"
     plugins:
     - git
     - ssh-agent
+
+  node_exporter:
+    collectors:
+      enabled:
+      - btrfs
+      - interrupts
+      - mdadm

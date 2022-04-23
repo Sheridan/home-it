@@ -10,25 +10,19 @@
         - right
         videocards:
         - first
-        - second
     videocards:
       first:
         vendor: "NVidia Corporation"
-        model: "GeForce GTX 1050 Ti (GP107)"
+        model: "GeForce RTX 3070 Ti"
         driver: "nvidia"
         pci: "01:00.0"
-      second:
-        vendor: "NVidia Corporation"
-        model: "GeForce GTX 1050 (GP107)"
-        driver: "nvidia"
-        pci: "08:00.0"
     monitors:
       center:
         vendor: "LG"
         model: "27UL500-W"
         connector:
           card: first
-          out: "DP-0"
+          out: "DP-2"
         position:
           base: yes
         mode:
@@ -40,35 +34,35 @@
         model: "ProLite XU2395WSU-B1"
         connector:
           card: first
-          out: "HDMI-1"
+          out: "DP-4"
         position:
           where: left-of
           from: center
         mode:
           width: 1920
           height: 1200
-          rate: 60
+          rate: 75
         rotate: right
       right:
         vendor: "Iiyama"
         model: "ProLite XU2395WSU-B1"
         connector:
           card: first
-          out: "HDMI-0"
+          out: "DP-0"
         position:
           where: right-of
           from: center
         mode:
           width: 1920
           height: 1200
-          rate: 60
+          rate: 75
         rotate: left
       top:
         vendor: "LG"
         model: "22MP55"
         connector:
           card: first
-          out: "DVI-D-0"
+          out: "HDMI-0"
         position:
           where: above
           from: center

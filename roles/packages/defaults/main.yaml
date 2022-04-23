@@ -12,6 +12,7 @@
     - { name: net-misc/telnet-bsd }
     - { name: sys-apps/pciutils, use: { enabled: [ dns ] } }
     - { name: sys-apps/usbutils }
+    - { name: sys-apps/i2c-tools }
     - { name: www-plugins/google-talkplugin, state: absent }
     - { name: dev-python/passlib }
 

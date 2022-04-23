@@ -12,27 +12,27 @@
       first:
         vendor: "NVidia Corporation"
         model: "GeForce GTX 630 (GF108)"
-        driver: "nvidia"
+        driver: "nouveau"
         pci: "01:00.0"
     monitors:
       left:
         vendor: "LG"
-        model: "27UL500-W"
+        model: "L1740PQ"
         connector:
           card: first
-          out: "DVI-0"
+          out: "DVI-I-1"
         position:
           base: yes
         mode:
-          width: 2180
+          width: 1280
           height: 1024
           rate: 60
       right:
         vendor: "LG"
-        model: "27UL500-W"
+        model: "L1740PQ"
         connector:
           card: first
-          out: "VGA-0"
+          out: "VGA-1"
         position:
           where: right-of
           from: left

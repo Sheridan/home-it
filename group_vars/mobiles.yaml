@@ -1,0 +1,29 @@
+---
+  firewall:
+    host_to_internet:
+      telegram:
+        name: "Telegram"
+        ports:
+        - 5222
+        - 1325
+        - 1192
+        - 3000-3100
+        - 5000-5100
+        - 9900-10000
+        - 32000-32100
+      wifi_call:
+        name: "WiFi calls"
+        ports:
+        - 500
+        - 4500
+      whatsapp:
+        name: "Whatsapp"
+        ports:
+        - 3400-3500
+        - 5200-5300
+        - 4200-4300
+        - 20000-60000
+      minecraft_earth:
+        name: "Minecraft Earth"
+        ports:
+        - 30000-31000

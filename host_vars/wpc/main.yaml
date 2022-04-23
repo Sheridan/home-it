@@ -15,3 +15,8 @@
     plugins:
     - git
     - ssh-agent
+
+  node_exporter:
+    collectors:
+      enabled:
+      - btrfs

@@ -1,22 +1,28 @@
 ---
-  # G.Craftsman
-  # Hickvision
-  # model: GC-SW608AHZ49EA-TF
+  # Shenzen Wonsdar Technology
+  # model: XM05-8MP
   network:
-  - name: "Internal"
-    mac: "f0:00:00:68:66:92"
-    ip: "{{ query('ship', 'ip', 171) }}"
+  - name: "WiFi"
+    # mac: "00:12:31:b8:d4:66"
+    mac: "9c:1c:37:99:94:46"
+    ip: "{{ query('ship', 'ip', 173) }}"
     network: 'home'
     type: 'dhcp'
+  - name: "Ethernet"
+    mac: "00:12:31:b8:d4:66"
+    ip: "{{ query('ship', 'ip', 174) }}"
+    network: 'home'
+    type: 'dhcp'
+
 
   stream_paths:
     high:
       port: 554
-      path: stream0
+      path: "11"
     low:
       port: 554
-      path: stream1
+      path: "12"
 
   dvr:
     host: dvr-kitchen
-    channel: 4
+    channel: 6

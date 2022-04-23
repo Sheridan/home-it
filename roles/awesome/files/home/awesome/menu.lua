@@ -7,9 +7,9 @@ function make_menu(terminal)
             {
                 { "Chrome"               , "google-chrome-stable --no-proxy-server" },
                 { "VSCode"               , "vscode --new-window"},
-                { "Skype"                , "skypeforlinux" },
                 { "Telegram"             , "telegram-desktop"},
                 { "Discord"              , "discord"},
+                { "Element"              , "element-desktop"},
                 { "Скриншотер"           , "flameshot"},
                 { "Passwords"            , "keepassxc"},
                 { "Калькулятор"          , "speedcrunch"}

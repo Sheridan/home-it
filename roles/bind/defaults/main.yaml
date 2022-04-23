@@ -99,6 +99,14 @@ bind:
       addresses:
       - type: CNAME
         address: gate
+    - name: test
+      addresses:
+      - type: CNAME
+        address: gate
+    - name: minecraft
+      addresses:
+      - type: CNAME
+        address: gate
     - name: spc
       addresses:
       - type: AAAA

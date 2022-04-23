@@ -29,16 +29,16 @@ USE="${USE}{{ " " if use_state == 'enabled' else " -" }}{{ merged_vars.portage.u
 # PYTHON_TARGETS="{{ merged_vars.portage.targets.python.enabled | sort | join(" ") }}"
 # PYTHON_SINGLE_TARGET="{{ merged_vars.portage.targets.python.single }}"
 
-RUBY_TARGETS="{{ ( merged_vars.portage.targets.ruby.enabled | default([]) ) | sort | join(" ") }}"
+#RUBY_TARGETS="{{ ( merged_vars.portage.targets.ruby.enabled | default([]) ) | sort | join(" ") }}"
 
-DOTNET_TARGETS="{{ ( merged_vars.portage.targets.dotnet.enabled | default([]) ) | sort | join(" ") }}"
+#DOTNET_TARGETS="{{ ( merged_vars.portage.targets.dotnet.enabled | default([]) ) | sort | join(" ") }}"
 
 VIDEO_CARDS="{{ ( merged_vars.portage.hardware.video_cards | default([]) ) | sort | join(" ") }}"
 
 LINGUAS="{{ merged_vars.portage.linguas | join(" ") }}"
 L10N="${LINGUAS}"
 
-PHP_TARGETS="{{ ( merged_vars.portage.targets.php.enabled  | default([]) ) | sort | join(" ") }}"
+#PHP_TARGETS="{{ ( merged_vars.portage.targets.php.enabled  | default([]) ) | sort | join(" ") }}"
 NGINX_MODULES_HTTP="{{ ( merged_vars.portage.targets.nginx.modules  | default([]) ) | sort | join(" ") }}"
 
 QEMU_SOFTMMU_TARGETS="{{ ( merged_vars.portage.targets.qemu.softmmu | default([]) ) | sort | join(" ") }}"
