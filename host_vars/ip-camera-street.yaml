@@ -1,6 +1,7 @@
 ---
   # Shenzen Wonsdar Technology
   # model: XM05-8MP
+  # http://www.wonsdar.com/
   network:
   - name: "WiFi"
     # mac: "00:12:31:b8:d4:66"

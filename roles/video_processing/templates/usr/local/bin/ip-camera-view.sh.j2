@@ -42,7 +42,7 @@ function view_dvr()
   then
     v_quality="1"
   fi
-  view "{{ dvr_secrets.viewer.login }}" "{{ dvr_secrets.viewer.pw }}" "{{ dvr_ip }}" "user={{ dvr_secrets.viewer.login }}&password={{ dvr_secrets.viewer.pw }}&channel={{ camera_vars.dvr.channel }}&stream=${v_quality}.sdp"
+  view "{{ dvr_secrets.viewer.login }}" "{{ dvr_secrets.viewer.pw }}" "{{ dvr_ip }}" "554" "user={{ dvr_secrets.viewer.login }}&password={{ dvr_secrets.viewer.pw }}&channel={{ camera_vars.dvr.channel }}&stream=${v_quality}.sdp"
 }
 
 while [ -n "$1" ]
