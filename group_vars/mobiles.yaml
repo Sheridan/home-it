@@ -27,3 +27,8 @@
         name: "Minecraft Earth"
         ports:
         - 30000-31000
+      iot:
+        name: "IoT"
+        ports:
+        - 5684
+        - 8883

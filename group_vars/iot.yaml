@@ -1,0 +1,25 @@
+---
+  firewall:
+    host_to_internet:
+      ntp:
+        name: "ntp"
+        ports:
+        - 123
+      dns:
+        name: "dns"
+        ports:
+        - 53
+      ekf:
+        name: "ekf"
+        ports:
+        - 8886
+        - 2443
+      magick_home:
+        name: "magick_home"
+        ports:
+        - 8816
+      requests:
+        name: "Default media streams"
+        ports:
+        - 46030
+        - 47878

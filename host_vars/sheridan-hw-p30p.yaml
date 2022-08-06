@@ -17,3 +17,7 @@
         - 6447
         - 7275
         - 5684
+      some_services:
+        name: "Some"
+        ports:
+        - 5684
