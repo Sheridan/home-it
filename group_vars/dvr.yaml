@@ -1,6 +1,6 @@
 ---
   firewall:
-    group_to_internet:
+    dvr_to_internet:
       services:
       - email
       - ntp

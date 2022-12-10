@@ -1,6 +1,6 @@
 ---
   firewall:
-    group_to_internet:
+    ios_to_internet:
       apple_push:
         name: "Apple push"
         ports:

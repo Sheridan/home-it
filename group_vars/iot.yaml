@@ -1,6 +1,6 @@
 ---
   firewall:
-    group_to_internet:
+    iot_to_internet:
       services:
       - ntp
       - dns

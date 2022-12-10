@@ -1,5 +1,5 @@
 ---
   firewall:
-    group_to_internet:
+    cameras_jovison_to_internet:
       services:
       - cameras_jovison

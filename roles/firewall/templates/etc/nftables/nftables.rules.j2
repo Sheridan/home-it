@@ -110,11 +110,12 @@ table inet filter {
 {%  for group_name in groups|sort                                                           %}
 {%    set group_hosts = query('inventory_hostnames', group_name)|difference(['gate'])|sort  %}
 {%    if group_hosts|length                                                                 %}
-{%      set host = hostvars[group_hosts|first]                                              %}
-{%      if 'firewall' in host and 'group_to_internet' in host.firewall                      %}
+{%      set group_varname = group_name + '_to_internet'                                     %}
+{%      set host = hostvars[group_hosts|first].merged_vars                                  %}
+{%      if 'firewall' in host and group_varname in host.firewall                            %}
 {%        set nft_group_name = group_name | replace('-','_')                                %}
   chain group_{{ nft_group_name }} {
-{%        for service_name in host.firewall.group_to_internet.services                      %}
+{%        for service_name in host.firewall[group_varname].services                         %}
 {%          for ip_version in ['ipv6', 'ipv4']                                              %}
     {{ query('nft', 'as_iif', internal_interface) }} {{ query('nft', 'ip_or_ip6', ip_version) }} saddr @group__{{ nft_group_name }}__{{ ip_version }} meta l4proto {tcp, udp} th dport @service__{{ service_name }} counter goto to_provider_{{ ip_version }} comment "[{{ group_name }}->internet] {{ network_services[service_name].name }}"
 {%          endfor                                                                          %}
@@ -128,8 +129,9 @@ table inet filter {
 {%  for group_name in groups|sort                                                           %}
 {%    set group_hosts = query('inventory_hostnames', group_name)|difference(['gate'])|sort  %}
 {%    if group_hosts|length                                                                 %}
-{%      set host = hostvars[group_hosts|first]                                              %}
-{%      if 'firewall' in host and 'group_to_internet' in host.firewall                      %}
+{%      set group_varname = group_name + '_to_internet'                                     %}
+{%      set host = hostvars[group_hosts|first].merged_vars                                  %}
+{%      if 'firewall' in host and group_varname in host.firewall                            %}
 {%        set nft_group_name = group_name | replace('-','_')                                %}
     jump group_{{ nft_group_name }}
 {%      endif                                                                               %}

@@ -1,6 +1,6 @@
 ---
   firewall:
-    group_to_internet:
+    probes_to_internet:
       services:
       - dns
       - ntp

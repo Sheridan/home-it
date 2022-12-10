@@ -1,5 +1,5 @@
 ---
   firewall:
-    group_to_internet:
+    android_to_internet:
       services:
       - android

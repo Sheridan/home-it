@@ -1,6 +1,6 @@
 ---
   firewall:
-    group_to_internet:
+    workstations_linux_to_internet:
       services:
       - web
       - nntp

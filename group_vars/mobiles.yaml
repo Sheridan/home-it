@@ -1,11 +1,9 @@
 ---
   firewall:
-    group_to_internet:
+    mobiles_to_internet:
       services:
       - telegram
       - wifi_call
       - whatsapp
       - minecraft_earth
       - iot_client
-      # - web
-      # - mail

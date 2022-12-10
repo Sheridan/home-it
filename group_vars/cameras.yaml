@@ -1,6 +1,6 @@
 ---
   firewall:
-    group_to_internet:
+    cameras_to_internet:
       services:
       - email
       - ntp

@@ -1,6 +1,6 @@
 ---
   firewall:
-    group_to_internet:
+    trusted_to_internet:
       services:
       - torrent
       - email

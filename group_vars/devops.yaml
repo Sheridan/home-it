@@ -1,6 +1,6 @@
 ---
   firewall:
-    group_to_internet:
+    devops_to_internet:
       services:
       - ssh
       - telnet

@@ -29,6 +29,6 @@
           positive: '.+?:  ::: completed emerge \\((?P<package_num>.+?) of (?P<queue_size>.+?)\\) (?P<package>.+?) to (?P<destination>.*)'
 
   firewall:
-    group_to_internet:
+    gentoo_to_internet:
       services:
       - rsync

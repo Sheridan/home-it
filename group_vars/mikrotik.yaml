@@ -5,6 +5,6 @@
   ansible_password: "{{ mikrotik_secrets.superuser.password }}"
 
   firewall:
-    group_to_internet:
+    mikrotik_to_internet:
       services:
       - ddns
