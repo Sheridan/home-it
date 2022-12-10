@@ -1,0 +1,42 @@
+#!/bin/bash
+
+provider=$1
+
+ipv6_tunnel_addr="216.66.80.30/32"
+ipv6_tunnel_hop="91.210.98.61"
+
+function to_rt()
+{
+  ip r d default
+  ip r a default via 109.168.144.155 dev external_rt_0 proto static
+  ip r a ${ipv6_tunnel_addr} via ${ipv6_tunnel_hop}
+  flush
+}
+
+function to_kis()
+{
+  ip r d default
+  ip r a default via 91.210.98.61 dev external_kis_0 proto static
+  ip r d ${ipv6_tunnel_addr} via ${ipv6_tunnel_hop}
+  flush
+}
+
+function flush()
+{
+  ip route flush cache
+}
+
+case "${provider}" in
+  "rt")
+    to_rt
+    exit $?
+  ;;
+  "kis")
+    to_kis
+    exit $?
+  ;;
+  "flush")
+    flush
+    exit $?
+  ;;
+esac

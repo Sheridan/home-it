@@ -47,24 +47,22 @@
       internal_interfaces: "{{ network | selectattr('ifname', 'match', 'internal_.*') | list }}"
       external_interfaces: "{{ network | selectattr('ifname', 'match', 'external_.*') | list }}"
 
-  - name: Установка скриптов управления стеной
+  - name: Установка скриптов управления
     template:
-      src: usr/local/bin/firewall-manager.sh.j2
-      dest: /usr/local/bin/firewall-manager.sh
+      src: "usr/local/bin/{{ i_filename }}.j2"
+      dest: "/usr/local/bin/{{ i_filename }}"
       owner: root
       group: root
       mode: 0744
+    loop:
+    - firewall-manager.sh
+    - route-tables-reload.sh
+    - firewall-mon.sh
+    - provider_change.sh
+    loop_control:
+      loop_var: i_filename
     notify:
     - update firewall
-
-  - name: Установка скриптов управления маршрутами
-    template:
-      src: usr/local/bin/route-tables-reload.sh.j2
-      dest: /usr/local/bin/route-tables-reload.sh
-      owner: root
-      group: root
-      mode: 0744
-    when: inventory_hostname in groups.gateways
 
   - name: Установка конфигурации firewall'а
     template:

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+dmesg -w | while read line; do
+  if [[ $line == *"dropped"* ]]
+  then
+    #echo $line
+    ndline=$(echo $line | sed -r 's/.*\](.*)/date \1/') #'
+    data=(${ndline// / })
+    echo -n "[${data[1]}] "
+    case ${data[1]} in
+      "Input")
+        echo $ndline | sed -r 's/.*: IN=([^[:space:]]*) .+? SRC=([^[:space:]]*) DST=([^[:space:]]*) .+? SPT=([^[:space:]]*) DPT=([^[:space:]]*) .*/<\1> \2->\3: \4->\5/'
+      ;;
+      "Forward")
+        # echo $line
+        echo $ndline | sed -r 's/.*: IN=([^[:space:]]*) OUT=([^[:space:]]*) .+? SRC=([^[:space:]]*) DST=([^[:space:]]*) .+? SPT=([^[:space:]]*) DPT=([^[:space:]]*) .*/<\1->\2> \3->\4: \5->\6/'
+      ;;
+    esac
+  fi
+done
