@@ -1,68 +1,15 @@
 ---
   firewall:
-    host_to_internet:
-      torrent:
-        name: "Torrent"
-        ports:
-        - 6881-6889
-        - 6969
-      email:
-        name: "Mail"
-        ports:
-        - 25
-        - 110
-        - 143
-        - 587
-        - 465
-        - 993
-        - 995
-      socks5:
-        name: "Socks"
-        ports:
-        - 1080
-      irc:
-        name: "IRC"
-        ports:
-        - 6667
-      media_streams:
-        name: "Default media streams"
-        ports:
-        - 554 # rtsp
-      steam:
-        name: "Steam"
-        ports:
-        - 27000-27037
-        - 4379-4380
-        - 3478
-      google:
-        name: "Google"
-        ports:
-        - 5228 # Market, sync
-        - 5222 # Talk
-      discord:
-        name: "Discord"
-        ports:
-        - 50000-50500
-      ultima_online:
-        name: "Ultima Online"
-        ports:
-        - 5001-5010
-        - 7775-7777
-        - 7875
-        - 8800-8900
-        - 9999
-      ftp:
-        name: "Default ftp"
-        ports:
-        - 20
-        - 21
-        - 115
-        - 989
-        - 990
-      fantasyradio:
-        name: "fantasyradio.ru streams"
-        ports:
-        - 8000
-        - 8002
-        - 8008
-        - 8016
+    group_to_internet:
+      services:
+      - torrent
+      - email
+      - socks5
+      - irc
+      - rtsp_streams
+      - steam
+      - google
+      - discord
+      - ultima_online
+      - ftp
+      - fantasyradio

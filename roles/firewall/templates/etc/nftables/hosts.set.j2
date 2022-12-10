@@ -1,0 +1,14 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+{# per host #}
+{%  for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort     %}
+{%    set nft_host_name = host_name | replace('-','_')                                 %}
+{%    for ip_version in ['ipv6', 'ipv4']                                               %}
+set host__{{ nft_host_name }}__{{ ip_version }} {
+  type {{ ip_version }}_addr
+  flags constant
+  elements = $host__{{ nft_host_name }}__{{ ip_version }}
+}
+{%    endfor                                                                           %}
+{%  endfor                                                                             %}

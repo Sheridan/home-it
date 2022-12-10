@@ -1,6 +1,6 @@
 ---
   - name: Checking firewall ruleset
-    shell: "nft --check -f {{ config.location }}/{{ config.filename }}"
+    shell: "nft --check -f {{ config.location }}/nftables.rules"
     register: firewall_check_result
 
   - name: Looking result

@@ -29,8 +29,6 @@
           positive: '.+?:  ::: completed emerge \\((?P<package_num>.+?) of (?P<queue_size>.+?)\\) (?P<package>.+?) to (?P<destination>.*)'
 
   firewall:
-    host_to_internet:
-      rsync:
-        name: "Gentoo to rsync"
-        ports:
-        - 873
+    group_to_internet:
+      services:
+      - rsync

@@ -4,7 +4,7 @@ Description=PPPoE <--> %i over bridge_%i_0
 [Service]
 Type=simple
 ExecStartPre=/bin/ip link set dev bridge_%i_0 up
-ExecStart=/usr/sbin/pppd call %i
+ExecStart=/usr/sbin/pon %i
 ExecStopPost=/bin/ip link set dev bridge_%i_0 down
 SendSIGHUP=yes
 PIDFile=/var/run/ppp-%i.pid

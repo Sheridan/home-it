@@ -8,16 +8,5 @@
 
   firewall:
     host_to_internet:
-      navitel:
-        name: "Navitel"
-        ports:
-        - 7443
-        - 7450
-        - 7390
-        - 6447
-        - 7275
-        - 5684
-      some_services:
-        name: "Some"
-        ports:
-        - 5684
+      services:
+      - navitel

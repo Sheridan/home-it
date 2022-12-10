@@ -2,4 +2,6 @@
   firewall:
     group_to_internet:
       services:
-      - cameras_jovison
+      - dns
+      - ntp
+      - faust

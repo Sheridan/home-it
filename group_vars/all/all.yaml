@@ -1,16 +1,9 @@
 ---
   tmp_workdir: /tmp
   firewall:
-    host_to_internet:
-      http:
-        name: "Default http"
-        ports:
-        - 80
-        - 8080
-      https:
-        name: "Default https"
-        ports:
-        - 443
+    group_to_internet:
+      services:
+      - web
 
   ballance:
     mark:

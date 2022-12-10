@@ -1,12 +1,6 @@
 ---
   firewall:
-    host_to_internet:
-      email:
-        name: "Mail"
-        ports:
-        - 465
-        - 25
-      ntp:
-        name: "NTP"
-        ports:
-        - 123
+    group_to_internet:
+      services:
+      - email
+      - ntp

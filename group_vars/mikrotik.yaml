@@ -5,8 +5,6 @@
   ansible_password: "{{ mikrotik_secrets.superuser.password }}"
 
   firewall:
-    host_to_internet:
-      ddns:
-        name: "DDNS"
-        ports:
-        - 15252
+    group_to_internet:
+      services:
+      - ddns

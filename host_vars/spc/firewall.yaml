@@ -1,21 +1,10 @@
 ---
   firewall:
     host_to_internet:
-      quake_champions:
-        name: "Quake champions"
-        ports:
-        - 48800-48900
-        - 11700-11725
-      heroes_vi:
-        name: "Heroes VI"
-        ports:
-        - 23900-24000
-      dsp:
-        name: "Dyson Sphere Program"
-        ports:
-        - 10001
-      gfn:
-        name: "Geforce NOW"
-        ports:
-        - 49000-50000
-        - 10000-20000
+      services:
+      - quake_champions
+      - heroes_vi
+      - dsp
+      - gfn
+      - torrent
+      - iot_client

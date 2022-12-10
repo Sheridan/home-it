@@ -9,7 +9,5 @@
 
   firewall:
     host_to_internet:
-      sber_online:
-        name: "Sber online"
-        ports:
-        - 4477
+      services:
+      - sber_online

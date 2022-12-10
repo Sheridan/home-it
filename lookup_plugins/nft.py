@@ -22,6 +22,8 @@ class LookupModule(LookupBase):
                 return self.as_if('o', terms[1])
             if terms[0] == 'list_or_single':  # 1 == list
                 return self.as_list_or_single(terms[1])
+            if terms[0] == 'ip_or_ip6':  # 1 == ipv4,ipv6
+                return self.as_ip_or_ip6(terms[1])
             raise AnsibleParserError("Непонятно что делать")
         except Exception as e:
             raise AnsibleError("Error in nft: %s (%s)" % (terms, e))
@@ -35,3 +37,6 @@ class LookupModule(LookupBase):
                 return '{ %s }' % ', '.join(str(x) for x in items)
             return items[0]
         return items
+
+    def as_ip_or_ip6(self, ip_version):
+        return 'ip' if ip_version == 'ipv4' else 'ip6'

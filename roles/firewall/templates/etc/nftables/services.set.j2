@@ -1,0 +1,14 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+{%  for service_name, service in network_services.items()           %}
+set service__{{ service_name }} { # {{ service.name }}
+  type inet_service
+  flags interval
+  elements = {
+{%    for ports in service.ports                                    %}
+    {{ ports }}{% if not loop.last %},{% endif +%}
+{%    endfor                                                        %}
+  }
+}
+{%  endfor                                                          %}

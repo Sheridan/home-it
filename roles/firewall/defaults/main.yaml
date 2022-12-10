@@ -1,4 +1,4 @@
 ---
   config:
     location: /etc/nftables
-    filename: nftables.rules
+    # filename: nftables.rules

@@ -29,13 +29,5 @@
 
   firewall:
     host_to_internet:
-      video_cast:
-        name: "Video cast"
-        ports:
-        - 31000-32000
-        - 56000-57000
-        - 60000-62000
-    sber_online:
-      name: "Sber online"
-      ports:
-      - 4477
+      services:
+      - sber_online

@@ -8,13 +8,5 @@
 
   firewall:
     host_to_internet:
-      dvr_kitchen:
-        name: "DVR Kitchen"
-        ports:
-        - 5550-5560
-        - 6500-6700
-        - 7999
-        - 8765
-        - 8000-8200
-        - 10001
-        - 34569
+      services:
+      - dvr_kitchen

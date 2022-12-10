@@ -68,11 +68,20 @@
 
   - name: Установка конфигурации firewall'а
     template:
-      src: etc/nftables/nftables.rules.j2
-      dest: "{{ config.location }}/{{ config.filename }}"
+      src: "etc/nftables/{{ i_filename }}.j2"
+      dest: "{{ config.location }}/{{ i_filename }}"
       owner: root
       group: root
       mode: 0644
+    loop:
+    - hosts.define
+    - hosts.set
+    - groups.define
+    - groups.set
+    - services.set
+    - nftables.rules
+    loop_control:
+      loop_var: i_filename
     notify:
     - update firewall
 
@@ -94,6 +103,7 @@
         description: Firewall service, based on nftables
         type: oneshot
         remain_after_exit: yes
+        exec_start_pre: /usr/local/bin/firewall-manager.sh check
         exec_start: /usr/local/bin/firewall-manager.sh start
         exec_stop: /usr/local/bin/firewall-manager.sh stop
         exec_reload: /usr/local/bin/firewall-manager.sh reload

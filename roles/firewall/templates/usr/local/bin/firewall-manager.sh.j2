@@ -8,9 +8,15 @@ function clear()
   return $?
 }
 
+function check()
+{
+  nft -cf {{ config.location }}/nftables.rules
+  return $?
+}
+
 function load()
 {
-  nft -f {{ config.location }}/{{ config.filename }}
+  nft -f {{ config.location }}/nftables.rules
   return $?
 }
 
@@ -34,6 +40,10 @@ function reload()
 }
 
 case "${command}" in
+  "check")
+    check
+    exit $?
+  ;;
   "reload")
     reload
     exit $?

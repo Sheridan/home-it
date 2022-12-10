@@ -1,0 +1,21 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+include "/etc/nftables/hosts.define"
+
+
+{# per group #}
+{%  for group_name in groups|sort                                                             %}
+{%  set group_hosts = query('inventory_hostnames', group_name)|difference(['gate'])           %}
+{%    if group_hosts|length                                                                   %}
+{%      set nft_group_name = group_name | replace('-','_')                                  %}
+{%      for ip_version in ['ipv6', 'ipv4']                                                    %}
+define group__{{ nft_group_name }}__{{ ip_version }} = {
+{%        for host_name in group_hosts|sort                                                   %}
+{%          set nft_host_name = host_name | replace('-','_')                                  %}
+  $host__{{ nft_host_name }}__{{ ip_version }}{% if not loop.last %},{% endif +%}
+{%        endfor                                                                              %}
+}
+{%      endfor                                                                                %}
+{%    endif                                                                                   %}
+{%  endfor                                                                                    %}

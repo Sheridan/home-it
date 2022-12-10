@@ -1,0 +1,257 @@
+---
+network_services:
+  android:
+    name: Android
+    ports:
+    - 5228
+  apple_airplay:
+    name: Apple AirPlay
+    ports:
+    - 554
+    - 5353
+  apple_isync:
+    name: Apple iSync
+    ports:
+    - 3004
+  apple_itunes:
+    name: Apple iTunes
+    ports:
+    - 8000-8999
+    - 42000-42999
+  apple_push:
+    name: Apple push
+    ports:
+    - 5223
+    - 2195-2196
+  apple_share:
+    name: Apple share
+    ports:
+    - 548
+  cameras_jovison:
+    name: Jovison cameras
+    ports:
+    - 8090
+    - 19877
+    - 36200
+    - 50000
+  ddns:
+    name: DDNS
+    ports:
+    - 15252
+  discord:
+    name: Discord
+    ports:
+    - 50000-50500
+  dns:
+    name: dns
+    ports:
+    - 53
+    - 853
+  dsp:
+    name: Dyson Sphere Program
+    ports:
+    - 10001
+  dvr_kitchen:
+    name: "DVR Kitchen"
+    ports:
+    - 5550-5560
+    - 6500-6700
+    - 7999
+    - 8765
+    - 8000-8200
+    - 10001
+    - 34569
+  email:
+    name: Mail
+    ports:
+    - 25
+    - 110
+    - 143
+    - 587
+    - 465
+    - 993
+    - 995
+  fantasyradio:
+    name: fantasyradio.ru streams
+    ports:
+    - 8000
+    - 8002
+    - 8008
+    - 8016
+  faust:
+    name: Faust E-Book
+    ports:
+    - 8001
+  ftp:
+    name: FTP
+    ports:
+    - 20
+    - 21
+    - 115
+    - 989
+    - 990
+  gfn:
+    name: Geforce NOW
+    ports:
+    - 49000-50000
+    - 10000-20000
+  google:
+    name: Google
+    ports:
+    - 5228
+    - 5222
+  heroes_vi:
+    name: Heroes VI
+    ports:
+    - 23900-24000
+  iot_client:
+    name: IoT client
+    ports:
+    - 5684
+    - 7000
+    - 8883
+  iot_ekf:
+    name: EKF IoT services
+    ports:
+    - 8886
+    - 2443
+  iot_magick_home:
+    name: Magick Home IoT services
+    ports:
+    - 8816
+  iot_requests:
+    name: IoT media streams
+    ports:
+    - 46030
+    - 47878
+  irc:
+    name: IRC
+    ports:
+    - 6667
+  minecraft_earth:
+    name: Minecraft Earth
+    ports:
+    - 30000-31000
+  navitel:
+    name: "Navitel"
+    ports:
+    - 7443
+    - 7450
+    - 7390
+    - 6447
+    - 7275
+    - 5684
+  nntp:
+    name: Network News Transfer Protocol
+    ports:
+    - 563
+    - 119
+  ntp:
+    name: NTP
+    ports:
+    - 123
+  openvpn:
+    name: OpenVPN
+    ports:
+    - 1194
+  probes_queryes:
+    name: Probes Queries
+    ports:
+    - 33400-33500
+  quake_champions:
+    name: Quake champions
+    ports:
+    - 48800-48900
+    - 11700-11725
+  rsync:
+    name: rsync
+    ports:
+    - 873
+  rtsp_streams:
+    name: RTSP
+    ports:
+    - 554
+  sber_online:
+    name: "Sber Online"
+    ports:
+    - 1030
+    - 3800
+    - 6892
+    - 6992
+    - 7466
+    - 8999
+    - 10000-60000
+  snmp:
+    name: Simple Network Management Protocol
+    ports:
+    - 161
+    - 162
+    - 992
+  socks5:
+    name: Socks 5
+    ports:
+    - 1080
+  ssh:
+    name: SSH
+    ports:
+    - 22
+  steam:
+    name: Steam
+    ports:
+    - 27000-27037
+    - 4379-4380
+    - 3478
+  telegram:
+    name: Telegram
+    ports:
+    - 599
+    - 1100-1500
+    - 3000-3100
+    - 5000-5100
+    - 5222
+    - 7900-8000
+    - 9900-10000
+    - 32000-32100
+    - 65400-65500
+  telnet:
+    name: Telnet
+    ports:
+    - 23
+    - 107
+  torrent:
+    name: Torrent
+    ports:
+    - 6881-6889
+    - 6969
+  ultima_online:
+    name: Ultima Online
+    ports:
+    - 5001-5010
+    - 7775-7777
+    - 7875
+    - 8800-8900
+    - 9999
+  web:
+    name: World Wide Web
+    ports:
+    - 80
+    - 443
+    - 8080
+    - 8081
+  whatsapp:
+    name: Whatsapp
+    ports:
+    - 3478
+    - 4244
+    - 5060-5300
+    - 9785
+    - 45395
+    - 50318
+    - 53494
+    - 59234
+    # - 40000-60000
+  wifi_call:
+    name: WiFi calls
+    ports:
+    - 500
+    - 4500

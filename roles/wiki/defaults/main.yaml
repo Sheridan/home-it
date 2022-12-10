@@ -4,11 +4,11 @@
       name: wiki
       pw: "{{ wiki_secrets.system_user_pw }}"
     path:
-      work: /data/wiki/packages/mediawiki
-      prod: /data/wiki/production/mediawiki
-      skins: /data/wiki/production/mediawiki/skins
-      extensions: /data/wiki/production/mediawiki/extensions
-      upload: /data/wiki/production/mediawiki/upload
+      work: /opt/wiki/packages/mediawiki
+      prod: /opt/wiki/production/mediawiki
+      skins: /opt/wiki/production/mediawiki/skins
+      extensions: /opt/wiki/production/mediawiki/extensions
+      upload: /opt/wiki/production/mediawiki/upload
     wiki_version:
       major: 1
       minor: 32

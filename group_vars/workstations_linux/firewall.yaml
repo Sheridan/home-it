@@ -1,17 +1,7 @@
 ---
   firewall:
-    host_to_internet:
-      http_extented:
-        name: "Default http extended"
-        ports:
-          - 8080
-          - 8081
-      nntp:
-        name: "Default nntp"
-        ports:
-        - 563
-        - 119
-      telegram_media:
-        name: "Telegram media"
-        ports:
-        - 32000-32100
+    group_to_internet:
+      services:
+      - web
+      - nntp
+      - telegram

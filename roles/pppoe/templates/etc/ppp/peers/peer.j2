@@ -1,5 +1,11 @@
 # Managed by ansible. Editing is useless
 # Sheridan
+
+{% if pppoe[provider].debug | default(False) %}
+debug
+dump
+{%endif %}
+
 {% set bridge_interface = network|selectattr('ifname', 'match', 'bridge_' + provider + '.*')|first %}
 {% set external_interface = network|selectattr('ifname', 'match', 'external_' + provider + '.*')|first %}
 plugin rp-pppoe.so {{ bridge_interface.ifname }}
@@ -23,10 +29,7 @@ nodeflate
 nopcomp
 novj
 novjccomp
-{#
 nobsdcomp
 noccp
-nodeflate
--#}
 lcp-echo-interval {{ pppoe[provider].lcp_echo.interval }}
 lcp-echo-failure {{ pppoe[provider].lcp_echo.failures }}

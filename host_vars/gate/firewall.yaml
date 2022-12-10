@@ -9,6 +9,7 @@
         interfaces:
         - "internal"
         - "external_kis"
+        - "external_rt"
       dhcpd:
         name: "DHCPd"
         ports:
@@ -35,6 +36,7 @@
         interfaces:
         - "external_kis"
         - "external_he"
+        - "external_rt"
       ssh_internal:
         name: "SSH internal"
         ports:
@@ -52,6 +54,7 @@
         interfaces:
         - "external_kis"
         - "external_he"
+        - "external_rt"
       web_internal:
         name: "web"
         ports:
@@ -71,6 +74,7 @@
         interfaces:
         - "external_kis"
         - "external_he"
+        - "external_rt"
       ntpd:
         name: "ntpd"
         ports:
@@ -85,6 +89,7 @@
         - "internal"
         - "external_kis"
         - "external_he"
+        - "external_rt"
       minecraft:
         name: "Minecraft"
         ports:
@@ -94,3 +99,4 @@
         - "internal"
         - "external_kis"
         - "external_he"
+        - "external_rt"

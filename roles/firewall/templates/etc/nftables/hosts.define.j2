@@ -1,0 +1,21 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+{# per host #}
+{%  for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort     %}
+{%    set nft_host_name = host_name | replace('-','_')                                 %}
+{%    set host_addresses = {'ipv4': [], 'ipv6': []}                                    %}
+{%    set host = hostvars[host_name]                                                   %}
+{%    for host_internal_interface in host.network                                      %}
+{%      for ip_version in ['ipv6', 'ipv4']                                             %}
+{{        host_addresses[ip_version].append(host_internal_interface.ip[ip_version].ip) }}
+{%      endfor                                                                         %}
+{%    endfor                                                                           %}
+{%    for ip_version in ['ipv6', 'ipv4']                                               %}
+define host__{{ nft_host_name }}__{{ ip_version }} = {
+{%      for host_address in host_addresses[ip_version] | sort                          %}
+  {{ host_address }}{% if not loop.last %},{% endif +%}
+{%      endfor                                                                         %}
+}
+{%    endfor                                                                           %}
+{%  endfor                                                                             %}

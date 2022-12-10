@@ -1,29 +1,9 @@
 ---
   firewall:
-    host_to_internet:
-      ssh:
-        name: "Devops to SSH"
-        ports:
-        - 22
-        - 2200-2210
-        - 2220-2229
-      telnet:
-        name: "Devops to telnet"
-        ports:
-        - 23
-        - 107
-      dns:
-        name: "Devops to dns"
-        ports:
-        - 53
-        - 853
-      snmp:
-        name: "Devops to snmp"
-        ports:
-        - 161
-        - 162
-        - 992
-      openvpn:
-        name: "Devops to openvpn"
-        ports:
-        - 1194
+    group_to_internet:
+      services:
+      - ssh
+      - telnet
+      - dns
+      - snmp
+      - openvpn

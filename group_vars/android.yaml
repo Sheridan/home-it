@@ -1,7 +1,5 @@
 ---
   firewall:
-    host_to_internet:
-      android:
-        name: "Android"
-        ports:
-        - 5228
+    group_to_internet:
+      services:
+      - android

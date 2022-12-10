@@ -14,8 +14,52 @@
 
 flush ruleset
 
+# include "/etc/nftables/hosts.define"
+include "/etc/nftables/groups.define"
+
+{#
+table netdev filter {
+
+  include "/etc/nftables/sets.include"
+
+  chain global {
+    ip frag-off & 0x1fff != 0 counter drop comment "Drop all fragments"
+    tcp flags & (fin|syn|rst|psh|ack|urg) == fin|syn|rst|psh|ack|urg counter drop comment "Drop XMAS packets"
+    tcp flags & (fin|syn|rst|psh|ack|urg) == 0x0 counter drop comment "Drop NULL packets"
+    tcp flags syn tcp option maxseg size 1-535 counter drop comment "Drop uncommon MSS values"
+  }
+
+  {% for external_interface in external_interfaces -%}
+  chain ingress_{{ external_interface.ifname }} {
+    type filter hook ingress device {{  external_interface.ifname }} priority -500;
+    jump global
+  }
+  {# -#
+  {%- endfor -%}
+
+  chain ingress {
+    {% for external_interface in external_interfaces -%}
+    jump ingress_{{ external_interface.ifname }}
+    {# -#
+    {%- endfor -%}
+  }
+
+}
+#}
+
 {# filter, inet -#}
 table inet filter {
+
+  include "/etc/nftables/hosts.set"
+  include "/etc/nftables/groups.set"
+  include "/etc/nftables/services.set"
+
+  chain garbage_drop {
+    ip frag-off & 0x1fff != 0 counter drop comment "Drop all fragments"
+    tcp flags & (fin|syn|rst|psh|ack|urg) == fin|syn|rst|psh|ack|urg counter drop comment "Drop XMAS packets"
+    tcp flags & (fin|syn|rst|psh|ack|urg) == 0x0 counter drop comment "Drop NULL packets"
+    tcp flags syn tcp option maxseg size 1-535 counter drop comment "Drop uncommon MSS values"
+  }
 
   chain netscan_drop {
     {# bad tcp -> avoid network scanning -#}
@@ -55,41 +99,67 @@ table inet filter {
   chain global {
     ct state {established, related} counter accept comment "accept all connections related to connections made by us"
     ct state invalid counter drop comment "drop invalid packets"
+    jump garbage_drop
     jump icmp_rules
     jump lo_rules
     jump netscan_drop
     jump ipv6_spetial
   }
 
-  {# output per host -#}
-  {% for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
-  chain host_{{ host_name | replace('-','_') }} {
-    {# -#}
-    {%- set host = hostvars[host_name].merged_vars -%}
-    {%- if 'firewall' in host -%}
-      {%- for host_internal_interface in host.network -%}
-        {%- for rule_name in host.firewall.host_to_internet -%}
-          {%- set rule = host.firewall.host_to_internet[rule_name] -%}
-          {%- for protocol in ['tcp', 'udp'] -%}
-            {%- for ip_version in ['ipv6', 'ipv4'] -%}
-              {%- set nfipv = 'ip' if ip_version == 'ipv4' else 'ip6' -%}
-    {{ query('nft', 'as_iif', internal_interface) }} {{ nfipv }} saddr {{ host_internal_interface.ip[ip_version].ip }} {% if 'ports' in rule -%} {{ protocol }} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter goto to_provider_{{ ip_version }} comment "[{{ host_name }}->internet] {{ rule.name }} [{{ protocol }}]"
-    {# -#}
-            {%- endfor -%}
-          {%- endfor -%}
-        {%- endfor -%}
-      {%- endfor -%}
-    {%- endif -%}
+{# output per group #}
+{%  for group_name in groups|sort                                                           %}
+{%    set group_hosts = query('inventory_hostnames', group_name)|difference(['gate'])|sort  %}
+{%    if group_hosts|length                                                                 %}
+{%      set host = hostvars[group_hosts|first]                                              %}
+{%      if 'firewall' in host and 'group_to_internet' in host.firewall                      %}
+{%        set nft_group_name = group_name | replace('-','_')                                %}
+  chain group_{{ nft_group_name }} {
+{%        for service_name in host.firewall.group_to_internet.services                      %}
+{%          for ip_version in ['ipv6', 'ipv4']                                              %}
+    {{ query('nft', 'as_iif', internal_interface) }} {{ query('nft', 'ip_or_ip6', ip_version) }} saddr @group__{{ nft_group_name }}__{{ ip_version }} meta l4proto {tcp, udp} th dport @service__{{ service_name }} counter goto to_provider_{{ ip_version }} comment "[{{ group_name }}->internet] {{ network_services[service_name].name }}"
+{%          endfor                                                                          %}
+{%        endfor                                                                            %}
+  }
+{%      endif                                                                               %}
+{%    endif                                                                                 %}
+{%  endfor                                                                                  %}
+
+  chain network_groups {
+{%  for group_name in groups|sort                                                           %}
+{%    set group_hosts = query('inventory_hostnames', group_name)|difference(['gate'])|sort  %}
+{%    if group_hosts|length                                                                 %}
+{%      set host = hostvars[group_hosts|first]                                              %}
+{%      if 'firewall' in host and 'group_to_internet' in host.firewall                      %}
+{%        set nft_group_name = group_name | replace('-','_')                                %}
+    jump group_{{ nft_group_name }}
+{%      endif                                                                               %}
+{%    endif                                                                                 %}
+{%  endfor                                                                                  %}
   }
 
-  {# -#}
-  {%- endfor -%}
+{# output per host #}
+{%  for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort  %}
+{%    set host = hostvars[host_name]                                                %}
+{%    set nft_host_name = host_name | replace('-','_')                              %}
+{%    if 'firewall' in host and 'host_to_internet' in host.firewall                 %}
+  chain host_{{ nft_host_name }} {
+{%      for service_name in host.firewall.host_to_internet.services               %}
+{%        for ip_version in ['ipv6', 'ipv4']                                      %}
+    {{ query('nft', 'as_iif', internal_interface) }} {{ query('nft', 'ip_or_ip6', ip_version) }} saddr @host__{{ nft_host_name }}__{{ ip_version }} meta l4proto {tcp, udp} th dport @service__{{ service_name }} counter goto to_provider_{{ ip_version }} comment "[{{ host_name }}->internet] {{ network_services[service_name].name }}"
+{%        endfor                                                                  %}
+{%      endfor                                                                    %}
+  }
+{%    endif                                                                         %}
+{%  endfor                                                                          %}
 
   chain network_hosts {
-    {% for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort -%}
-    jump host_{{ host_name | replace('-','_') }}
-    {# -#}
-    {%- endfor -%}
+{%  for host_name in query('inventory_hostnames', 'all')|difference(['gate'])|sort %}
+{%    set host = hostvars[host_name]                                               %}
+{%    set nft_host_name = host_name | replace('-','_')                             %}
+{%    if 'firewall' in host and 'host_to_internet' in host.firewall                %}
+    jump host_{{ nft_host_name }}
+{%    endif                                                                        %}
+{%  endfor                                                                         %}
   }
 
   chain to_provider_ipv4 {
@@ -121,20 +191,18 @@ table inet filter {
   chain to_self {
     {# to_host -#}
     {% for rule_name in merged_vars.firewall.to_host|list -%}
-      {%- set rule = merged_vars.firewall.to_host[rule_name] -%}
-      {%- for protocol in ['tcp', 'udp'] -%}
-        {%- for rule_interface_name_part in rule.interfaces -%}
-          {%- for rule_interface in network|selectattr('ifname', 'match', '.*' + rule_interface_name_part + '.*')|list -%}
-            {%- if 'max_rate' in rule -%}
-    {{ query('nft', 'as_iif', rule_interface) }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} limit rate {{ rule.max_rate.count }}/{{ rule.max_rate.per_period }} burst {{ rule.max_rate.burst }} packets counter accept comment "[->{{ inventory_hostname }}] {{ rule.name }} [{{ protocol }}]"
-    {{ query('nft', 'as_iif', rule_interface) }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} limit rate 8/second log prefix "Input {{ rule.name }} [{{ protocol }}] limit: "
-    {{ query('nft', 'as_iif', rule_interface) }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter drop comment "[->{{ inventory_hostname }}] {{ rule.name }} [{{ protocol }}]"
+    {%- set rule = merged_vars.firewall.to_host[rule_name] -%}
+      {%- for rule_interface_name_part in rule.interfaces -%}
+        {%- for rule_interface in network|selectattr('ifname', 'match', '.*' + rule_interface_name_part + '.*')|list -%}
+          {%- if 'max_rate' in rule -%}
+    {{ query('nft', 'as_iif', rule_interface) }} meta l4proto {tcp, udp} th {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} limit rate {{ rule.max_rate.count }}/{{ rule.max_rate.per_period }} burst {{ rule.max_rate.burst }} packets counter accept comment "[->{{ inventory_hostname }}] {{ rule.name }}"
+    {{ query('nft', 'as_iif', rule_interface) }} meta l4proto {tcp, udp} th {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} limit rate 8/second log prefix "Input {{ rule.name }} limit: "
+    {{ query('nft', 'as_iif', rule_interface) }} meta l4proto {tcp, udp} th {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter drop comment "[->{{ inventory_hostname }}] {{ rule.name }}"
     {# -#}
             {%- else -%}
-    {{ query('nft', 'as_iif', rule_interface) }} {{ protocol }} {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter accept comment "[->{{ inventory_hostname }}] {{ rule.name }} [{{ protocol }}]"
+    {{ query('nft', 'as_iif', rule_interface) }} meta l4proto {tcp, udp} th {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter accept comment "[->{{ inventory_hostname }}] {{ rule.name }}"
     {# -#}
-            {%- endif -%}
-          {%- endfor -%}
+          {%- endif -%}
         {%- endfor -%}
       {%- endfor -%}
     {%- endfor -%}
@@ -146,6 +214,13 @@ table inet filter {
     ip saddr {{ route_addr_test }} log prefix "<-route target: "
   }
 #}
+
+  chain spetial_external_rt_0 {
+    # tcp flags syn tcp option maxseg size set rt mtu counter
+    # {{ query('nft', 'as_iif', external_interface_rt) }} tcp flags syn tcp option maxseg size set rt mtu counter
+    {{ query('nft', 'as_oif', external_interface_rt) }} tcp flags syn tcp option maxseg size set rt mtu counter
+  }
+
   chain input {
     type filter hook input priority 0; policy drop;
     jump global
@@ -162,19 +237,48 @@ table inet filter {
 
   chain forward {
     type filter hook forward priority 0; policy drop;
+    jump spetial_external_rt_0
     jump global
+    jump network_groups
     jump network_hosts
     jump onion_to_tor
     jump guests_to_tor
     limit rate 8/second log prefix "Forward dropped: "
     counter comment "forward dropped packets"
   }
+}
+{#
+table ip filter {
+
+  # include "/etc/nftables/hosts.set"
+
+  chain spetial_external_rt_0 {
+    # tcp flags syn tcp option maxseg size set rt mtu counter
+    # {{ query('nft', 'as_iif', external_interface_rt) }} tcp flags syn tcp option maxseg size set rt mtu counter
+    {{ query('nft', 'as_oif', external_interface_rt) }} tcp flags syn tcp option maxseg size set rt mtu counter
+  }
+
+  chain output {
+    type filter hook output priority 0; policy accept;
+    jump spetial_external_rt_0
+    counter comment "output accepted packets"
+  }
+
+  chain forward {
+    type filter hook forward priority 0; policy drop;
+    jump spetial_external_rt_0
+    limit rate 8/second log prefix "Forward dropped: "
+    counter comment "forward dropped packets"
+  }
 
 }
+#}
 
 {# ip daddr {{ route_addr_test }} counter ct mark set meta mark comment "route target mangle store mark" #}
 
 table mangle {
+
+  include "/etc/nftables/hosts.set"
 
   chain route_test {
     ip daddr {{ route_addr_test }} counter meta mark set {{ external_interface_rt.route_table }} accept comment "route target mangle mark"
@@ -182,10 +286,12 @@ table mangle {
 
   chain probes {
     {% for prov in ['kis', 'rt'] -%}
-      {%- set host = hostvars['probe-' + prov].merged_vars -%}
+      {%- set host_name = 'probe-' + prov -%}
+      {%- set nft_host_name = host_name | replace('-','_') -%}
+      {%- set host = hostvars[host_name].merged_vars -%}
       {%- for host_internal_interface in host.network -%}
         {%- set route_interface = external_interfaces | selectattr('ifname', 'match', '.*_' + prov + '_.*') | first -%}
-    ip saddr {{ host_internal_interface.ip.ipv4.ip }} meta mark set {{ route_interface.route_table }} counter accept comment "probe-{{ prov }} mark"
+    ip saddr @host__{{ nft_host_name }}__ipv4 meta mark set {{ route_interface.route_table }} counter accept comment "{{ host_name }} mark"
     {# -#}
       {%- endfor -%}
     {%- endfor -%}
@@ -201,25 +307,22 @@ table mangle {
     jump probes
     jump default
   }
-
 }
 
 
 {# nat, ipv4 -#}
 table ip nat {
 
+  # include "/etc/nftables/sets.include"
+
   chain onion_to_tor {
-    {% for protocol in ['tcp', 'udp'] -%}
-    ip daddr {{ merged_vars.tor.network.ipv4.net }}/{{ merged_vars.tor.network.ipv4.mask }} ip protocol {{ protocol }} counter dnat to 127.0.0.1:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv4 DNAT {{ protocol }}"
+    ip daddr {{ merged_vars.tor.network.ipv4.net }}/{{ merged_vars.tor.network.ipv4.mask }} ip protocol {tcp, udp} counter dnat to 127.0.0.1:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv4 DNAT"
     {# -#}
-    {%- endfor -%}
   }
 
   chain guests_to_tor {
-    {% for protocol in ['tcp', 'udp'] -%}
-    ip saddr { {{ networks.home.ranges.guests.first.ipv4.ip }}-{{ networks.home.ranges.guests.last.ipv4.ip }} } ip protocol {{ protocol }} counter dnat to 127.0.0.1:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv4 DNAT guests {{ protocol }}"
+    ip saddr { {{ networks.home.ranges.guests.first.ipv4.ip }}-{{ networks.home.ranges.guests.last.ipv4.ip }} } ip protocol {tcp, udp} counter dnat to 127.0.0.1:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv4 DNAT guests"
     {# -#}
-    {%- endfor -%}
   }
 
   chain prerouting {
@@ -275,18 +378,16 @@ table ip nat {
 {#
 table ip6 nat {
 
+  include "/etc/nftables/sets.include"
+
   chain onion_to_tor {
-    {% for protocol in ['tcp', 'udp'] -%}
-    ip6 daddr {{ merged_vars.tor.network.ipv6.net }}/{{ merged_vars.tor.network.ipv6.mask }} ip6 nexthdr {{ protocol }} counter dnat to [::1]:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv6 DNAT {{ protocol }}"
+    ip6 daddr {{ merged_vars.tor.network.ipv6.net }}/{{ merged_vars.tor.network.ipv6.mask }} ip6 nexthdr meta l4proto {tcp, udp} th counter dnat to [::1]:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv6 DNAT"
     {# -#
-    {%- endfor -%}
   }
 
   chain guests_to_tor {
-    {% for protocol in ['tcp', 'udp'] -%}
-    ip6 saddr { {{ networks.home.ranges.guests.first.ipv6.ip }}-{{ networks.home.ranges.guests.last.ipv6.ip }} } ip6 nexthdr {{ protocol }} counter dnat to [::1]:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv6 DNAT guests {{ protocol }}"
+    ip6 saddr { {{ networks.home.ranges.guests.first.ipv6.ip }}-{{ networks.home.ranges.guests.last.ipv6.ip }} } ip6 nexthdr meta l4proto {tcp, udp} th counter dnat to [::1]:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] ipv6 DNAT guest"
     {# -#
-    {%- endfor -%}
   }
 
   chain prerouting {

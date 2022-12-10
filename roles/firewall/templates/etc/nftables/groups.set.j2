@@ -1,0 +1,17 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+{# per group #}
+{%  for group_name in groups|sort                                                             %}
+{%    set group_hosts = query('inventory_hostnames', group_name)|difference(['gate'])         %}
+{%    if group_hosts|length                                                                   %}
+{%      set nft_group_name = group_name | replace('-','_')                                    %}
+{%      for ip_version in ['ipv6', 'ipv4']                                                    %}
+set group__{{ nft_group_name }}__{{ ip_version }} {
+  type {{ ip_version }}_addr
+  flags constant
+  elements = $group__{{ nft_group_name }}__{{ ip_version }}
+}
+{%      endfor                                                                                %}
+{%    endif                                                                                   %}
+{%  endfor                                                                                    %}
