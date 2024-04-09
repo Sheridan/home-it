@@ -39,11 +39,11 @@
 
   # - name: ship net test
   #   debug:
-  #     msg: "{{ query('ship', 'tor_ip', 'ipv4', 1) }}"
+  #     msg: "{{ query('ship', 'tor_ip', 'ipv4', 1) | first }}"
 
   # - name: ship net test
   #   debug:
-  #     msg: "{{ query('ship', 'tor_ip', 'ipv6', 1) }}"
+  #     msg: "{{ query('ship', 'tor_ip', 'ipv6', 1) | first }}"
 
   # - name: merge test
   #   debug:

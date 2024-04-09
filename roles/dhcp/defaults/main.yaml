@@ -1,6 +1,6 @@
 ---
   dhcp:
-    lease_time: "{{ 60 * 60 * 4 }}"
+    lease_time: "{{ 60 * 60 * 24 }}"
 
   radvd:
     interval: 8

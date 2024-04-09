@@ -15,17 +15,6 @@
     tags:
     - packages
 
-  # - name: Add observer user
-  #   user:
-  #     name: "{{ observer_user }}"
-  #     comment: Observer and alerter
-  #     shell: /bin/false
-  #     group: root
-  #     groups:
-  #     - portage
-  #     - systemd-journal
-  #     create_home: no
-
   - name: Setup observer user
     import_role:
       name: system_user
@@ -95,6 +84,7 @@
         name: observer
         description: Observer service for pushing alerts from many to many
         user: "{{ observer_user }}"
+        group: portage
         restart_sec: 30s
         exec_start: >-
           /usr/bin/python3

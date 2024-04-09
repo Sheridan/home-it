@@ -2,14 +2,17 @@
   firewall:
     trusted_to_internet:
       services:
-      - torrent
+      - discord
       - email
-      - socks5
+      - fantasyradio
+      - ftp
+      - google
       - irc
       - rtsp_streams
+      - socks5
       - steam
-      - google
-      - discord
+      - telegram
+      - torrent
       - ultima_online
-      - ftp
-      - fantasyradio
+      - whatsapp
+      - tracepath

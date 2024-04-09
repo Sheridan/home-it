@@ -54,9 +54,11 @@ bind:
     - name: ns
       addresses:
       - type: A
-        address: "{{ query('ship', 'kis_ip', 2).ip }}"
+        address: "{{ query('ship', 'kis_ip', 2)[0].ip }}"
+      - type: A
+        address: "{{ query('ship', 'rt_ip', 3)[0].ip }}"
       - type: AAAA
-        address: "{{ query('ship', 'henet_ip', 2).ip }}"
+        address: "{{ query('ship', 'henet_ip', 2)[0].ip }}"
     - name: ns-secondary
       addresses:
       - type: A
@@ -80,9 +82,11 @@ bind:
     - name: gate
       addresses:
       - type: A
-        address: "{{ query('ship', 'kis_ip', 2).ip }}"
+        address: "{{ query('ship', 'kis_ip', 2)[0].ip }}"
+      - type: A
+        address: "{{ query('ship', 'rt_ip', 3)[0].ip }}"
       - type: AAAA
-        address: "{{ query('ship', 'henet_ip', 2).ip }}"
+        address: "{{ query('ship', 'henet_ip', 2)[0].ip }}"
     - name: www
       addresses:
       - type: CNAME
@@ -110,10 +114,10 @@ bind:
     - name: spc
       addresses:
       - type: AAAA
-        address: "{{ query('ship', 'ip', 10).ipv6.ip }}"
+        address: "{{ query('ship', 'ip', 10)[0].ipv6.ip }}"
     - name: eee
       addresses:
       - type: AAAA
-        address: "{{ query('ship', 'ip', 20).ipv6.ip }}"
+        address: "{{ query('ship', 'ip', 20)[0].ipv6.ip }}"
       - type: AAAA
-        address: "{{ query('ship', 'ip', 21).ipv6.ip }}"
+        address: "{{ query('ship', 'ip', 21)[0].ipv6.ip }}"

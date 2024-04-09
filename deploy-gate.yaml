@@ -8,6 +8,7 @@
   - vars/ssh_keys.yaml
   - vars/telegram.yaml
   - vars/network_services.yaml
+  - vars/tor.yaml
   roles:
   - { role: portage, tags: portage }
   - { role: packages, tags: packages }

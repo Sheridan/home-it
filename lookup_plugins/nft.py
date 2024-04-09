@@ -17,13 +17,13 @@ class LookupModule(LookupBase):
         display.v("Netfilter terms: %s" % terms)
         try:
             if terms[0] == 'as_iif':  # 1 == interface
-                return self.as_if('i', terms[1])
+                return [self.as_if('i', terms[1])]
             if terms[0] == 'as_oif':  # 1 == interface
-                return self.as_if('o', terms[1])
+                return [self.as_if('o', terms[1])]
             if terms[0] == 'list_or_single':  # 1 == list
-                return self.as_list_or_single(terms[1])
+                return [self.as_list_or_single(terms[1])]
             if terms[0] == 'ip_or_ip6':  # 1 == ipv4,ipv6
-                return self.as_ip_or_ip6(terms[1])
+                return [self.as_ip_or_ip6(terms[1])]
             raise AnsibleParserError("Непонятно что делать")
         except Exception as e:
             raise AnsibleError("Error in nft: %s (%s)" % (terms, e))

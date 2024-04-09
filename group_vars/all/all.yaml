@@ -20,34 +20,35 @@
       journald:
       - name: sshd_listening
         match:
-          positive: 'sshd.*: Server listening on (?P<address>.+?) port (?P<port>.+?)\\.'
+          positive: 'ssh.*: Server listening on (?P<address>.+?) port (?P<port>.+?)\\.'
       - name: sshd_bad_negotiation
         match:
-          positive: 'sshd.*: Unable to negotiate with (?P<client_address>.+?) port (?P<client_port>.+?): no matching host key type found. Their offer: (?P<client_keys_offer>.+?) \\[(?P<step>.+?)\\]'
+          positive: 'ssh.*: Unable to negotiate with (?P<client_address>.+?) port (?P<client_port>.+?): no matching host key type found. Their offer: (?P<client_keys_offer>.+?) \\[(?P<step>.+?)\\]'
       - name: sshd_no_negotiation
         match:
-          positive: 'sshd.*: Did not receive identification string from (?P<client_address>.+?) port (?P<client_port>.*)'
+          positive: 'ssh.*: Did not receive identification string from (?P<client_address>.+?) port (?P<client_port>.*)'
       - name: sshd_invalid_user
         match:
-          positive: 'sshd.*: Invalid user (?P<user>.+?) from (?P<client_address>.+?) port (?P<client_port>.*)'
+          # ssh-daemon[494051]: Invalid user cassandra from 45.67.230.193 port 55516
+          positive: 'ssh.*: Invalid user (?P<user>.+?) from (?P<client_address>.+?) port (?P<client_port>.*)'
       - name: sshd_port_bind_failed
         match:
-          positive: 'sshd.*: Bind to port (?P<listen_port>.+?) on (?P<listen_address>.+?) failed: (?P<cause>.+?)\\.'
+          positive: 'ssh.*: Bind to port (?P<listen_port>.+?) on (?P<listen_address>.+?) failed: (?P<cause>.+?)\\.'
       - name: sshd_bad_config
         match:
-          positive: 'sshd.*: /etc/ssh/sshd_config: (?P<cause>.*)'
+          positive: 'ssh.*: /etc/ssh/sshd_config: (?P<cause>.*)'
       - name: sshd_bad_protocol
         match:
-          positive: "sshd.*: Bad protocol version identification '(?P<protocol_string>.+?)' from (?P<client_address>.+?) port (?P<client_port>.*)"
+          positive: "ssh.*: Bad protocol version identification '(?P<protocol_string>.+?)' from (?P<client_address>.+?) port (?P<client_port>.*)"
       - name: sshd_user_not_allowed
         match:
-          positive: 'sshd.*: User (?P<user>.+?) from (?P<client_address>.+?) not allowed because not listed in AllowUsers'
+          positive: 'ssh.*: User (?P<user>.+?) from (?P<client_address>.+?) not allowed because not listed in AllowUsers'
       - name: sshd_user_accepted
         match:
-          positive: 'sshd.*: Accepted publickey for (?P<user>.+?) from (?P<client_address>.+?) port (?P<client_port>.+?) (?P<client_protocol>.+?): (?P<client_keytype>.+?) (?P<client_keysubtype>.+?):(?P<client_key>.*)'
+          positive: 'ssh.*: Accepted publickey for (?P<user>.+?) from (?P<client_address>.+?) port (?P<client_port>.+?) (?P<client_protocol>.+?): (?P<client_keytype>.+?) (?P<client_keysubtype>.+?):(?P<client_key>.*)'
       - name: sshd_user_disconnect
         match:
-          positive: 'sshd.*: Disconnected from user (?P<user>.+?) (?P<client_address>.+?) port (?P<client_port>.*)'
+          positive: 'ssh.*: Disconnected from user (?P<user>.+?) (?P<client_address>.+?) port (?P<client_port>.*)'
       - name: systemd_service_start_stop
         match:
           positive: 'systemd.*: (?P<action>(Stopped|Started)) (?P<service_description>.*)'

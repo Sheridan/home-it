@@ -18,6 +18,20 @@
     notify:
     - restart grafana
 
+  - name: deploy grafana message templates
+    copy:
+      owner: grafana
+      group: grafana
+      src: "var/lib/grafana/alerting/{{ i_filename }}"
+      dest: "/var/lib/grafana/alerting/1/{{ i_filename }}"
+      mode: 0644
+    loop:
+    - telegram.message
+    loop_control:
+      loop_var: i_filename
+    notify:
+    - restart grafana
+
   - name: deploy nginx configuration
     import_role:
       name: nginx

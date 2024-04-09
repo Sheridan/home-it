@@ -133,7 +133,11 @@ function bind_keyboard(modkey, mainmenu, switcher)
             function (c)
                 c.maximized_horizontal = not c.maximized_horizontal
                 c.maximized_vertical   = not c.maximized_vertical
-            end)
+            end),
+        awful.key({         }, "XF86AudioRaiseVolume", function () awful.util.spawn("pactl set-sink-volume 1 +1%") end),
+        awful.key({         }, "XF86AudioLowerVolume", function () awful.util.spawn("pactl set-sink-volume 1 -1%") end),
+        awful.key({"Control"}, "XF86AudioRaiseVolume", function () awful.util.spawn("pactl set-sink-volume 0 +1%") end),
+        awful.key({"Control"}, "XF86AudioLowerVolume", function () awful.util.spawn("pactl set-sink-volume 0 -1%") end)
     )
 
     -- Bind all key numbers to tags.

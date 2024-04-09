@@ -21,6 +21,7 @@ require("keybindings")
 require("toolbars")
 require("tags")
 require("set")
+require("on_window_focus")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -131,7 +132,7 @@ awful.rules.rules = {
             maximized = false
         }
     },
-    { rule = { class = "Steam" }          , properties = { tag = get_tag("Home") , switchtotag = true } },
+    { rule = { class = "Steam" }          , properties = { tag = get_tag("Other") , switchtotag = true } },
     { rule = { class = "Code" }           , properties = { tag = get_tag("Work") , switchtotag = true } },
     { rule = { class = "Audacious" }      , properties = { tag = get_tag("Media"), switchtotag = true, screen = get_screen_index("top" ) } },
     { rule = { class = "Deadbeef" }       , properties = { tag = get_tag("Media"), switchtotag = true, screen = get_screen_index("top" ) } },
@@ -216,7 +217,10 @@ client.connect_signal("manage", function (c, startup)
     end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+client.connect_signal("focus", function(c)
+        c.border_color = beautiful.border_focus
+        on_window_focus(c)
+    end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
@@ -225,6 +229,8 @@ awful.spawn("setxkbmap -option")
 awful.spawn("setxkbmap -layout 'us,ru' -variant ',winkeys,winkeys' -option grp:caps_toggle -option grp_led:scroll -option terminate:ctrl_alt_bksp -option compose:menu -option keypad:pointerkeys")
 awful.spawn("numlockx on")
 
+run_once("openrazer-daemon --respawn")
+run_once("polychromatic-tray-applet")
 run_once("pasystray", "")
 run_once("xcompmgr", "-n -F -f -c -D 3")
 

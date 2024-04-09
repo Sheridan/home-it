@@ -50,6 +50,17 @@ DNSPort {{ lhost }}:{{ merged_vars.tor.ports.dns }}
 ControlPort {{ lhost }}:{{ merged_vars.tor.ports.control }}
 {% endfor %}
 
+ClientTransportPlugin obfs4 exec /usr/bin/obfs4proxy
+# Bridge obfs4 73.32.252.243:9999 BCA9A01D0525CCA0832CEC963570724EE7079925 cert=okCbzFRm58G8f0E0w/wg06JYf+sErNRJvRpPlpHGBpn9CGMLzcdBLTwZ8cSYpX1lXiR+bQ iat-mode=0
+Bridge obfs4 74.50.96.108:50144 C1F7FAA2E4CF6BF532D1FAFFB46009DC306FDC01 cert=dcSrg3q64yX2SlkJ9QtiTNzEtBLy7pJi9JZss07VW9jicS6sAMOzK0NGGedasFQHYvaGEw iat-mode=0
+Bridge obfs4 46.226.105.107:8087 F111DDEBD2F5C20210F890BBBBA773E0A895B45D cert=yVA9qh0g5ZhUY4iR/bCwaCgKWo2p8Llxb1qrBV7/5yvgtBujU1s4Pr6YPnXZjGgiquURMw iat-mode=0
+# Bridge obfs4 138.201.155.39:21948 5A8877058F3EE7F76E39CE0BE5D30C1DF9758C9D cert=yd2F6YO7cfwqG8Xv1zaVs2V7DM8+hXc4F4VXfEhshGQqcjnEl+2tUgHyh4uouuwQXQXUOg iat-mode=0
+Bridge obfs4 [2400:8902::f03c:92ff:feab:489e]:7987 9F539B9E42AB86BFDFD8B3760138A39E67395589 cert=FjKytP43NmYEklG4ScIBhYIXfSe05oVIEKVu4h87gZU+x/l7B5E/pQSYo60Mc/qduhgSXQ iat-mode=0
+
+Bridge obfs4 84.22.109.77:8088 CEF423251E83353BD875CB5327B458F4C8751170 cert=HMCEwtFxM3OK68PTtZ0NXeYlabBRrRGF1IddIEfXk0J7Dmuq7Y2zgohCwjluwFE0AuH8Zg iat-mode=0
+Bridge obfs4 193.122.144.123:12644 BB76DB82D1E92235C329928E5E93B6B48A8B25E4 cert=cUP4xRo3R4Lit2drhf6cqoSQgz11zK4NcGq08dBc207+XtPj0JG3BNmzJHN+HT3GzXh5EQ iat-mode=0
+UseBridges 1
+
 TransProxyType default
 {#
 OutboundBindAddress {{ tor_interface.ip.ipv4.ip }}
@@ -90,7 +101,7 @@ SOCKSPolicy reject *
 #Log debug stderr
 #}
 Log notice file /var/log/tor/notices.log
-{# Log debug file /var/log/tor/debug.log #}
+# Log debug file /var/log/tor/debug.log
 Log warn file /var/log/tor/warn.log
 
 {#

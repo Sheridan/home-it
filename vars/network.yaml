@@ -4,45 +4,49 @@
       type: 'static'
       domain: "sheridan-home.local"
       subnet:
-        ipv4: "{{ query('ship', 'net', 'ipv4') }}"
-        ipv6: "{{ query('ship', 'net', 'ipv6') }}"
-      delegated: "{{ query('ship', 'delegated_net') }}"
-      gateway: "{{ query('ship', 'ip', 1) }}"
+        ipv4: "{{ query('ship', 'net', 'ipv4') | first }}"
+        ipv6: "{{ query('ship', 'net', 'ipv6') | first }}"
+      delegated: "{{ query('ship', 'delegated_net') | first }}"
+      gateway: "{{ query('ship', 'ip', 1) | first }}"
       ranges:
         owned:
-          first: "{{ query('ship', 'ip', 1) }}"
-          last: "{{ query('ship', 'ip', 512) }}"
+          first: "{{ query('ship', 'ip', 1) | first }}"
+          last: "{{ query('ship', 'ip', 512) | first }}"
         guests:
-          first: "{{ query('ship', 'ip', 513) }}"
-          last: "{{ query('ship', 'ip', 1024) }}"
-          temporary: "{{ query('ship', 'ip', 65536).ipv6.ip }}/120"
+          first: "{{ query('ship', 'ip', 513) | first }}"
+          last: "{{ query('ship', 'ip', 1024) | first }}"
+          temporary: "{{ query('ship', 'ip', 65536)[0].ipv6.ip }}/120"
 
     kis:
       type: 'static'
       subnet:
-        ipv4: "{{ query('ship', 'kis_net') }}"
+        ipv4: "{{ query('ship', 'kis_net') | first }}"
       gateway:
-        ipv4: "{{ query('ship', 'kis_ip', 1) }}"
+        ipv4: "{{ query('ship', 'kis_ip', 1) | first }}"
 
     henet:
       type: 'static'
       tunnel_addr: "216.66.80.30"
       subnet:
-        ipv6: "{{ query('ship', 'henet_net') }}"
+        ipv6: "{{ query('ship', 'henet_net') | first }}"
       gateway:
-        ipv6: "{{ query('ship', 'henet_ip', 1) }}"
+        ipv6: "{{ query('ship', 'henet_ip', 1) | first }}"
       tunnel:
-        local: "{{ query('ship', 'henet_ip', 2) }}"
-        remote: "{{ query('ship', 'henet_ip', 1) }}"
+        local: "{{ query('ship', 'henet_ip', 2) | first }}"
+        remote: "{{ query('ship', 'henet_ip', 1) | first }}"
 
     rt:
       type: 'dynamic'
+      subnet:
+        ipv4: "{{ query('ship', 'rt_net') | first }}"
+      gateway:
+        ipv4: "100.105.0.1"
 
     tor:
       type: 'static'
       subnet:
-        ipv4: "{{ query('ship', 'tor_net', 'ipv4') }}"
-        ipv6: "{{ query('ship', 'tor_net', 'ipv6') }}"
+        ipv4: "{{ query('ship', 'tor_net', 'ipv4') | first }}"
+        ipv6: "{{ query('ship', 'tor_net', 'ipv6') | first }}"
 
   raw_home_networks:
     home:
@@ -55,7 +59,6 @@
       delegated:
         net: '2001:0470:70c8::'
         mask: 48
-
     henet:
       ipv6:
         net: '2001:470:1f0a:1880::'
@@ -64,6 +67,10 @@
       ipv4:
         net: '91.210.98.60'
         mask: 30
+    rt:
+      ipv4:
+        net: '109.168.144.155'
+        mask: 30 #32
     tor:
       ipv4:
         net: '172.16.0.0'

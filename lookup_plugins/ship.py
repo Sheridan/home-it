@@ -40,23 +40,30 @@ class LookupModule(LookupBase):
         display.v("Ship terms: %s" % terms)
         try:
             if terms[0] == 'ip':  # 1 == номер
-                return self.ip(int(terms[1]))
+                return [self.ip(int(terms[1]))]
             if terms[0] == 'net':  # 1 == версия ip
-                return self._format_net(self._home_net(terms[1]))
+                return [self._format_net(self._home_net(terms[1]))]
             if terms[0] == 'delegated_net':
-                return self._format_net(self._delegated_net())
+                return [self._format_net(self._delegated_net())]
             if terms[0] == 'kis_ip':  # 1 == номер
-                return self.prov_ip('ipv4', 'kis', int(terms[1]))
+                return [self.prov_ip('ipv4', 'kis', int(terms[1]))]
             if terms[0] == 'kis_net':
-                return self.prov_net('ipv4', 'kis')
+                return [self.prov_net('ipv4', 'kis')]
+
+            if terms[0] == 'rt_ip':  # 1 == номер
+                return [self.prov_ip('ipv4', 'rt', int(terms[1]))]
+            if terms[0] == 'rt_net':
+                return [self.prov_net('ipv4', 'rt')]
+
+
             if terms[0] == 'henet_ip':  # 1 == номер
-                return self.prov_ip('ipv6', 'henet', int(terms[1]))
+                return [self.prov_ip('ipv6', 'henet', int(terms[1]))]
             if terms[0] == 'henet_net':
-                return self.prov_net('ipv6', 'henet')
+                return [self.prov_net('ipv6', 'henet')]
             if terms[0] == 'tor_ip':  # 1 == версия ip, 2 == номер
-                return self.prov_ip(terms[1], 'tor', int(terms[2]))
+                return [self.prov_ip(terms[1], 'tor', int(terms[2]))]
             if terms[0] == 'tor_net':  # 1 == версия ip
-                return self.prov_net(terms[1], 'tor')
+                return [self.prov_net(terms[1], 'tor')]
             raise AnsibleParserError("Непонятно что делать")
         except Exception as e:
             raise AnsibleError("Error in ship: %s (%s)" % (terms, e))
@@ -111,6 +118,6 @@ class LookupModule(LookupBase):
             'reverse': network[0].reverse_dns,
             'range': {
                 'first': network[1].format(),
-                'last': network[-2].format()
+                'last': network[1 if network.prefixlen == 32 else -2].format()
             }
         }

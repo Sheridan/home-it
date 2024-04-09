@@ -2,6 +2,6 @@
   network:
   - name: "Internal"
     mac: "50:ed:3c:42:5c:2d"
-    ip: "{{ query('ship', 'ip', 122) }}"
+    ip: "{{ query('ship', 'ip', 122) | first }}"
     network: 'home'
     type: 'dhcp'

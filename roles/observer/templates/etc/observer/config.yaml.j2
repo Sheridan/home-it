@@ -1,9 +1,12 @@
 ---
+{#
   {% set external_interfaces_kis = hostvars['gate'].network|selectattr('ifname', 'match', 'external_kis.*')|first %}
-  {% set proxy_user = merged_vars.three_proxy.users | selectattr('login', 'match', 'observer') | first %}
+  {% set proxy_user = merged_vars.proxy3_secrets.users | selectattr('login', 'match', 'observer') | first %}
+#}
 
   debug: no
 
+{#
   proxy:
     enabled: yes
     host: {{ external_interfaces_kis.ip.ipv4.ip }}
@@ -11,6 +14,7 @@
     type: socks5
     user: {{ proxy_user.login }}
     pass: {{ proxy_user.pw }}
+#}
 
   session_storage:
     storage_folder: /var/lib/observer
@@ -21,6 +25,7 @@
   output:
     telegram:
       token: '{{ telegram.bots.logger.token }}'
+      ipv4: yes
       targets:
       - name: Observers
         destination:

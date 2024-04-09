@@ -1,4 +1,4 @@
-✴ DHCPd ipv4 <code>-></code> <b>guest</b> [<code>{$hostname}</code>>] via <i>{$interface}</i>
+✴ DHCPd ipv4 <code>-></code> <b>host</b> via <i>{$interface}</i>
 <pre>
 ip : {$address}
 mac: {$mac}

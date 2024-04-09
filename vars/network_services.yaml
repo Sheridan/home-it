@@ -115,6 +115,10 @@ network_services:
     ports:
     - 8886
     - 2443
+  iot_lg_tq:
+    name: LG ThingQuick
+    ports:
+    - 9000
   iot_magick_home:
     name: Magick Home IoT services
     ports:
@@ -124,6 +128,10 @@ network_services:
     ports:
     - 46030
     - 47878
+  iot_roborock:
+    name: IoT Roborock cleaners
+    ports:
+    - 8883
   irc:
     name: IRC
     ports:
@@ -176,9 +184,14 @@ network_services:
     ports:
     - 1030
     - 3800
+    - 4416
+    - 4433
+    - 4477
     - 6892
     - 6992
+    - 7275
     - 7466
+    - 8543
     - 8999
     - 10000-60000
   snmp:
@@ -238,6 +251,8 @@ network_services:
     - 443
     - 8080
     - 8081
+    # x4 wiki
+    - 8444
   whatsapp:
     name: Whatsapp
     ports:
@@ -255,3 +270,24 @@ network_services:
     ports:
     - 500
     - 4500
+  vsk_strach:
+    name: VSK strachovanie
+    ports:
+    - 8443
+    - 8503
+    - 8505
+  vpn_super:
+    name: VPN Super
+    ports:
+    - 6447
+    - 995
+    - 5684
+  tracepath:
+    name: Tracepath
+    ports:
+    - 5355
+  chromecast:
+    name: Chromecast
+    ports:
+    - 9999
+    - 5228

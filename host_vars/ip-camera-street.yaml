@@ -6,12 +6,12 @@
   - name: "WiFi"
     # mac: "00:12:31:b8:d4:66"
     mac: "9c:1c:37:99:94:46"
-    ip: "{{ query('ship', 'ip', 173) }}"
+    ip: "{{ query('ship', 'ip', 173) | first }}"
     network: 'home'
     type: 'dhcp'
   - name: "Ethernet"
     mac: "00:12:31:b8:d4:66"
-    ip: "{{ query('ship', 'ip', 174) }}"
+    ip: "{{ query('ship', 'ip', 174) | first }}"
     network: 'home'
     type: 'dhcp'
 

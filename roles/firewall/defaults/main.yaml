@@ -1,4 +1,6 @@
 ---
+  icmp_packets_per_second_drop_rate: 1024
+  input_packets_per_second_drop_rate: 64
   config:
     location: /etc/nftables
     # filename: nftables.rules

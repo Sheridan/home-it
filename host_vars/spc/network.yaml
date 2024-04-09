@@ -5,6 +5,6 @@
     #mac: "94:de:80:7c:8b:ee"
     mac: "a8:a1:59:88:94:e3"
     duid: "00:02:00:00:ab:11:7a:1c:61:eb:ac:c3:f0:f3"
-    ip: "{{ query('ship', 'ip', 10) }}"
+    ip: "{{ query('ship', 'ip', 10) | first }}"
     network: 'home'
     type: 'dhcp'

@@ -1,5 +1,5 @@
 ---
   - name: restart telegraf
     systemd:
-      name: telegraf
+      name: telegraf-daemon
       state: restarted

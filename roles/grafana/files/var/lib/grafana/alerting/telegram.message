@@ -1,0 +1,20 @@
+{{ define "alert_list" }}{{ range . }}{{ .Labels.alertname }}
+  {{ range .Annotations.SortedPairs }}<strong>{{ .Name }}</strong>: {{ .Value }}
+{{ end }}|
+{{ if gt (len .GeneratorURL) 0 }}<a href="{{ .GeneratorURL }}">source</a> | {{ end }}
+{{ if gt (len .SilenceURL) 0 }}<a href="{{ .SilenceURL }}">silence</a> | {{ end }}
+{{ if gt (len .DashboardURL) 0 }}<a href="{{ .DashboardURL }}">dashboard</a> | {{ end }}
+{{ if gt (len .PanelURL) 0 }}<a href="{{ .PanelURL }}">panel</a> |{{ end }}
+—
+{{ end }}{{ end }}
+
+{{ define "telegram.message" }}
+{{ if gt (len .Alerts.Firing) 0 }} 🔥🔥🔥
+—
+{{ template "alert_list" .Alerts.Firing }}
+{{ if gt (len .Alerts.Resolved) 0 }}
+{{ end }}{{ end }}
+{{ if gt (len .Alerts.Resolved) 0 }} ♻️♻️♻️
+—
+{{ template "alert_list" .Alerts.Resolved }}
+{{ end }}{{ end }}

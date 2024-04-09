@@ -1,0 +1,15 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+
+[sshd]
+enabled            = true
+mode               = normal
+port               = ssh
+filter             = sshd
+ignoreip           = {{ networks.home.subnet.ipv4.full }} {{ networks.home.subnet.ipv6.full }}
+bantime            = 1w
+findtime           = 1d
+maxretry           = 1
+banaction          = nftables
+banaction_allports = nftables[type=allports]
+backend            = systemd

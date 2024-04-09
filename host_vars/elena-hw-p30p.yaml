@@ -3,7 +3,7 @@
   - name: "Internal"
     mac: "54:92:9:ab:92:5a"
     # duid: "00:01:00:01:22:5d:50:dc:84:8e:0c:61:6f:c6"
-    ip: "{{ query('ship', 'ip', 30) }}"
+    ip: "{{ query('ship', 'ip', 30) | first }}"
     network: 'home'
     type: 'dhcp'
 
@@ -11,3 +11,4 @@
     host_to_internet:
       services:
       - sber_online
+      - vpn_super

@@ -2,8 +2,10 @@
   firewall:
     mobiles_to_internet:
       services:
-      - telegram
-      - wifi_call
-      - whatsapp
-      - minecraft_earth
       - iot_client
+      - iot_lg_tq
+      - minecraft_earth
+      - telegram
+      - vsk_strach
+      - whatsapp
+      - wifi_call

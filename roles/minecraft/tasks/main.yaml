@@ -99,7 +99,7 @@
     - { name: 'function-permission-level',         value: '2'                                                                                }
     - { name: 'gamemode',                          value: '{{ merged_vars.minecraft.options.game.gamemode                               }}'  }
     - { name: 'generate-structures',               value: '{{ merged_vars.minecraft.options.spawn.structures        |    string | lower }}'  }
-    - { name: 'generator-settings',                value: ''                                                                                 }
+    - { name: 'generator-settings',                value: '{}'                                                                               }
     - { name: 'hardcore',                          value: '{{ merged_vars.minecraft.options.game.hardcore           |    string | lower }}'  }
     - { name: 'level-name',                        value: '{{ merged_vars.minecraft.options.world.level_name                            }}'  }
     - { name: 'level-seed',                        value: '{{ merged_vars.minecraft.options.world.seed                                  }}'  }

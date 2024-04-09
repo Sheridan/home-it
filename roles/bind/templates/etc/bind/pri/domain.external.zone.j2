@@ -15,10 +15,12 @@ $TTL {{ 60*60*8 }}
 @ IN NS {{ ns }}
 {# -#}
 {%- endfor -%}
-@ A {{ query('ship', 'kis_ip', 2).ip }}
-@ AAAA {{ query('ship', 'henet_ip', 2).ip }}
+@ A {{ query('ship', 'kis_ip', 2)[0].ip }}
+@ A {{ query('ship', 'rt_ip', 3)[0].ip }}
+@ AAAA {{ query('ship', 'henet_ip', 2)[0].ip }}
 
-root A {{ query('ship', 'kis_ip', 2).ip }}
-root AAAA {{ query('ship', 'henet_ip', 2).ip }}
+root A {{ query('ship', 'kis_ip', 2)[0].ip }}
+root A {{ query('ship', 'rt_ip', 3)[0].ip }}
+root AAAA {{ query('ship', 'henet_ip', 2)[0].ip }}
 
 $INCLUDE /etc/bind/pri/{{ zone.domain }}.zone.hosts

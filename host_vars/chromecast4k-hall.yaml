@@ -1,0 +1,12 @@
+---
+  network:
+  - name: "Internal"
+    mac: "90:ca:fa:b5:94:ac"
+    ip: "{{ query('ship', 'ip', 77) | first }}"
+    network: 'home'
+    type: 'dhcp'
+
+  firewall:
+    host_to_internet:
+      services:
+      - chromecast

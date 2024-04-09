@@ -25,7 +25,7 @@ auth strong
 users {{ user.login }}:CL:{{ user.pw }}
 {% endfor %}
 allow *
-parent 1000 socks5 127.0.0.1 {{ merged_vars.tor.ports.socks }}
+parent 1000 socks5+ 127.0.0.1 {{ merged_vars.tor.ports.socks }}
 {% for ext_ip in [
   internal_interface.ip.ipv4.ip,
   external_interface.ip.ipv4.ip

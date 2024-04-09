@@ -3,6 +3,6 @@
   - name: "Internal"
     mac: "38:1f:8d:67:af:01"
     # duid: "00:01:00:01:28:15:8f:52:b8:87:6e:05:ad:cd"
-    ip: "{{ query('ship', 'ip', 132) }}"
+    ip: "{{ query('ship', 'ip', 132) | first }}"
     network: 'home'
     type: 'dhcp'

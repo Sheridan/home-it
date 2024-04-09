@@ -70,8 +70,8 @@ table inet filter {
   }
 
   chain lo_rules {
-    {{ query('nft', 'as_iif', internal_interface) }} ip daddr 127.0.0.1/8 counter accept comment "Accept v4 to lo from internal"
-    {{ query('nft', 'as_iif', internal_interface) }} ip6 daddr ::1/128 counter accept comment "Accept v6 to lo from internal"
+    {{ query('nft', 'as_iif', internal_interface) | first }} ip daddr 127.0.0.1/8 counter accept comment "Accept v4 to lo from internal"
+    {{ query('nft', 'as_iif', internal_interface) | first }} ip6 daddr ::1/128 counter accept comment "Accept v6 to lo from internal"
     {#
     iif != lo ip daddr 127.0.0.1/8 counter log prefix "drop to loopback not from loopback: "
     iif != lo ip daddr 127.0.0.1/8 counter drop comment "drop connections to loopback not coming from loopback"
@@ -83,17 +83,18 @@ table inet filter {
   }
 
   chain icmp_rules {
-    ip protocol icmp limit rate 32/second counter accept comment "accept icmp"
+    udp dport 33434-33524 limit rate {{ icmp_packets_per_second_drop_rate }}/second counter accept comment "Rate limit traceroute"
+    ip protocol icmp limit rate {{ icmp_packets_per_second_drop_rate }}/second counter accept comment "accept icmp"
     ip protocol icmp counter drop comment "drop burst icmp"
-    ip6 nexthdr icmpv6 limit rate 32/second counter accept comment "accept icmp6"
+    ip6 nexthdr icmpv6 limit rate {{ icmp_packets_per_second_drop_rate }}/second counter accept comment "accept icmp6"
     ip6 nexthdr icmpv6 counter drop comment "drop burst icmp6"
   }
 
   chain ipv6_spetial {
-    {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { fe80::/16 } counter accept comment "accept from link-local"
-    {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { fe80::/16 } counter accept comment "accept to link-local"
-    {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { ff02::/16 } counter accept comment "accept from spetial"
-    {{ query('nft', 'as_oif', internal_interface) }} ip6 daddr { ff02::/16 } counter accept comment "accept to spetial"
+    {{ query('nft', 'as_iif', internal_interface) | first }} ip6 saddr { fe80::/16 } counter accept comment "accept from link-local"
+    {{ query('nft', 'as_oif', internal_interface) | first }} ip6 daddr { fe80::/16 } counter accept comment "accept to link-local"
+    {{ query('nft', 'as_iif', internal_interface) | first }} ip6 saddr { ff02::/16 } counter accept comment "accept from spetial"
+    {{ query('nft', 'as_oif', internal_interface) | first }} ip6 daddr { ff02::/16 } counter accept comment "accept to spetial"
   }
 
   chain global {
@@ -117,7 +118,7 @@ table inet filter {
   chain group_{{ nft_group_name }} {
 {%        for service_name in host.firewall[group_varname].services                         %}
 {%          for ip_version in ['ipv6', 'ipv4']                                              %}
-    {{ query('nft', 'as_iif', internal_interface) }} {{ query('nft', 'ip_or_ip6', ip_version) }} saddr @group__{{ nft_group_name }}__{{ ip_version }} meta l4proto {tcp, udp} th dport @service__{{ service_name }} counter goto to_provider_{{ ip_version }} comment "[{{ group_name }}->internet] {{ network_services[service_name].name }}"
+    {{ query('nft', 'as_iif', internal_interface) | first }} {{ query('nft', 'ip_or_ip6', ip_version) | first }} saddr @group__{{ nft_group_name }}__{{ ip_version }} meta l4proto {tcp, udp} th dport @service__{{ service_name }} counter goto to_provider_{{ ip_version }} comment "[{{ group_name }}->internet] {{ network_services[service_name].name }}"
 {%          endfor                                                                          %}
 {%        endfor                                                                            %}
   }
@@ -147,7 +148,7 @@ table inet filter {
   chain host_{{ nft_host_name }} {
 {%      for service_name in host.firewall.host_to_internet.services               %}
 {%        for ip_version in ['ipv6', 'ipv4']                                      %}
-    {{ query('nft', 'as_iif', internal_interface) }} {{ query('nft', 'ip_or_ip6', ip_version) }} saddr @host__{{ nft_host_name }}__{{ ip_version }} meta l4proto {tcp, udp} th dport @service__{{ service_name }} counter goto to_provider_{{ ip_version }} comment "[{{ host_name }}->internet] {{ network_services[service_name].name }}"
+    {{ query('nft', 'as_iif', internal_interface) | first }} {{ query('nft', 'ip_or_ip6', ip_version) | first }} saddr @host__{{ nft_host_name }}__{{ ip_version }} meta l4proto {tcp, udp} th dport @service__{{ service_name }} counter goto to_provider_{{ ip_version }} comment "[{{ host_name }}->internet] {{ network_services[service_name].name }}"
 {%        endfor                                                                  %}
 {%      endfor                                                                    %}
   }
@@ -166,7 +167,7 @@ table inet filter {
 
   chain to_provider_ipv4 {
     {% for external_interface in external_interfaces_ipv4 -%}
-    {{ query('nft', 'as_oif', external_interface) }} counter accept comment "Accepted to {{ external_interface.ifname }} ({{ external_interface.name }})"
+    {{ query('nft', 'as_oif', external_interface) | first }} counter accept comment "Accepted to {{ external_interface.ifname }} ({{ external_interface.name }})"
     {# -#}
     {%- endfor -%}
 
@@ -174,20 +175,28 @@ table inet filter {
 
   chain to_provider_ipv6 {
     {% for external_interface in external_interfaces_ipv6 -%}
-    {{ query('nft', 'as_oif', external_interface) }} counter accept comment "Accepted to {{ external_interface.ifname }} ({{ external_interface.name }})"
+    {{ query('nft', 'as_oif', external_interface) | first }} counter accept comment "Accepted to {{ external_interface.ifname }} ({{ external_interface.name }})"
     {# -#}
     {%- endfor -%}
 
   }
 
   chain onion_to_tor {
-    {{ query('nft', 'as_iif', internal_interface) }} ip daddr {{ merged_vars.tor.network.ipv4.net }}/{{ merged_vars.tor.network.ipv4.mask }} counter accept comment "[network->tor] Accepted ipv4 to Tor"
-    {{ query('nft', 'as_iif', internal_interface) }} ip6 daddr {{ merged_vars.tor.network.ipv6.net }}/{{ merged_vars.tor.network.ipv6.mask }} counter accept comment "[network->tor] Accepted ipv6 to Tor"
+    {{ query('nft', 'as_iif', internal_interface) | first }} ip daddr {{ merged_vars.tor.network.ipv4.net }}/{{ merged_vars.tor.network.ipv4.mask }} counter accept comment "[network->tor] Accepted ipv4 to Tor"
+    {{ query('nft', 'as_iif', internal_interface) | first }} ip6 daddr {{ merged_vars.tor.network.ipv6.net }}/{{ merged_vars.tor.network.ipv6.mask }} counter accept comment "[network->tor] Accepted ipv6 to Tor"
   }
 
   chain guests_to_tor {
-    {{ query('nft', 'as_iif', internal_interface) }} ip saddr { {{ networks.home.ranges.guests.first.ipv4.ip }}-{{ networks.home.ranges.guests.last.ipv4.ip }} } counter accept comment "[guests->tor] Accepted ipv4 to Tor"
-    {{ query('nft', 'as_iif', internal_interface) }} ip6 saddr { {{ networks.home.ranges.guests.first.ipv6.ip }}-{{ networks.home.ranges.guests.last.ipv6.ip }} } counter accept comment "[guests->tor] Accepted ipv6 to Tor"
+    {{ query('nft', 'as_iif', internal_interface) | first }} ip saddr { {{ networks.home.ranges.guests.first.ipv4.ip }}-{{ networks.home.ranges.guests.last.ipv4.ip }} } counter accept comment "[guests->tor] Accepted ipv4 to Tor"
+    {{ query('nft', 'as_iif', internal_interface) | first }} ip6 saddr { {{ networks.home.ranges.guests.first.ipv6.ip }}-{{ networks.home.ranges.guests.last.ipv6.ip }} } counter accept comment "[guests->tor] Accepted ipv6 to Tor"
+  }
+
+  chain other_to_tor {
+{% for t_entry in to_tor        %}
+{%   for t_addr in t_entry.addr %}
+    {{ query('nft', 'as_iif', internal_interface) | first }} ip daddr {{ t_addr }} counter accept comment "[network->tor] Accepted {{ t_entry.name }} to Tor"
+{%   endfor                     %}
+{% endfor                       %}
   }
 
   chain to_self {
@@ -197,12 +206,12 @@ table inet filter {
       {%- for rule_interface_name_part in rule.interfaces -%}
         {%- for rule_interface in network|selectattr('ifname', 'match', '.*' + rule_interface_name_part + '.*')|list -%}
           {%- if 'max_rate' in rule -%}
-    {{ query('nft', 'as_iif', rule_interface) }} meta l4proto {tcp, udp} th {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} limit rate {{ rule.max_rate.count }}/{{ rule.max_rate.per_period }} burst {{ rule.max_rate.burst }} packets counter accept comment "[->{{ inventory_hostname }}] {{ rule.name }}"
-    {{ query('nft', 'as_iif', rule_interface) }} meta l4proto {tcp, udp} th {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} limit rate 8/second log prefix "Input {{ rule.name }} limit: "
-    {{ query('nft', 'as_iif', rule_interface) }} meta l4proto {tcp, udp} th {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter drop comment "[->{{ inventory_hostname }}] {{ rule.name }}"
+    {{ query('nft', 'as_iif', rule_interface) | first }} meta l4proto {tcp, udp} th {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) | first }} {%- endif %} limit rate {{ rule.max_rate.count }}/{{ rule.max_rate.per_period }} burst {{ rule.max_rate.burst }} packets counter accept comment "[->{{ inventory_hostname }}] {{ rule.name }}"
+    {{ query('nft', 'as_iif', rule_interface) | first }} meta l4proto {tcp, udp} th {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) | first }} {%- endif %} limit rate {{ input_packets_per_second_drop_rate }}/second log prefix "Input {{ rule.name }} limit: "
+    {{ query('nft', 'as_iif', rule_interface) | first }} meta l4proto {tcp, udp} th {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) | first }} {%- endif %} counter drop comment "[->{{ inventory_hostname }}] {{ rule.name }}"
     {# -#}
             {%- else -%}
-    {{ query('nft', 'as_iif', rule_interface) }} meta l4proto {tcp, udp} th {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) }} {%- endif %} counter accept comment "[->{{ inventory_hostname }}] {{ rule.name }}"
+    {{ query('nft', 'as_iif', rule_interface) | first }} meta l4proto {tcp, udp} th {% if 'ports' in rule -%} dport {{ query('nft', 'list_or_single', rule.ports) | first }} {%- endif %} counter accept comment "[->{{ inventory_hostname }}] {{ rule.name }}"
     {# -#}
           {%- endif -%}
         {%- endfor -%}
@@ -218,16 +227,14 @@ table inet filter {
 #}
 
   chain spetial_external_rt_0 {
-    # tcp flags syn tcp option maxseg size set rt mtu counter
-    # {{ query('nft', 'as_iif', external_interface_rt) }} tcp flags syn tcp option maxseg size set rt mtu counter
-    {{ query('nft', 'as_oif', external_interface_rt) }} tcp flags syn tcp option maxseg size set rt mtu counter
+    {{ query('nft', 'as_oif', external_interface_rt) | first }} tcp flags syn tcp option maxseg size set rt mtu counter
   }
 
   chain input {
     type filter hook input priority 0; policy drop;
     jump global
     jump to_self
-    limit rate 8/second log prefix "Input dropped: "
+    limit rate {{ input_packets_per_second_drop_rate }}/second log prefix "Input dropped: "
     counter comment "input dropped packets"
   }
 
@@ -245,7 +252,8 @@ table inet filter {
     jump network_hosts
     jump onion_to_tor
     jump guests_to_tor
-    limit rate 8/second log prefix "Forward dropped: "
+    jump other_to_tor
+    limit rate {{ input_packets_per_second_drop_rate }}/second log prefix "Forward dropped: "
     counter comment "forward dropped packets"
   }
 }
@@ -256,8 +264,8 @@ table ip filter {
 
   chain spetial_external_rt_0 {
     # tcp flags syn tcp option maxseg size set rt mtu counter
-    # {{ query('nft', 'as_iif', external_interface_rt) }} tcp flags syn tcp option maxseg size set rt mtu counter
-    {{ query('nft', 'as_oif', external_interface_rt) }} tcp flags syn tcp option maxseg size set rt mtu counter
+    # {{ query('nft', 'as_iif', external_interface_rt) | first }} tcp flags syn tcp option maxseg size set rt mtu counter
+    {{ query('nft', 'as_oif', external_interface_rt) | first }} tcp flags syn tcp option maxseg size set rt mtu counter
   }
 
   chain output {
@@ -282,10 +290,11 @@ table mangle {
 
   include "/etc/nftables/hosts.set"
 
+{#
   chain route_test {
     ip daddr {{ route_addr_test }} counter meta mark set {{ external_interface_rt.route_table }} accept comment "route target mangle mark"
   }
-
+#}
   chain probes {
     {% for prov in ['kis', 'rt'] -%}
       {%- set host_name = 'probe-' + prov -%}
@@ -300,12 +309,12 @@ table mangle {
   }
 
   chain default {
-    ip saddr {{ networks.home.subnet.ipv4.full }} counter meta mark set {{ external_interface_kis.route_table }} accept comment "default route target mangle mark"
+    ip saddr {{ networks.home.subnet.ipv4.full }} counter meta mark set {{ external_interface_rt.route_table }} accept comment "default route target mangle mark"
   }
 
   chain prerouting {
     type filter hook prerouting priority -150;
-    jump route_test
+    {# jump route_test #}
     jump probes
     jump default
   }
@@ -327,10 +336,19 @@ table ip nat {
     {# -#}
   }
 
+  chain other_to_tor {
+{% for t_entry in to_tor        %}
+{%   for t_addr in t_entry.addr %}
+    ip daddr {{ t_addr }} ip protocol {tcp, udp} counter dnat to 127.0.0.1:{{ merged_vars.tor.ports.transparent }} comment "[home->tor] {{ t_entry.name }} DNAT"
+{%   endfor                     %}
+{% endfor                       %}
+  }
+
   chain prerouting {
     type nat hook prerouting priority -100; policy accept;
     jump onion_to_tor
     jump guests_to_tor
+    jump other_to_tor
     counter comment "count accepted packets"
   }
 
@@ -366,7 +384,7 @@ table ip nat {
 
     {% for external_interface in external_interfaces -%}
       {%- if 'ipv4' in external_interface.ip -%}
-    ip saddr {{ networks.home.subnet.ipv4.full }} {{ query('nft', 'as_oif', external_interface) }} counter masquerade comment "Network masquerade through {{ external_interface.ifname }} ({{ external_interface.name }})"
+    ip saddr {{ networks.home.subnet.ipv4.full }} {{ query('nft', 'as_oif', external_interface) | first }} counter masquerade comment "Network masquerade through {{ external_interface.ifname }} ({{ external_interface.name }})"
     {# -#}
       {%- endif -%}
     {%- endfor -%}

@@ -1,5 +1,6 @@
 ---
   ssh_keys:
-  - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBC51wpE3WZGXMprMABkRRBWfWKKgcb2Hm+1bksSZGeG sheridan [main key]"
+  - 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBC51wpE3WZGXMprMABkRRBWfWKKgcb2Hm+1bksSZGeG sheridan [spc  key]'
+  - 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEMwURZOptrKem8h+0fXFsYidsr7F9BxkVuebEYdyAmS sheridan [wpc  key]'
   - 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDQcLlKFmYqWhme7MoGMiAZIHuaVeCjZRaY8U6BcLR8W sheridan [gate key]'
   - 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFaJacwPX4NWoYlER4bPwRsZPNhiCV3/ZcFGmOCjXchF sheridan [work key]'

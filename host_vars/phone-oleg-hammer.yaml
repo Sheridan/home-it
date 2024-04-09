@@ -1,0 +1,13 @@
+---
+  network:
+  - name: "Internal"
+    mac: "e2:8a:87:e9:3c:b6"
+    # duid: "00:01:00:01:22:5d:50:dc:84:8e:0c:61:6f:c6"
+    ip: "{{ query('ship', 'ip', 125) | first }}"
+    network: 'home'
+    type: 'dhcp'
+
+  firewall:
+    host_to_internet:
+      services:
+      - sber_online

@@ -5,7 +5,7 @@ Protocol 2
 Port 22
 AddressFamily any
 {% for interface in network -%}
-    {%- if interface.type in ['static', 'dhcp'] -%}
+    {%- if interface.type in ['static', 'dhcp', 'pppoe'] -%}
         {%- for ip_ver in ['ipv6', 'ipv4'] -%}
             {%- if ip_ver in interface.ip -%}
 ListenAddress {{ interface.ip[ip_ver].ip }}
@@ -16,7 +16,7 @@ ListenAddress {{ interface.ip[ip_ver].ip }}
 {%- endfor -%}
 
 SyslogFacility AUTH
-LogLevel INFO
+LogLevel VERBOSE
 
 LoginGraceTime 30
 PermitRootLogin without-password

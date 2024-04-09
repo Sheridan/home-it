@@ -1,0 +1,36 @@
+#!/bin/bash
+
+command=$1
+
+function flush()
+{
+  {# nft flush ruleset #}
+  return $?
+}
+
+function ban()
+{
+  ip=$2
+  {# nft -cf {{ config.location }}/nftables.rules #}
+  return $?
+}
+
+
+case "${command}" in
+  "ban")
+    ban $2
+    exit $?
+  ;;
+  "unban")
+    unban $2
+    exit $?
+  ;;
+  "flush")
+    clear
+    exit $?
+  ;;
+  "stop")
+    stop
+    exit $?
+  ;;
+esac

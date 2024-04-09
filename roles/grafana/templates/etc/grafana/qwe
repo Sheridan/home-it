@@ -1,0 +1,103 @@
+# Managed by ansible. Editing is useless
+# Sheridan
+{% set interface = network|selectattr('ifname', 'match', 'internal_.*')|first %}
+
+app_mode = production
+instance_name = sheridan-home
+
+[paths]
+data = /var/lib/grafana
+temp_data_lifetime = 24h
+logs = /var/log/grafana
+plugins = /var/lib/grafana/plugins
+
+[server]
+protocol = http
+http_addr = [{{ grafana.listen.addr }}]
+http_port = {{ grafana.listen.port }}
+domain = grafana.{{ networks.home.domain }}
+root_url = http://grafana.sheridan-home.ru
+router_logging = {{ merged_vars.grafana.debug | string | lower }}
+
+[database]
+ssl_mode = disable
+max_idle_conn = 8
+conn_max_lifetime = {{ 60 * 60 * 8 }}
+log_queries = {{ merged_vars.grafana.debug | string | lower }}
+
+[session]
+cookie_name = grafana_{{ networks.home.domain | regex_replace('[\.-]', '_') }}
+
+[dataproxy]
+logging = {{ merged_vars.grafana.debug | string | lower }}
+
+[analytics]
+check_for_updates = true
+
+[security]
+admin_user = {{ grafana.login }}
+admin_password = {{ grafana.password }}
+secret_key = {{ (grafana.login + grafana.password) | md5 }}
+login_remember_days = {{ 7 * 4 * 12 }}
+disable_gravatar = false
+disable_brute_force_login_protection = false
+cookie_secure = false
+strict_transport_security = true
+x_xss_protection = true
+
+[dashboards]
+versions_to_keep = 128
+
+[users]
+allow_sign_up = false
+allow_org_create = false
+default_theme = dark
+viewers_can_edit = false
+
+[auth]
+login_cookie_name = grafana_session
+login_maximum_inactive_lifetime_days = 8
+login_maximum_lifetime_days = {{ 4 * 7 * 12 }}
+token_rotation_interval_minutes = 16
+disable_signout_menu = false
+
+[auth.anonymous]
+enabled = false
+
+[log]
+mode = console file
+level = {% if merged_vars.grafana.debug %}debug{% else %}info{% endif %}
+
+[log.file]
+log_rotate = true
+max_lines = {{ 1024 * 1024 }}
+max_size_shift = 28
+daily_rotate = true
+max_days = 32
+
+[alerting]
+enabled = true
+execute_alerts = true
+
+[explore]
+enabled = true
+
+[panels]
+disable_sanitize_html = false
+
+[plugins]
+enable_alpha = false
+app_tls_skip_verify_insecure = false
+
+[help]
+enabled = false
+
+[query_history]
+enabled = true
+
+[plugin.grafana-image-renderer]
+rendering_language = ru-RU
+rendering_ignore_https_errors = true
+
+[expressions]
+enabled = true

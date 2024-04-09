@@ -8,7 +8,7 @@ ip route add default dev {{ external_interface_rt.ifname }} table to_{{ external
 
 {% for external_interface in external_interfaces -%}
   {%- if 'route_table' in external_interface -%}
-ip rule add fwmark {{ external_interface.route_table}} table to_{{ external_interface.ifname }}
+ip rule add fwmark {{ external_interface.route_table }} table to_{{ external_interface.ifname }}
 {# -#}
   {%- endif -%}
 {%- endfor %}

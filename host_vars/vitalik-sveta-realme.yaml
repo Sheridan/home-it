@@ -1,0 +1,12 @@
+---
+  network:
+  - name: "Internal"
+    mac: "02:70:d8:c6:c5:1a"
+    ip: "{{ query('ship', 'ip', 120) | first }}"
+    network: 'home'
+    type: 'dhcp'
+
+  firewall:
+    host_to_internet:
+      services:
+      - ntp

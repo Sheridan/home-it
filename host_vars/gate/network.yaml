@@ -8,7 +8,7 @@
         - prometheus
         - ntp
     mac: "94:de:80:6c:66:b0"
-    ip: "{{ query('ship', 'ip', 1) }}"
+    ip: "{{ query('ship', 'ip', 1) | first }}"
     network: 'home'
     type: 'static'
 
@@ -23,7 +23,7 @@
         - minecraft
     mac: "50:3e:aa:04:8f:b0"
     ip:
-      ipv4: "{{ query('ship', 'kis_ip', 2) }}"
+      ipv4: "{{ query('ship', 'kis_ip', 2) | first }}"
     network: 'kis'
     type: 'static'
     route_table: 100
@@ -33,7 +33,7 @@
     type: "pppoe"
     bridge: "bridge_rt_0"
     ip:
-      ipv4: 'dynamic'
+      ipv4: "{{ query('ship', 'rt_ip', 3) | first }}"
     route_table: 101
 
   - name: "Bridge RT"
@@ -53,7 +53,7 @@
     ifname: "external_he_0"
     need_netdev: yes
     ip:
-      ipv6: "{{ query('ship', 'henet_ip', 2) }}"
+      ipv6: "{{ query('ship', 'henet_ip', 2) | first }}"
     network: 'henet'
     type: 'static'
 
@@ -62,6 +62,6 @@
   #   type: "virtual"
   #   network: 'tor'
   #   mac: "50:3e:aa:04:cb:20"
-  #   ip: # "{{ query('ship', 'ip', 8) }}"
-  #     ipv4: "{{ query('ship', 'tor_ip', 'ipv4', 1) }}"
-  #     ipv6: "{{ query('ship', 'tor_ip', 'ipv6', 1) }}"
+  #   ip: # "{{ query('ship', 'ip', 8) | first }}"
+  #     ipv4: "{{ query('ship', 'tor_ip', 'ipv4', 1) | first }}"
+  #     ipv6: "{{ query('ship', 'tor_ip', 'ipv6', 1) | first }}"

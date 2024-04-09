@@ -6,8 +6,7 @@
     mac: "94:de:80:7c:8b:ee"
     duid: "00:02:00:00:ab:11:92:fc:95:b3:77:cb:d8:b5"
     #duid: "00:04:00:74:00:1e:8c:00:00:b6:54:03:90:e6:ba:72:2d:60"
-    ip: "{{ query('ship', 'ip', 16) }}"
+    ip: "{{ query('ship', 'ip', 16) | first }}"
     network: 'home'
     type: 'dhcp'
   #ansible_host: 10.0.0.16
-  

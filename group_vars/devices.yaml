@@ -1,0 +1,8 @@
+---
+  firewall:
+    devices_to_internet:
+      services:
+      - ntp
+      - dns
+      - google
+      - web

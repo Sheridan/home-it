@@ -32,9 +32,33 @@
         port: "{{ merged_vars.telegraf.listen.port }}"
         job: telegraf
 
-  - name: Enabling services
-    systemd:
-      name: telegraf
-      enabled: yes
-    notify:
-    - restart telegraf
+  - name: Install telegraf service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: telegraf-daemon
+        description: Telegraf server daemon
+        restart_sec: 2s
+        exec_start: /usr/bin/telegraf -config /etc/telegraf/telegraf.conf -config-directory /etc/telegraf/telegraf.d
+        exec_reload: /bin/kill -HUP $MAINPID
+        #capability_bounding_set: CAP_NET_RAW CAP_NET_ADMIN
+        #ambient_capabilities: CAP_NET_RAW CAP_NET_ADMIN
+        user: telegraf
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes
+        replaces:
+        - telegraf
+
+#  - name: Enabling services
+#    systemd:
+#      name: telegraf
+#      enabled: yes
+#    notify:
+#    - restart telegraf
