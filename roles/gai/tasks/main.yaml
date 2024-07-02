@@ -1,0 +1,6 @@
+---
+  - name: Устанавливаем конфиг приоритета версий ip
+    template:
+      src: templates/etc/gai.conf.j2
+      dest: /etc/gai.conf
+      mode: 0644

@@ -1,0 +1,72 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - homed-custom
+      state: latest
+    notify:
+    - restart homed-custom
+    tags:
+    - packages
+
+  - name: create dirs for homed-custom
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ homed_user }}"
+    loop:
+      - "{{ homed_custom_data_root }}"
+
+  - name: Настройка ротации логов homed-custom
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: homed-custom
+        files:
+        - "{{ homed_log_root }}/custom.log"
+        options:
+        - missingok
+        - nocreate
+        - rotate 7
+        - daily
+        - compress
+        - copytruncate
+
+  - name: Install homed-custom configuration
+    template:
+      src: etc/homed/homed-custom.conf.j2
+      dest: /etc/homed/homed-custom.conf
+    notify:
+    - restart homed-custom
+
+  - name: Install HOMEd custom service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: homed-custom-daemon
+        description: The IoT HOMEd Custom daemon
+        exec_start: /usr/bin/homed-custom
+        user: "{{ homed_user }}"
+        group: "{{ homed_user }}"
+        kill_signal: SIGTERM
+        restart: on-failure
+        environments:
+        - { name: LD_LIBRARY_PATH, value: "/usr/lib" }
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: reloaded
+        state: started
+        enabled: yes
+        replaces:
+        - homed-custom
+
+  # - name: Enabling homed-custom service
+  #   systemd:
+  #     name: homed-custom
+  #     enabled: yes

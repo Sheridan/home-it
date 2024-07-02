@@ -1,0 +1,17 @@
+---
+  yandex2mqtt_root: /opt/yandex2mqtt
+  yandex2mqtt_src: "/storage/data/sources/yandex2mqtt"
+  yandex2mqtt_user: iot
+  yandex2mqtt_mqtt_port: 1883
+  yandex2mqtt_web_port: 8443
+  yandex2mqtt_config_file: "{{ yandex2mqtt_root }}/config.js"
+  yandex2mqtt_mqtt_topic: "yandex/controls"
+
+  yandex_devices:
+    power_sockets:
+    - name: "Улица"
+      topic: "PowerSocket_Street"
+      room: "Крыльцо"
+    - name: "Видеонаблюдение"
+      topic: "PowerSocket_CCTV_Monitor_Power"
+      room: "Прихожая"

@@ -1,0 +1,38 @@
+---
+- hosts: gate
+  gather_facts: yes
+
+- hosts: pi-iot
+  remote_user: root
+  vars_files:
+  - vars/vault.yaml
+  - vars/dns.yaml
+  - vars/network.yaml
+  - vars/ssh_keys.yaml
+  - vars/telegram.yaml
+  roles:
+  - { role: locale, tags: locale }
+  - { role: network_interfaces, tags: network_interfaces }
+  - { role: hostname, tags: hostname }
+  - { role: gai, tags: gai }
+  # - { role: kernel, tags: kernel }
+  - { role: users, tags: users }
+  - { role: zsh, tags: zsh }
+  - { role: sshd, tags: sshd }
+  - { role: logrotate, tags: logrotate }
+  - { role: journald, tags: journald }
+  # - { role: firewall, tags: firewall }
+  - { role: node_exporter, tags: [ node_exporter, monitoring ] }
+  - { role: telegraf, tags: [ telegraf, monitoring ] }
+  # - { role: smartctl_exporter, tags: smartctl_exporter }
+  - { role: nginx, tags: nginx }
+  # - { role: observer, tags: observer }
+  - { role: htop, tags: htop }
+  # - { role: portage, tags: portage }
+  # - { role: packages, tags: packages }
+  - { role: nodered, tags: nodered }
+  - { role: zigbee2mqtt, tags: zigbee2mqtt }
+  - { role: yandex2mqtt, tags: yandex2mqtt }
+  - { role: mosquitto, tags: mosquitto }
+  - { role: homed, tags: homed }
+  - { role: mqtt-exporter, tags: mqtt-exporter }

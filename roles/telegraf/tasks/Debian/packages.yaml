@@ -1,0 +1,19 @@
+---
+  - name: Добавляем ключ репозитория
+    apt_key:
+      url: https://repos.influxdata.com/influxdata-archive.key
+      state: present
+    register: r_telegraf_key_added
+
+  - name: Добавляем репозиторий
+    apt_repository:
+      repo: deb https://repos.influxdata.com/debian {{ ansible_lsb.codename }} stable
+      state: present
+    register: r_telegraf_repo_added
+
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - telegraf
+      state: present
+      update_cache: "{{ r_telegraf_key_added.changed or r_telegraf_repo_added.changed }}"

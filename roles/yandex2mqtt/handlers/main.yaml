@@ -1,0 +1,5 @@
+---
+  - name: restart yandex2mqtt
+    systemd:
+      name: yandex2mqtt
+      state: restarted

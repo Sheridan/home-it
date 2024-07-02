@@ -1,0 +1,3 @@
+{% for key in mqtt_users.keys() %}
+{{ mqtt_users[key].login }}:{{ mqtt_users[key].pw }}
+{% endfor %}

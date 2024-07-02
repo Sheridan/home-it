@@ -1,0 +1,9 @@
+---
+  firewall:
+    yandex_to_internet:
+      services:
+      - iot_client
+      - iot_lg_tq
+      - telegram
+      - wifi_call
+      - high_ports

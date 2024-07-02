@@ -2,6 +2,7 @@
 # Sheridan
 
 {% set proxy_to = target.to | default('internal') %}
+{# {% set hosted_at = target.hoster | default(inventory_hostname) %} #}
 
 map $http_upgrade $connection_upgrade
 {
@@ -14,8 +15,10 @@ upstream {{ target.name }}_upstream
   server {% if target.addr | ipv6 -%} [{{ target.addr }}] {%- else -%} {{ target.addr }} {%- endif %}:{{ target.port }};
 }
 
+
+
 {% if proxy_to in ['both', 'internal'] %}
-{% set interface = network|selectattr('ifname', 'match', 'internal_.*')|first %}
+{% set interface = hostvars[hosted_at].network|selectattr('ifname', 'match', 'internal_.*')|first %}
 server
 {
   listen {{ interface.ip.ipv4.ip }}:80;
@@ -42,20 +45,25 @@ server
 {% endif %}
 
 {% if proxy_to in ['both', 'external'] %}
-{% set interfaces = network|selectattr('ifname', 'match', 'external_.*') %}
+{% set interfaces = hostvars[hosted_at].network|selectattr('ifname', 'match', 'external_.*') %}
 server
 {
   {# -#}
 {% for interface in interfaces -%}
-    {%- if interface.type in ['static'] -%}
+    {%- if interface.type in ['static', 'pppoe'] -%}
         {%- for ip_ver in ['ipv6', 'ipv4'] -%}
             {%- if ip_ver in interface.ip -%}
-  listen {% if ip_ver == 'ipv6' -%} [{{ interface.ip[ip_ver].ip }}] {%- else -%} {{ interface.ip[ip_ver].ip}} {%- endif %}:80;
+    listen {% if ip_ver == 'ipv6' -%} [{{ interface.ip[ip_ver].ip }}] {%- else -%} {{ interface.ip[ip_ver].ip}} {%- endif %}:443 ssl; # {{ interface.name }}
   {# -#}
             {%- endif -%}
         {%- endfor -%}
     {%- endif -%}
 {%- endfor -%}
+
+  ssl_certificate     {{ ssl_certificate_nginx.cert }};
+  ssl_certificate_key {{ ssl_certificate_nginx.key }};
+  include             {{ ssl_certificate_nginx.conf }};
+  ssl_dhparam         {{ ssl_certificate_nginx.dhparam }};
 
   server_name          {{ target.name }}.sheridan-home.ru;
   access_log           /var/log/nginx/{{ target.name }}.internet.access.log combined gzip=9;
@@ -64,7 +72,7 @@ server
 
   location /
   {
-    proxy_pass         http://{{ target.name }}_upstream;
+    proxy_pass         {{ target.protocol | default('http') }}://{{ target.name }}_upstream;
     proxy_read_timeout {{ 60 * 5 }}s;
     proxy_set_header   Host $http_host;
     proxy_set_header   Upgrade $http_upgrade;
@@ -72,8 +80,24 @@ server
     proxy_set_header   X-Real-IP $remote_addr;
     proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header   X-Forwarded-Proto $scheme;
-    proxy_set_header   Authorization  "";
+    proxy_pass_header Authorization;
     proxy_http_version 1.1;
   }
+}
+server
+{
+  {# -#}
+{% for interface in interfaces -%}
+  {%- if interface.type in ['static', 'pppoe'] -%}
+      {%- for ip_ver in ['ipv6', 'ipv4'] -%}
+          {%- if ip_ver in interface.ip -%}
+  listen {% if ip_ver == 'ipv6' -%} [{{ interface.ip[ip_ver].ip }}] {%- else -%} {{ interface.ip[ip_ver].ip}} {%- endif %}:80; # {{ interface.name }}
+  {# -#}
+          {%- endif -%}
+      {%- endfor -%}
+  {%- endif -%}
+{%- endfor -%}
+  server_name          {{ target.name }}.sheridan-home.ru;
+  location / { return 301 https://$host$request_uri; }
 }
 {% endif %}

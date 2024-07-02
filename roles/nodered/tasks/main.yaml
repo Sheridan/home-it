@@ -1,0 +1,77 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - build-essential
+      - git
+      - curl
+      state: present
+    tags:
+    - packages
+
+  - name: Скачиваем скрипт установки
+    get_url:
+      url: https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered
+      dest: "/tmp/nodered_install.sh"
+      mode: '0755'
+    ignore_errors: "{{ ansible_check_mode }}"
+    tags:
+    - packages
+
+  - name: Запускаем установку
+    shell: >
+      /tmp/nodered_install.sh
+      --confirm-install
+      --confirm-pi
+      --nodered-user={{ iot_user }}
+      2>&1
+    become: yes
+    become_user: "{{ iot_user }}"
+    tags:
+    - packages
+
+  - name: deploy nginx configuration
+    import_role:
+      name: nginx
+      tasks_from: simple_proxy
+    vars:
+      target:
+        name: nodered
+        addr: "127.0.0.1"
+        port: "{{ nodered_port }}"
+
+
+  - name: Install nodered service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: nodered-daemon
+        description: Node-RED graphical event wiring tool
+        type: simple
+        user: "{{ iot_user }}"
+        group: "{{ iot_user }}"
+        restart_sec: 10s
+        working_dir: /home/iot
+        environments:
+        - { name: NODE_OPTIONS, value: "--max_old_space_size=2048" }
+        - { name: NODE_RED_OPTIONS, value: "-v" }
+        - { name: MQTT_USER, value: "{{ mqtt_users.nodered.login }}" }
+        - { name: MQTT_PW, value: "{{ mqtt_users.nodered.pw }}" }
+        - { name: TELEGRAM_LOGGER_TOKEN, value: "{{ telegram_secrets.logger_bot_token }}" }
+        - { name: TELEGRAM_ALERTER_TOKEN, value: "{{ telegram_secrets.alerter_bot_token }}" }
+        - { name: TELEGRAM_CHANNEL_LOGS, value: "{{ telegram_secrets.log_chat_id }}" }
+        - { name: TELEGRAM_CHANNEL_MESSAGES, value: "{{ telegram_secrets.messages_chat_id }}" }
+        - { name: YANDEX_OAUTH_TOKEN, value: "{{ yandex_secrets.oauth_token }}" }
+        exec_start: /usr/bin/env node-red-pi $NODE_OPTIONS $NODE_RED_OPTIONS
+        kill_signal: SIGINT
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: reloaded
+        state: started
+        enabled: yes
+        replaces:
+        - nodered

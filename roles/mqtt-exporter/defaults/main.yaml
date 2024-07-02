@@ -1,0 +1,4 @@
+---
+  mqtt_exporter_user: prometheus
+  mqtt_exporter_port: 9183
+  mqtt_exporter_mqtt_port: 1883

@@ -1,0 +1,5 @@
+---
+  - name: restart mosquitto
+    systemd:
+      name: mosquitto
+      state: restarted

@@ -1,0 +1,62 @@
+homeassistant: false
+
+permit_join: false
+
+frontend:
+  port: {{ zigbee2mqtt_frontend_port }}
+  host: 127.0.0.1
+  url: http://{{ inventory_hostname }}.{{ networks.home.domain }}
+
+mqtt:
+  base_topic: z2m
+  server: mqtt://localhost:{{ zigbee2mqtt_mqtt_port }}
+  # server: 'mqtt://{{ inventory_hostname }}.{{ networks.home.domain }}:{{ zigbee2mqtt_mqtt_port }}'
+  user: {{ mqtt_users.zigbee2mqtt.login }}
+  password: {{ mqtt_users.zigbee2mqtt.pw }}
+
+serial:
+  port: {{ zigbee2mqtt_serial }}
+  adapter: zstack
+  rtscts: true
+
+advanced:
+  legacy_api: false
+  legacy_availability_payload: false
+  log_level: warning
+  log_output:
+    - console
+  channel: {{ zigbee2mqtt_channel }}
+  pan_id: {{ zigbee2mqtt_pan }}
+  ext_pan_id:
+    - {{ zigbee2mqtt_pan + 1 }}
+    - {{ zigbee2mqtt_pan + 3 }}
+    - {{ zigbee2mqtt_pan + 5 }}
+    - {{ zigbee2mqtt_pan + 7 }}
+    - {{ zigbee2mqtt_pan + 9 }}
+    - {{ zigbee2mqtt_pan + 11 }}
+    - {{ zigbee2mqtt_pan + 13 }}
+    - {{ zigbee2mqtt_pan + 15 }}
+  network_key:
+    - {{ zigbee2mqtt_pan + 17 }}
+    - {{ zigbee2mqtt_pan + 19 }}
+    - {{ zigbee2mqtt_pan + 21 }}
+    - {{ zigbee2mqtt_pan + 23 }}
+    - {{ zigbee2mqtt_pan + 25 }}
+    - {{ zigbee2mqtt_pan + 27 }}
+    - {{ zigbee2mqtt_pan + 29 }}
+    - {{ zigbee2mqtt_pan + 31 }}
+    - {{ zigbee2mqtt_pan + 33 }}
+    - {{ zigbee2mqtt_pan + 35 }}
+    - {{ zigbee2mqtt_pan + 37 }}
+    - {{ zigbee2mqtt_pan + 39 }}
+    - {{ zigbee2mqtt_pan + 41 }}
+    - {{ zigbee2mqtt_pan + 43 }}
+    - {{ zigbee2mqtt_pan + 45 }}
+    - {{ zigbee2mqtt_pan + 47 }}
+devices:
+  '0xa4c1388144f56870':
+    friendly_name: HumanDetector_0
+  '0x70b3d52b6006031f':
+    friendly_name: PowerSocket_1
+  '0x70b3d52b60060150':
+    friendly_name: PowerSocket_0

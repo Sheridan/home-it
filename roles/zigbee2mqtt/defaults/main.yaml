@@ -1,0 +1,11 @@
+---
+  zigbee2mqtt_root: /opt/zigbee2mqtt
+  zigbee2mqtt_user: iot
+  zigbee2mqtt_serial: /dev/ttyAMA0
+  zigbee2mqtt_frontend_port: 8080
+  zigbee2mqtt_mqtt_port: 1883
+  zigbee2mqtt_config_path: /etc/zigbee2mqtt
+  zigbee2mqtt_config_file: "{{ zigbee2mqtt_config_path }}/config.yaml"
+  # 0-16383
+  zigbee2mqtt_pan: 256
+  zigbee2mqtt_channel: 26

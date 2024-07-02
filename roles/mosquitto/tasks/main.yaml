@@ -1,0 +1,42 @@
+---
+  - name: Добавляем ключ репозитория
+    apt_key:
+      url: http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
+      state: present
+    tags:
+    - packages
+
+  - name: Добавляем репозиторий
+    apt_repository:
+      repo: "deb https://repo.mosquitto.org/debian {{ ansible_lsb.codename }} main"
+      state: present
+    tags:
+    - packages
+
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - mosquitto
+      state: present
+    tags:
+    - packages
+
+  - name: Install mosquitto configuration
+    template:
+      src: "etc/mosquitto/{{ item }}.j2"
+      dest: "/etc/mosquitto/{{ item }}"
+    loop:
+    - conf.d/main.conf
+    - conf.d/auth.conf
+    - auth.txt
+    notify:
+    - restart mosquitto
+
+  - name: Обрабатываем пароли
+    shell: "mosquitto_passwd -U /etc/mosquitto/auth.txt"
+    check_mode: no
+
+  - name: Enabling mosquitto service
+    systemd:
+      name: mosquitto
+      enabled: yes

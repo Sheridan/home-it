@@ -1,0 +1,5 @@
+  ssl_certificate_nginx:
+    cert: /etc/letsencrypt/live/sheridan-home.ru/fullchain.pem
+    key:  /etc/letsencrypt/live/sheridan-home.ru/privkey.pem
+    conf: /etc/letsencrypt/options-ssl-nginx.conf
+    dhparam: /etc/letsencrypt/ssl-dhparams.pem

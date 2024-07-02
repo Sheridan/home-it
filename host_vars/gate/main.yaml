@@ -20,3 +20,33 @@
     theme: "gentoo"
     plugins:
     - git
+
+  mqtt_port: 1883
+
+  mosquitto_mqtt_port: "{{ mqtt_port }}"
+  iot_user: iot
+  nodered_port: 1880
+  zigbee2mqtt_root: /opt/zigbee2mqtt
+  zigbee2mqtt_user: iot
+  zigbee2mqtt_serial: /dev/ttyAMA0
+  zigbee2mqtt_frontend_port: 8080
+  zigbee2mqtt_mqtt_port: "{{ mqtt_port }}"
+  zigbee2mqtt_config_path: /etc/zigbee2mqtt
+  zigbee2mqtt_config_file: "{{ zigbee2mqtt_config_path }}/config.yaml"
+  # 0-16383
+  zigbee2mqtt_pan: 256
+  zigbee2mqtt_channel: 26
+
+  yandex2mqtt_root: /opt/yandex2mqtt
+  yandex2mqtt_src: "/storage/data/sources/yandex2mqtt"
+  yandex2mqtt_user: iot
+  yandex2mqtt_mqtt_port: 1883
+  yandex2mqtt_web_port: 8443
+  yandex2mqtt_config_file: "{{ yandex2mqtt_root }}/config.js"
+
+  homed_port: /dev/ttyAMA0
+  homed_frontend_port: 8081
+  homed_mqtt_port: 1883
+  homed_channel: 26
+  homed_data_root: /var/lib/homed
+  homed_user: iot

@@ -1,0 +1,72 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - homed-cloud
+      state: latest
+    notify:
+    - restart homed-cloud
+    tags:
+    - packages
+
+  - name: create dirs for homed-cloud
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ homed_user }}"
+    loop:
+      - "{{ homed_cloud_data_root }}"
+
+  - name: Настройка ротации логов homed-cloud
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: homed-cloud
+        files:
+        - "{{ homed_log_root }}/cloud.log"
+        options:
+        - missingok
+        - nocreate
+        - rotate 7
+        - daily
+        - compress
+        - copytruncate
+
+  - name: Install homed-cloud configuration
+    template:
+      src: etc/homed/homed-cloud.conf.j2
+      dest: /etc/homed/homed-cloud.conf
+    notify:
+    - restart homed-cloud
+
+  - name: Install HOMEd cloud service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: homed-cloud-daemon
+        description: The IoT HOMEd Cloud daemon
+        exec_start: /usr/bin/homed-cloud
+        user: "{{ homed_user }}"
+        group: "{{ homed_user }}"
+        kill_signal: SIGTERM
+        restart: on-failure
+        environments:
+        - { name: LD_LIBRARY_PATH, value: "/usr/lib" }
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: reloaded
+        state: started
+        enabled: yes
+        replaces:
+        - homed-cloud
+
+  # - name: Enabling homed-cloud service
+  #   systemd:
+  #     name: homed-cloud
+  #     enabled: yes

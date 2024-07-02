@@ -1,0 +1,21 @@
+[log]
+enabled=true
+file={{ homed_log_root }}/custom.log
+
+[mqtt]
+host=localhost
+port={{ homed_mqtt_port }}
+username={{ mqtt_users.homed.login }}
+password={{ mqtt_users.homed.pw }}
+prefix=homed
+names=true
+
+[homeassistant]
+enabled=false
+legacy=false
+prefix=homeassistant
+status=homeassistant/status
+
+[device]
+database={{ homed_custom_data_root }}/database.json
+properties={{ homed_custom_data_root }}/properties.json

@@ -1,0 +1,39 @@
+---
+  - name: Добавляем ключ репозитория
+    apt_key:
+      url: https://apt.homed.dev/apt.key
+      state: present
+    tags:
+    - packages
+
+  - name: Добавляем репозиторий
+    apt_repository:
+      repo: "deb https://apt.homed.dev/ {{ ansible_distribution | lower }} main"
+      state: present
+    tags:
+    - packages
+
+  - name: create dirs for homed
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ homed_user }}"
+    loop:
+      - "{{ homed_data_root }}"
+      - "{{ homed_log_root }}"
+
+  - include_role:
+      name: homed
+      tasks_from: zigbee
+
+  - include_role:
+      name: homed
+      tasks_from: web
+
+  - include_role:
+      name: homed
+      tasks_from: cloud
+
+  - include_role:
+      name: homed
+      tasks_from: custom

@@ -26,23 +26,26 @@
     notify:
     - reload nginx
 
-  # - name: deploy simple fileshare
-  #   template:
-  #     owner: nginx
-  #     group: nginx
-  #     src: etc/nginx/sites/simple_filesharing.conf.j2
-  #     dest: /etc/nginx/sites/simple_filesharing.conf
-  #     mode: 0644
-  #   notify:
-  #   - reload nginx
-
-  - name: Deploy nginx site
-    import_role:
-      name: nginx
-      tasks_from: simple_site
+  - name: deploy simple fileshare
+    template:
+      owner: nginx
+      group: nginx
+      src: etc/nginx/sites/simple_filesharing.conf.j2
+      dest: /etc/nginx/sites/simple_filesharing.conf
+      mode: 0644
+    notify:
+    - reload nginx
     vars:
       target:
-        name: test
+        name: files
+
+  # - name: Deploy nginx site
+  #   import_role:
+  #     name: nginx
+  #     tasks_from: simple_site
+  #   vars:
+  #     target:
+  #       name: test
 
   - name: Настройка ротации логов nginx
     import_role:

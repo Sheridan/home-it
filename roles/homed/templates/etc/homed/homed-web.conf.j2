@@ -1,0 +1,17 @@
+[log]
+enabled=true
+file={{ homed_log_root }}/web.log
+
+[mqtt]
+host=localhost
+port={{ homed_mqtt_port }}
+username={{ mqtt_users.homed.login }}
+password={{ mqtt_users.homed.pw }}
+prefix=homed
+
+[server]
+port={{ homed_frontend_port }}
+database={{ homed_web_data_root }}/database.json
+frontend=/usr/share/homed-web
+username={{ homed_secrets.web.login }}
+password={{ homed_secrets.web.pw }}

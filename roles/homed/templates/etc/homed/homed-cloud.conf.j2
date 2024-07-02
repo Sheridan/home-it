@@ -1,0 +1,16 @@
+[log]
+enabled=true
+file={{ homed_log_root }}/cloud.log
+
+[mqtt]
+host=localhost
+port={{ homed_mqtt_port }}
+username={{ mqtt_users.homed.login }}
+password={{ mqtt_users.homed.pw }}
+prefix=homed
+
+[cloud]
+host=cloud.homed.dev
+port=8042
+uniqueid={{ homed_secrets.cloud.id }}
+token={{ homed_secrets.cloud.token }}

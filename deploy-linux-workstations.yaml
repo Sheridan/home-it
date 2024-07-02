@@ -11,6 +11,7 @@
   # - { role: firewall, tags: firewall }
   - { role: locale, tags: locale }
   - { role: network_interfaces, tags: network_interfaces }
+  - { role: gai, tags: gai }
   - { role: hostname, tags: hostname }
   - { role: portage, tags: portage }
   - { role: bluetooth, tags: bluetooth }

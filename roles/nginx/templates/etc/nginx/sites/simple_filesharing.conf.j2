@@ -1,14 +1,28 @@
 # Managed by ansible. Editing is useless
 # Sheridan
 
-{% set interface_ipv4  = network | selectattr('ifname', 'match', 'external_kis_.*') | first %}
-{% set interfaces_ipv6 = network | selectattr('ifname', 'match', 'external_he_.*')  | first %}
+{% set interfaces = network|selectattr('ifname', 'match', 'external_.*') %}
 
 server
 {
-  listen {{ interface_ipv4.ip.ipv4.ip }}:80;
-  listen [{{ interfaces_ipv6.ip.ipv6.ip }}]:80;
+  {# -#}
+{% for interface in interfaces -%}
+    {%- if interface.type in ['static', 'pppoe'] -%}
+        {%- for ip_ver in ['ipv6', 'ipv4'] -%}
+            {%- if ip_ver in interface.ip -%}
+    listen {% if ip_ver == 'ipv6' -%} [{{ interface.ip[ip_ver].ip }}] {%- else -%} {{ interface.ip[ip_ver].ip}} {%- endif %}:443 ssl; # {{ interface.name }}
+  {# -#}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
+{%- endfor -%}
   server_name          {{ target.name }}.sheridan-home.ru;
+
+  ssl_certificate     {{ ssl_certificate_nginx.cert }};
+  ssl_certificate_key {{ ssl_certificate_nginx.key }};
+  include             {{ ssl_certificate_nginx.conf }};
+  ssl_dhparam         {{ ssl_certificate_nginx.dhparam }};
+
   access_log           /var/log/nginx/{{ target.name }}.access.log combined gzip=9;
   error_log            /var/log/nginx/{{ target.name }}.error.log warn;
   client_max_body_size 1024g;
@@ -19,4 +33,21 @@ server
     index {{ target.index | default('index.html') }};
     autoindex on;
   }
+}
+
+server
+{
+  {# -#}
+{% for interface in interfaces -%}
+    {%- if interface.type in ['static', 'pppoe'] -%}
+        {%- for ip_ver in ['ipv6', 'ipv4'] -%}
+            {%- if ip_ver in interface.ip -%}
+    listen {% if ip_ver == 'ipv6' -%} [{{ interface.ip[ip_ver].ip }}] {%- else -%} {{ interface.ip[ip_ver].ip}} {%- endif %}:80; # {{ interface.name }}
+  {# -#}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
+{%- endfor -%}
+  server_name          {{ target.name }}.sheridan-home.ru;
+  location / { return 301 https://$host$request_uri; }
 }

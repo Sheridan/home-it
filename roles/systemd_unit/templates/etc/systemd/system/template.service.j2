@@ -24,6 +24,7 @@ PIDFile={{ service.pid_file | default('/run/' + service.name + '.pid') }}
 {% if 'ambient_capabilities'    in service -%} AmbientCapabilities={{ service.ambient_capabilities }}      {{- '\n' -}} {%- endif -%}
 User={{ service.user | default('root') }}
 Group={{ service.group | default('root') }}
+KillSignal={{ service.kill_signal | default('SIGTERM') }}
 SyslogIdentifier={{ service.syslog_identifier | default(service.name) }}
 Restart={{ service.restart | default('no' if service.type | default('simple') in ['oneshot'] else 'always') }}
 RemainAfterExit={{ 'yes' if service.remain_after_exit | default(False) else 'no' }}

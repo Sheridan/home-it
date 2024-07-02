@@ -1,0 +1,84 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - homed-web
+      state: latest
+    notify:
+    - restart homed-web
+    tags:
+    - packages
+
+  - name: create dirs for homed-web
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ homed_user }}"
+    loop:
+      - "{{ homed_web_data_root }}"
+
+  - name: Настройка ротации логов homed-web
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: homed-web
+        files:
+        - "{{ homed_log_root }}/web.log"
+        options:
+        - missingok
+        - nocreate
+        - rotate 7
+        - daily
+        - compress
+        - copytruncate
+
+  - name: Install homed-web configuration
+    template:
+      src: etc/homed/homed-web.conf.j2
+      dest: /etc/homed/homed-web.conf
+    notify:
+    - restart homed-web
+
+  - name: deploy nginx configuration
+    import_role:
+      name: nginx
+      tasks_from: simple_proxy
+    vars:
+      target:
+        name: homed
+        addr: "127.0.0.1"
+        port: "{{ homed_frontend_port }}"
+
+  - name: Install HOMEd zigbee service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: homed-web-daemon
+        description: The IoT HOMEd Web daemon
+        exec_start: /usr/bin/homed-web
+        user: "{{ homed_user }}"
+        group: "{{ homed_user }}"
+        kill_signal: SIGTERM
+        restart: on-failure
+        environments:
+        - { name: LD_LIBRARY_PATH, value: "/usr/lib" }
+        after:
+        - network-online.target
+        - homed-zigbee-daemon.service
+        - homed-custom-daemon.service
+        wanted_by:
+        - multi-user.target
+        on_changed: reloaded
+        state: started
+        enabled: yes
+        replaces:
+        - homed-web
+
+  # - name: Enabling homed-web service
+  #   systemd:
+  #     name: homed-web
+  #     enabled: yes

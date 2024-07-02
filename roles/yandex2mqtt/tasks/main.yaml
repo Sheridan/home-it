@@ -1,0 +1,99 @@
+---
+  - name: create dirs for yandex2mqtt
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ yandex2mqtt_user }}"
+      recurse: yes
+    loop:
+      - "{{ yandex2mqtt_root }}"
+      - "{{ yandex2mqtt_src }}"
+
+  - name: Git yandex2mqtt checkout
+    git:
+      repo: 'https://github.com/lasthead0/yandex2mqtt.git'
+      dest: "{{ yandex2mqtt_src }}"
+      force: yes
+      # version: master
+      # version: 1.33.2
+      # version: dev
+    become: yes
+    become_user: "{{ yandex2mqtt_user }}"
+    notify:
+    - restart yandex2mqtt
+    tags:
+    - packages
+    register: r_y2m_git
+
+  - name: Копируем исходники в другой каталог
+    synchronize:
+      src: "{{ yandex2mqtt_src }}/"
+      dest: "{{ yandex2mqtt_root }}"
+      recursive: yes
+      delete: yes
+      rsync_opts: "--exclude=config.js"
+    delegate_to: "{{ inventory_hostname }}"
+    tags:
+    - packages
+    when: r_y2m_git.changed
+
+  - name: Install yandex2mqtt dependencies
+    shell: "npm install"
+    args:
+      chdir: "{{ yandex2mqtt_root }}"
+    become: yes
+    become_user: "{{ yandex2mqtt_user }}"
+    tags:
+    - packages
+    when: r_y2m_git.changed
+
+  - name: Install yandex2mqtt configuration
+    template:
+      src: opt/yandex2mqtt/config.js.j2
+      dest: "{{ yandex2mqtt_config_file }}"
+      # owner: root
+      # group: rootm
+      owner: "{{ yandex2mqtt_user }}"
+      group: "{{ yandex2mqtt_user }}"
+      # mode: 0644
+    notify:
+    - restart yandex2mqtt
+
+  - name: deploy nginx configuration
+    import_role:
+      name: nginx
+      tasks_from: simple_proxy
+    vars:
+      target:
+        name: alice
+        addr: "{{ inventory_hostname }}.sheridan-home.local"
+        port: "{{ yandex2mqtt_web_port }}"
+        to: external
+        hoster: gate
+        protocol: https
+    delegate_to: gate
+
+  - name: Install yandex2mqtt service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: yandex2mqtt
+        # type: notify
+        description: The yandex2mqtt service
+        user: "{{ yandex2mqtt_user }}"
+        group: tty
+        exec_start: /usr/bin/npm start
+        working_dir: "{{ yandex2mqtt_root }}"
+        restart_sec: 10s
+        # environments:
+        # - { name: NODE_ENV, value: "production" }
+        # - { name: ZIGBEE2MQTT_CONFIG, value: "{{ zigbee2mqtt_config_file }}" }
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

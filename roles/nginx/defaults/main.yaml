@@ -7,3 +7,4 @@
       user:
         Ubuntu: www-data
         Gentoo: nginx
+        Debian: www-data

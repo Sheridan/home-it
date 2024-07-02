@@ -1,0 +1,101 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - homed-zigbee
+      state: latest
+    notify:
+    - restart homed-zigbee
+    tags:
+    - packages
+
+  - name: create dirs for homed-zigbee
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ homed_user }}"
+      recurse: yes
+    loop:
+      - "{{ homed_zigbee_data_root }}"
+      - "{{ homed_zigbee_data_root }}/external"
+      - "{{ homed_zigbee_src }}"
+
+  - name: Git homed-zigbee checkout
+    git:
+      repo: 'https://github.com/u236/homed-service-zigbee.git'
+      dest: "{{ homed_zigbee_src }}"
+      force: yes
+      # version: master
+      # version: 1.33.2
+      # version: dev
+    become: yes
+    become_user: "{{ homed_user }}"
+    tags:
+    - packages
+    register: r_hz_git
+
+  - name: Копируем описание девайсов...
+    synchronize:
+      src: "{{ homed_zigbee_src }}/deploy/data/usr/share/homed-zigbee/"
+      dest: "{{ homed_zigbee_data_root }}/external"
+      recursive: yes
+      delete: yes
+      rsync_opts: "--exclude=A_sheridan.json"
+    delegate_to: "{{ inventory_hostname }}"
+    tags:
+    - packages
+    when: r_hz_git.changed
+
+  - name: Настройка ротации логов homed-zigbee
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: homed-zigbee
+        files:
+        - "{{ homed_log_root }}/zigbee.log"
+        options:
+        - missingok
+        - nocreate
+        - rotate 7
+        - daily
+        - compress
+        - copytruncate
+
+  - name: Install homed-zigbee configuration
+    template:
+      src: etc/homed/homed-zigbee.conf.j2
+      dest: /etc/homed/homed-zigbee.conf
+    notify:
+    - restart homed-zigbee
+
+  - name: Install HOMEd zigbee service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: homed-zigbee-daemon
+        description: The IoT HOMEd Zigbee daemon
+        exec_start: /usr/bin/homed-zigbee
+        user: "{{ homed_user }}"
+        group: dialout
+        kill_signal: SIGTERM
+        restart: on-failure
+        environments:
+        - { name: LD_LIBRARY_PATH, value: "/usr/lib" }
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: reloaded
+        state: started
+        enabled: yes
+        replaces:
+        - homed-zigbee
+
+  # - name: Enabling homed-zigbee service
+  #   systemd:
+  #     name: homed-zigbee
+  #     enabled: yes

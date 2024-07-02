@@ -1,0 +1,121 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - nodejs
+      - git
+      - make
+      - g++
+      - gcc
+      - libsystemd-dev
+      - make
+      - graphviz
+      state: present
+    tags:
+    - packages
+
+  - name: create dirs for zigbee2mqtt
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ zigbee2mqtt_user }}"
+    loop:
+      - "{{ zigbee2mqtt_root }}"
+      - "{{ zigbee2mqtt_config_path }}"
+
+  - name: Git zigbee2mqtt checkout
+    git:
+      repo: 'https://github.com/Koenkk/zigbee2mqtt.git'
+      dest: "{{ zigbee2mqtt_root }}"
+      force: yes
+      # version: master
+      # version: 1.33.2
+      version: dev
+    become: yes
+    become_user: "{{ zigbee2mqtt_user }}"
+    notify:
+    - restart zigbee2mqtt
+    tags:
+    - packages
+    register: r_z2m_git
+
+  - name: Install zigbee2mqtt dependencies
+    npm:
+      path: "{{ zigbee2mqtt_root }}"
+      ci: yes
+      state: present
+    become: yes
+    become_user: "{{ zigbee2mqtt_user }}"
+    tags:
+    - packages
+    when: r_z2m_git.changed
+
+  - name: Запускаем сборку
+    shell: >
+      npm run build
+    args:
+      chdir: "{{ zigbee2mqtt_root }}"
+    become: yes
+    become_user: "{{ zigbee2mqtt_user }}"
+    tags:
+    - packages
+    when: r_z2m_git.changed
+
+  - name: Настройка sysctl
+    sysctl:
+      name: "{{ item.key }}"
+      value: "{{ item.value }}"
+      state: "{{ item.state|default('present') }}"
+      sysctl_set: yes
+      reload: yes
+    with_items:
+    - { key: kernel.sysrq, value: 0 }
+
+  - name: Install zigbee2mqtt configuration
+    template:
+      src: opt/zigbee2mqtt/data/configuration.yaml.j2
+      dest: "{{ zigbee2mqtt_config_file }}"
+      # owner: root
+      # group: root
+      owner: "{{ zigbee2mqtt_user }}"
+      group: "{{ zigbee2mqtt_user }}"
+      # mode: 0644
+    notify:
+    - restart zigbee2mqtt
+
+  - name: deploy nginx configuration
+    import_role:
+      name: nginx
+      tasks_from: simple_proxy
+    vars:
+      target:
+        name: zigbee2mqtt
+        addr: "127.0.0.1"
+        port: "{{ zigbee2mqtt_frontend_port }}"
+
+  # systemctl mask serial-getty@ttyAMA0.service
+
+  - name: Install zigbee2mqtt service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: zigbee2mqtt
+        # type: notify
+        description: The zigbee2mqtt service
+        user: "{{ zigbee2mqtt_user }}"
+        group: tty
+        exec_start: /usr/bin/npm start
+        working_dir: "{{ zigbee2mqtt_root }}"
+        restart_sec: 10s
+        environments:
+        - { name: NODE_ENV, value: "production" }
+        - { name: ZIGBEE2MQTT_CONFIG, value: "{{ zigbee2mqtt_config_file }}" }
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: restarted
+        state: started
+        enabled: yes

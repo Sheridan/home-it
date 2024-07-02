@@ -1,0 +1,20 @@
+---
+  - name: restart homed-zigbee
+    systemd:
+      name: homed-zigbee-daemon
+      state: restarted
+
+  - name: restart homed-web
+    systemd:
+      name: homed-web-daemon
+      state: restarted
+
+  - name: restart homed-cloud
+    systemd:
+      name: homed-cloud-daemon
+      state: restarted
+
+  - name: restart homed-custom
+    systemd:
+      name: homed-custom-daemon
+      state: restarted

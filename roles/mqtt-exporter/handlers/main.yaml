@@ -1,0 +1,5 @@
+---
+  - name: restart mqtt-exporter
+    systemd:
+      name: mqtt-exporter
+      state: restarted

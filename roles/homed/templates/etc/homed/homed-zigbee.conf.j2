@@ -1,0 +1,53 @@
+[log]
+enabled=true
+file={{ homed_log_root }}/zigbee.log
+
+[mqtt]
+host=localhost
+port={{ homed_mqtt_port }}
+username={{ mqtt_users.homed.login }}
+password={{ mqtt_users.homed.pw }}
+prefix=homed
+names=true
+
+[homeassistant]
+enabled=false
+prefix=homeassistant
+status=homeassistant/status
+
+[default]
+discovery=true
+cloud=true
+
+[device]
+database={{ homed_zigbee_data_root }}/database.json
+properties={{ homed_zigbee_data_root }}/properties.json
+options={{ homed_zigbee_data_root }}/options.json
+external={{ homed_zigbee_data_root }}/external
+library=/usr/share/homed-zigbee
+join=disabled
+
+[gpio]
+status=-1
+blink=-1
+boot=-1
+reset=-1
+
+[zigbee]
+adapter=znp
+port={{ homed_port }}
+baudrate=460800
+panid={{ homed_pan_id }}
+channel={{ homed_channel }}
+reset=soft
+write=false
+power=10
+
+[security]
+enabled=true
+key={{ homed_zigbee_key }}
+
+[debug]
+port=false
+adapter=false
+zigbee=false

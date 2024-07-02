@@ -1,0 +1,20 @@
+{% set interfaces = network|selectattr('ifname', 'match', 'internal_.*') %}
+
+per_listener_settings false
+listener {{ mosquitto_mqtt_port }} 127.0.0.1
+socket_domain ipv4
+protocol mqtt
+
+  {# -#}
+{% for interface in interfaces -%}
+        {%- for ip_ver in ['ipv4'] -%}
+            {%- if ip_ver in interface.ip -%}
+{#- #}
+
+listener {{ mosquitto_mqtt_port }} {% if ip_ver == 'ipv6' -%} [{{ interface.ip[ip_ver].ip }}] {%- else -%} {{ interface.ip[ip_ver].ip}} {%- endif %} # {{ interface.name }}
+socket_domain {{ ip_ver }}
+protocol mqtt
+{# -#}
+            {%- endif -%}
+        {%- endfor -%}
+{%- endfor -%}

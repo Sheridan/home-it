@@ -1,11 +1,17 @@
 ---
+  # - debug:
+  #     msg: "{{ hostvars[target.hoster].ansible_facts.distribution }}"
+
   - name: "{{ target.name }} : Deploying nginx configuration"
     template:
-      owner: "{{ merged_vars.dist_difference.nginx.user[ansible_distribution] }}"
-      group: "{{ merged_vars.dist_difference.nginx.user[ansible_distribution] }}"
+      owner: "{{ dist_difference.nginx.user[dist] }}"
+      group: "{{ dist_difference.nginx.user[dist] }}"
       src: etc/nginx/sites/simple_proxy.conf.j2
       dest: "/etc/nginx/sites/{{ target.name }}.conf"
       mode: 0644
+    vars:
+      hosted_at: "{{ target.hoster | default(inventory_hostname) }}"
+      dist: "{{ hostvars[target.hoster | default(inventory_hostname)].ansible_facts.distribution | default(ansible_distribution) }}"
     notify:
     - reload nginx
 
@@ -27,4 +33,4 @@
         - daily
         - delaycompress
         - sharedscripts
-        postrotate: "test -r {{ merged_vars.nginx.pid_file }} && kill -USR1 `cat {{ merged_vars.nginx.pid_file }}`"
+        postrotate: "test -r {{ nginx.pid_file }} && kill -USR1 `cat {{ nginx.pid_file }}`"

@@ -1,0 +1,123 @@
+module.exports =
+{
+  notification:
+  [
+    {
+      skill_id: '{{ yandex2mqtt_secrets.skill_id }}',
+      oauth_token: '{{ yandex2mqtt_secrets.oauth_token }}',
+      user_id: '1'
+    },
+  ],
+
+  mqtt:
+  {
+    host: 'localhost',
+    port: {{ yandex2mqtt_mqtt_port }},
+    user: '{{ mqtt_users.yandex2mqtt.login }}',
+    password: '{{ mqtt_users.yandex2mqtt.pw }}'
+  },
+
+  https:
+  {
+    privateKey: '/etc/letsencrypt/live/sheridan-home.ru/privkey.pem',
+    certificate: '/etc/letsencrypt/live/sheridan-home.ru/cert.pem',
+    port: 8443
+  },
+
+  clients:
+  [
+    {
+      id: '1',
+      name: 'Yandex',
+      clientId: '{{ yandex2mqtt_secrets.client.id }}',
+      clientSecret: '{{ yandex2mqtt_secrets.client.secret }}',
+      isTrusted: false
+    },
+  ],
+
+  users:
+  [
+    {
+      id: '1',
+      username: '{{ yandex2mqtt_secrets.user.login }}',
+      password: '{{ yandex2mqtt_secrets.user.pw }}',
+      name: '{{ yandex2mqtt_secrets.user.login }}'
+    },
+  ],
+
+  devices:
+  [
+{% for power_socket in yandex_devices.power_sockets %}
+    {
+      id: 'id_{{ power_socket.topic }}',
+      name: '{{ power_socket.name }}',
+      room: '{{ power_socket.room }}',
+      type: 'devices.types.socket',
+      allowedUsers: ['1'],
+      mqtt:
+      [
+        {
+          instance: 'on',
+          set: '{{ yandex2mqtt_mqtt_topic }}/{{ power_socket.topic }}/status/set',
+          state: '{{ yandex2mqtt_mqtt_topic }}/{{ power_socket.topic }}/status/state',
+        },
+        {
+          instance: 'backlight',
+          set: '{{ yandex2mqtt_mqtt_topic }}/{{ power_socket.topic }}/backlight/set',
+          state: '{{ yandex2mqtt_mqtt_topic }}/{{ power_socket.topic }}/backlight/state',
+        },
+        {
+          instance: 'power',
+          state: '{{ yandex2mqtt_mqtt_topic }}/{{ power_socket.topic }}/power',
+        },
+        {
+          instance: 'voltage',
+          state: '{{ yandex2mqtt_mqtt_topic }}/{{ power_socket.topic }}/voltage',
+        },
+        {
+          instance: 'amperage',
+          state: '{{ yandex2mqtt_mqtt_topic }}/{{ power_socket.topic }}/amperage',
+        },
+      ],
+      valueMapping:
+      [
+        {
+          type: 'on_off',
+          mapping: [[false, true], ["off", "on"]], // [yandex, mqtt]
+        },
+      ],
+      capabilities:
+      [
+        {
+          type: 'devices.capabilities.on_off',
+          retrievable: true,
+        },
+        {
+          type: "devices.capabilities.toggle",
+          retrievable: true,
+          parameters: { instance: "backlight" }
+        }
+      ],
+      properties:
+      [
+        {
+          type: "devices.properties.float",
+          retrievable: true,
+          parameters: { instance: "amperage", unit: "unit.ampere" }
+        },
+        {
+          type: "devices.properties.float",
+          retrievable: true,
+          parameters: { instance: "voltage", unit: "unit.volt" }
+        },
+        {
+          type: "devices.properties.float",
+          retrievable: true,
+          parameters: { instance: "power", unit: "unit.watt" }
+        }
+      ]
+    },
+{% endfor %}
+  ]
+
+}

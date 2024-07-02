@@ -1,0 +1,52 @@
+---
+  - name: Устанавливаем необходимые пакеты
+    apt:
+      name:
+      - prometheus-mqtt-exporter
+      state: present
+    tags:
+    - packages
+
+  - name: Install mqtt-exporter configuration
+    template:
+      src: etc/mqtt-exporter.yaml.j2
+      dest: /etc/mqtt-exporter.yaml
+    notify:
+    - restart mqtt-exporter
+
+  - name: Connect MQTT exporter to prometheus
+    import_role:
+      name: prometheus
+      tasks_from: connect_exporter
+    vars:
+      target:
+        name: "{{ inventory_hostname }}_mqtt_exporter"
+        addr: "{{ inventory_hostname }}"
+        port: "{{ mqtt_exporter_port }}"
+        job:  mqtt_exporter
+    delegate_to: gate
+
+  - name: Install mqtt-exporter service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: mqtt-exporter
+        description: The MQTT Prometheus Exporter
+        exec_start: "/usr/bin/prometheus-mqtt-exporter -config /etc/mqtt-exporter.yaml -listen-port {{ mqtt_exporter_port }}"
+        user: "{{ mqtt_exporter_user }}"
+        group: "{{ mqtt_exporter_user }}"
+        kill_signal: SIGTERM
+        restart: on-failure
+        # environments:
+        # - { name: LD_LIBRARY_PATH, value: "/usr/lib" }
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: reloaded
+        state: started
+        enabled: yes
+        replaces:
+        - prometheus-mqtt-exporter

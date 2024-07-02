@@ -193,7 +193,6 @@ network_services:
     - 7466
     - 8543
     - 8999
-    - 10000-60000
   snmp:
     name: Simple Network Management Protocol
     ports:
@@ -224,8 +223,6 @@ network_services:
     - 5222
     - 7900-8000
     - 9900-10000
-    - 32000-32100
-    - 65400-65500
   telnet:
     name: Telnet
     ports:
@@ -291,3 +288,11 @@ network_services:
     ports:
     - 9999
     - 5228
+  homed:
+    name: HOMEd
+    ports:
+    - 8042
+  high_ports:
+    name: High ports pool
+    ports:
+    - 16000-65535

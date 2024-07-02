@@ -99,6 +99,10 @@ bind:
       addresses:
       - type: CNAME
         address: gate
+    - name: alice
+      addresses:
+      - type: CNAME
+        address: gate
     - name: cameras
       addresses:
       - type: CNAME
