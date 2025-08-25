@@ -39,8 +39,8 @@
     vars:
       target:
         name: grafana
-        addr: "{{ grafana.listen.addr }}"
-        port: "{{ grafana.listen.port }}"
+        addr: "{{ grafana_listen_addr }}"
+        port: "{{ grafana_listen_port }}"
         to: both
 
   - name: Enabling services

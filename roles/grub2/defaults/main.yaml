@@ -1,19 +1,19 @@
 ---
-  grub2:
-    distributor: "Sheridan Gentoo"
-    menu:
-      timeout: 4
-      default: 0
-    boot:
-      device: "auto"
-      fs: "auto"
-    video:
-      uefi: no
-      vga: '0x11a'
-      resolution: 'auto'
-      colorbits: 'auto'
-      mtrr: '2'
-    theme: '/boot/grub/themes/starfield/theme.txt'
-    sound: '60 800 1'
-    kernel:
-      options: []
+  grub2_distributor: "Sheridan Gentoo"
+
+  grub2_menu_timeout: 4
+  grub2_menu_default: 0
+
+  grub2_boot_device: "auto"
+  grub2_boot_fs: "auto"
+
+  grub2_video_uefi: no
+  grub2_video_vga: "0x11a"
+  grub2_video_resolution: "auto"
+  grub2_video_colorbits: "auto"
+  grub2_video_mtrr: "2"
+
+  grub2_theme: "/boot/grub/themes/starfield/theme.txt"
+  grub2_sound: "60 800 1"
+
+  grub2_kernel_options: []

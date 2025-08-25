@@ -13,17 +13,17 @@ plugins = /var/lib/grafana/plugins
 
 [server]
 protocol = http
-http_addr = [{{ grafana.listen.addr }}]
-http_port = {{ grafana.listen.port }}
+http_addr = [{{ grafana_listen_addr }}]
+http_port = {{ grafana_listen_port }}
 domain = grafana.{{ networks.home.domain }}
 root_url = http://grafana.{{ networks.home.domain }}
-router_logging = {{ merged_vars.grafana.debug | string | lower }}
+router_logging = {{ grafana_debug | string | lower }}
 
 [database]
 ssl_mode = disable
 max_idle_conn = 8
 conn_max_lifetime = {{ 60 * 60 * 8 }}
-log_queries = {{ merged_vars.grafana.debug | string | lower }}
+log_queries = {{ grafana_debug | string | lower }}
 
 [session]
 cookie_name = grafana_{{ networks.home.domain | regex_replace('[\.-]', '_') }}
@@ -31,15 +31,15 @@ cookie_name = grafana_{{ networks.home.domain | regex_replace('[\.-]', '_') }}
 [remote_cache]
 
 [dataproxy]
-logging = {{ merged_vars.grafana.debug | string | lower }}
+logging = {{ grafana_debug | string | lower }}
 
 [analytics]
 check_for_updates = true
 
 [security]
-admin_user = {{ grafana.login }}
-admin_password = {{ grafana.password }}
-secret_key = {{ (grafana.login + grafana.password) | md5 }}
+admin_user = {{ grafana_login }}
+admin_password = {{ grafana_password }}
+secret_key = {{ (grafana_login + grafana_password) | md5 }}
 login_remember_days = {{ 7 * 4 * 12 }}
 disable_gravatar = false
 disable_brute_force_login_protection = false
@@ -74,7 +74,7 @@ enabled = false
 
 [log]
 mode = console file
-level = {% if merged_vars.grafana.debug %}debug{% else %}info{% endif %}
+level = {% if grafana_debug %}debug{% else %}info{% endif %}
 
 [log.console]
 

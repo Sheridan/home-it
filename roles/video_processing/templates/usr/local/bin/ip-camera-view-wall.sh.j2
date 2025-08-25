@@ -4,11 +4,11 @@ ffmpeg \
   -rtsp_transport tcp \
   -hwaccel cuda -c:v h264_cuvid \
   {% for i_camera in groups.cameras -%}
-  {%- set camera_vars = hostvars[i_camera].merged_vars -%}
+  {%- set camera_vars = hostvars[i_camera] -%}
   {%- set camera_secrets = cameras_secrets[i_camera | replace('-','_')] -%}
   {%- set camera_net_interface = camera_vars.network | first -%}
   {%- set camera_ip = camera_net_interface.ip.ipv4.ip -%}
-    {%- if 'stream_paths' in hostvars[i_camera].merged_vars -%}
+    {%- if 'stream_paths' in hostvars[i_camera] -%}
 {{ "\t" }} -i rtsp://{{ camera_secrets.viewer.login }}:{{ camera_secrets.viewer.pw }}@{{ camera_ip }}:{{ camera_vars.stream_paths.high.port }}/{{ camera_vars.stream_paths.high.path }} {{ "\\\n" }}
     {%- endif -%}
   {%- endfor %}

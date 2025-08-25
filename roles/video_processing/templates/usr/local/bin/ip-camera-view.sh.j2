@@ -1,12 +1,12 @@
 #!/bin/bash
 
-{% set camera_vars = hostvars[i_camera].merged_vars %}
+{% set camera_vars = hostvars[i_camera] %}
 {% set camera_secrets = cameras_secrets[i_camera | replace('-','_')] %}
 {% set camera_net_interface = camera_vars.network | first %}
 {% set camera_ip = camera_net_interface.ip.ipv4.ip %}
 
 {% set dvr_secrets = dvrs_secrets[camera_vars.dvr.host | replace('-','_')] %}
-{% set dvr_vars = hostvars[camera_vars.dvr.host].merged_vars %}
+{% set dvr_vars = hostvars[camera_vars.dvr.host] %}
 {% set dvr_net_interface = dvr_vars.network | first %}
 {% set dvr_ip = dvr_net_interface.ip.ipv4.ip %}
 

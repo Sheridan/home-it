@@ -8,27 +8,27 @@ log /var/log/3proxy/main.log
 logformat "[%d-%m-%Y %H:%M:%S] %U %C:%c %R:%r %O %I %T"
 
 auth strong
-{% for user in merged_vars.three_proxy.users %}
+{% for user in three_proxy_users %}
 users {{ user.login }}:CL:{{ user.pw }}
 {% endfor %}
 allow *
-parent 1000 connect 127.0.0.1 {{ merged_vars.tor.ports.http }}
+parent 1000 connect 127.0.0.1 {{ three_proxy_http_port }}
 {% for ext_ip in [
   internal_interface.ip.ipv4.ip,
   external_interface.ip.ipv4.ip
 ] %}
-proxy -n -p{{ merged_vars.three_proxy.ports.http }} -i{{ ext_ip }}
+proxy -n -p{{three_proxy_http_port }} -i{{ ext_ip }}
 {% endfor %}
 
 auth strong
-{% for user in merged_vars.three_proxy.users %}
+{% for user in three_proxy_users %}
 users {{ user.login }}:CL:{{ user.pw }}
 {% endfor %}
 allow *
-parent 1000 socks5+ 127.0.0.1 {{ merged_vars.tor.ports.socks }}
+parent 1000 socks5+ 127.0.0.1 {{ three_proxy_socks_port }}
 {% for ext_ip in [
   internal_interface.ip.ipv4.ip,
   external_interface.ip.ipv4.ip
 ] %}
-socks -n -p{{ merged_vars.three_proxy.ports.socks }} -i{{ ext_ip }}
+socks -n -p{{ three_proxy_socks_port }} -i{{ ext_ip }}
 {% endfor %}

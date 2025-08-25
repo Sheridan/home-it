@@ -11,7 +11,7 @@
     - { name: x11-misc/numlockx }
     - { name: x11-misc/xcompmgr }
     - { name: x11-apps/xrandr }
-    
+
     - { name: media-libs/mesa, use: [vulkan, vulkan-overlay, vaapi, -lm-sensors, zink] }
     - { name: x11-apps/mesa-progs }
 
@@ -33,14 +33,11 @@
     - { name: media-fonts/emojione-color-font, unstable: yes }
     - { name: media-fonts/twemoji-color-font, unstable: yes }
     - { name: media-fonts/fonts-meta, use: { enabled: [ms] } }
-    
+
     - { name: x11-terms/qterminal }
     - { name: x11-misc/qtfm }
     tags:
     - packages
-
-  - debug:
-      msg: '{{ merged_vars.xorg }}'
 
   - name: Устанавливаем конфиги xorg
     template:
@@ -68,7 +65,7 @@
       src: usr/local/bin/xrandrapply.j2.sh
       dest: /usr/local/bin/xrandrapply.sh
       mode: 0755
-    when: merged_vars.xorg.monitors | length > 1
+    when: xorg.monitors | length > 1
 
   - name: Деплоим в юзера
     include_tasks: user_part.yaml

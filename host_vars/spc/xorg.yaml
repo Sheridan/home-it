@@ -1,15 +1,15 @@
 ---
+  # xorg options
+  xorg_options_dpi: 96
+  xorg_options_init_order_monitors:
+  - center
+  - top
+  - left
+  - right
+  xorg_options_init_order_videocards:
+  - first
+
   xorg:
-    options:
-      dpi: 96
-      init_order:
-        monitors:
-        - center
-        - top
-        - left
-        - right
-        videocards:
-        - first
     videocards:
       first:
         vendor: "NVidia Corporation"
@@ -70,60 +70,3 @@
           width: 1920
           height: 1080
           rate: 60
-
-
-#    monitors:
-#      center:
-#        vendor: "LG"
-#        model: "27UL500-W"
-#        connector:
-#          card: first
-#          out: "DP-0"
-#        position:
-#          base: yes
-#        mode:
-#          width: 3840
-#          height: 2160
-#          rate: 60
-#      left:
-#        vendor: "Iiyama"
-#        model: "ProLite XU2395WSU-B1"
-#        connector:
-#          card: first
-#          out: "HDMI-1-0"
-#        position:
-#          where: left-of
-#          from: center
-#        mode:
-#          width: 1920
-#          height: 1200
-#          rate: 60
-#        rotate: right
-#      right:
-#        vendor: "Iiyama"
-#        model: "ProLite XU2395WSU-B1"
-#        connector:
-#          card: first
-#          out: "DP-1-1"
-#        position:
-#          where: right-of
-#          from: center
-#        mode:
-#          width: 1920
-#          height: 1200
-#          rate: 60
-#        rotate: left
-#      top:
-#        vendor: "LG"
-#        model: "22MP55"
-#        connector:
-#          card: first
-#          out: "DVI-D-1-0"
-#        position:
-#          where: above
-#          from: center
-#        mode:
-#          width: 1920
-#          height: 1080
-#          rate: 60
-

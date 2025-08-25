@@ -5,12 +5,12 @@ function make_menu(terminal)
     {
         { "Usefull",
             {
-                { "Chrome"               , "google-chrome-stable --no-proxy-server" },
+                { "Chrome"               , "google-chrome-stable --no-proxy-server --enable-features=WebUIDarkMode --force-dark-mode" },
                 { "VSCode"               , "vscode --new-window"},
                 { "Telegram"             , "telegram-desktop"},
-                { "Discord"              , "discord"},
+                -- { "Discord"              , "discord"},
                 { "Element"              , "element-desktop"},
-                { "Скриншотер"           , "flameshot"},
+                -- { "Скриншотер"           , "flameshot"},
                 { "Passwords"            , "keepassxc"},
                 { "Калькулятор"          , "speedcrunch"}
             },

@@ -1,0 +1,17 @@
+---
+  network:
+  - name: "Internal"
+    mac: "3c:38:24:82:0a:9a"
+    ip: "{{ query('ship', 'ip', 11) | first }}"
+    ipv6_link_local: "fe80::6f82:29d:4b5b:1889"
+    network: 'home'
+    type: 'dhcp'
+
+
+  firewall:
+    host_to_internet:
+      services:
+      - navitel
+      - tinyprint
+      - dns
+      - fantasyradio

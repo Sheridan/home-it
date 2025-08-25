@@ -41,14 +41,17 @@
       state: "{{ service.on_changed | default('restarted') }}"
     when: (r_service_template_result.changed or r_service_env_result.changed) and
           (service.standalone | default(True)) and
-          (service.on_changed | default('restarted') != 'noop')
+          (service.on_changed | default('restarted') != 'noop') and
+          '@' not in service.name
+    ignore_errors: '{{ ansible_check_mode }}'
 
   - name: "{{ service.name }} : Управление запуском"
     systemd:
       name: "{{ service.name }}"
       enabled: "{{ service.enabled | default(False) }}"
       state: "{{ service.state | default('stopped') }}"
-    when: (service.standalone | default(True))
+    when: (service.standalone | default(True)) and 'state' in service
+
 
   - name: "{{ service.name }} : Запрет замещаемых сервисов"
     systemd:

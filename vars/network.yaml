@@ -7,14 +7,15 @@
         ipv4: "{{ query('ship', 'net', 'ipv4') | first }}"
         ipv6: "{{ query('ship', 'net', 'ipv6') | first }}"
       delegated: "{{ query('ship', 'delegated_net') | first }}"
+      slaac: "{{ query('ship', 'slaac_net') | first }}"
       gateway: "{{ query('ship', 'ip', 1) | first }}"
       ranges:
         owned:
           first: "{{ query('ship', 'ip', 1) | first }}"
-          last: "{{ query('ship', 'ip', 512) | first }}"
+          last: "{{ query('ship', 'ip', 4096) | first }}"
         guests:
-          first: "{{ query('ship', 'ip', 513) | first }}"
-          last: "{{ query('ship', 'ip', 1024) | first }}"
+          first: "{{ query('ship', 'ip', 4097) | first }}"
+          last: "{{ query('ship', 'ip', 8192) | first }}"
           temporary: "{{ query('ship', 'ip', 65536)[0].ipv6.ip }}/120"
 
     kis:
@@ -59,6 +60,9 @@
       delegated:
         net: '2001:0470:70c8::'
         mask: 48
+      slaac:
+        net: '2001:0470:70c8:1024::'
+        mask: 64
     henet:
       ipv6:
         net: '2001:470:1f0a:1880::'
@@ -84,3 +88,24 @@
       trusted:
         ssid: "{{ wifi_secrets.main.ssid }}"
         psk: "{{ wifi_secrets.main.psk }}"
+
+  slaac_services:
+  - android
+  - email
+  - google
+  - iot_client
+  - iot_ekf
+  - iot_lg_tq
+  - iot_magick_home
+  - iot_requests
+  - iot_roborock
+  - sber_online
+  - steam
+  - telegram
+  - torrent
+  - web
+  - whatsapp
+  - wifi_call
+  - chromecast
+  - tracepath
+  - tinyprint

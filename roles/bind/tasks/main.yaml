@@ -71,7 +71,7 @@
       tasks_from: deploy_zone
     vars:
       zone: "{{ item }}"
-    loop: "{{ merged_vars.bind.zones }}"
+    loop: "{{ bind.zones }}"
 
   - name: Enabling services
     systemd:

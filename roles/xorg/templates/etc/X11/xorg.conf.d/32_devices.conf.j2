@@ -1,8 +1,8 @@
 # Managed by ansible. Editing is useless
 # Sheridan
 
-{% for videocard_name in merged_vars.xorg.options.init_order.videocards %}
-  {% set videocard = merged_vars.xorg.videocards[videocard_name] %}
+{% for videocard_name in xorg_options_init_order_videocards %}
+  {% set videocard = xorg.videocards[videocard_name] %}
   {% set videocard_identifier = (videocard.vendor + ' ' + videocard.model) | lower | regex_replace('[^a-z0-9]', '_') %}
   {% set videocard_pci = 'PCI:' + ( videocard.pci | regex_replace('\.', ':') ) %}
 
@@ -41,9 +41,9 @@ EndSection
 {% endfor %}
 
 
-{% for monitor_name in merged_vars.xorg.options.init_order.monitors %}
-  {% set monitor = merged_vars.xorg.monitors[monitor_name] %}
-  {% set videocard = merged_vars.xorg.videocards[monitor.connector.card] %}
+{% for monitor_name in xorg_options_init_order_monitors %}
+  {% set monitor = xorg.monitors[monitor_name] %}
+  {% set videocard = xorg.videocards[monitor.connector.card] %}
   {% set videocard_identifier = (videocard.vendor + ' ' + videocard.model) | lower | regex_replace('[^a-z0-9]', '_') %}
   {% set monitor_identifier = (monitor.vendor + ' ' + monitor.model + ' ' + monitor.connector.card + ' ' + monitor.connector.out) | lower | regex_replace('[^a-z0-9]', '_') %}
 

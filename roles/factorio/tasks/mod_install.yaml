@@ -46,7 +46,7 @@
   - name: "{{ mod.name }} : Определяем целевой релиз"
     set_fact:
       target_release: "{{ release }}"
-      target_filepath: "{{ merged_vars.factorio.paths.home }}/mods/{{ release.file_name }}"
+      target_filepath: "{{ factorio.paths.home }}/mods/{{ release.file_name }}"
     loop: "{{ json_string | json_query('releases[*]') }}"
     loop_control:
       loop_var: release
@@ -65,8 +65,8 @@
       return_content: yes
       body_format: form-urlencoded
       body:
-      - [ username, "{{ merged_vars.factorio.server.auth.login }}" ]
-      - [ password, "{{ merged_vars.factorio.server.auth.password }}" ]
+      - [ username, "{{ factorio.server.auth.login }}" ]
+      - [ password, "{{ factorio.server.auth.password }}" ]
     register: login
     check_mode: no
     when: stat_key_result.stat.exists == False
@@ -82,19 +82,19 @@
 
   - name: "{{ mod.name }} : Выкачиваем мод"
     get_url:
-      url: "https://mods.factorio.com/{{ target_release.download_url }}?username={{ merged_vars.factorio.server.auth.login }}&token={{ lookup('file', login_key_file) }}"
+      url: "https://mods.factorio.com/{{ target_release.download_url }}?username={{ factorio.server.auth.login }}&token={{ lookup('file', login_key_file) }}"
       dest: "{{ target_filepath }}"
       checksum: "sha1:{{ target_release.sha1 }}"
       mode: 0644
-      owner: "{{ merged_vars.factorio.user.name }}"
-      group: "{{ merged_vars.factorio.user.name }}"
+      owner: "{{ factorio.user.name }}"
+      group: "{{ factorio.user.name }}"
     register: download_status
     notify:
     - restart factorio
 
   - name: "{{ mod.name }} : Ищем старые релизы"
     find:
-      paths: "{{ merged_vars.factorio.paths.home }}/mods/"
+      paths: "{{ factorio.paths.home }}/mods/"
       patterns: "{{ module.name }}*.zip"
     register: all_versions
 

@@ -5,7 +5,7 @@
       tasks_from: setup_user
     vars:
       user:
-        name: "{{ merged_vars.octoprint.username }}"
+        name: "{{ merged_vars.octoprint_username }}"
         comment: 3d printer manager runner
         create_home: yes
         shell: /bin/bash
@@ -26,8 +26,8 @@
     vars:
       target:
         name: octoprint
-        addr: "{{ merged_vars.octoprint.listen.host }}"
-        port: "{{ merged_vars.octoprint.listen.port }}"
+        addr: "{{ octoprint_listen_host }}"
+        port: "{{ octoprint_listen_port }}"
         to: internal
 
   - name: Установка сервиса
@@ -39,13 +39,13 @@
         name: octoprint
         description: 3d printer manager
         restart: on-failure
-        user: "{{ merged_vars.octoprint.username }}"
+        user: "{{ merged_vars.octoprint_username }}"
         group: dialout
         exec_start: >
-          {{ merged_vars.octoprint.virtualenv.path }}/bin/octoprint
+          {{ merged_vars.octoprint_virtualenv_path }}/bin/octoprint
           serve
-          --host {{ merged_vars.octoprint.listen.host }}
-          --port {{ merged_vars.octoprint.listen.port }}
+          --host {{ octoprint_listen_host }}
+          --port {{ octoprint_listen_port }}
         after:
         - network-online.target
         wanted_by:

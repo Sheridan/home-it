@@ -1,8 +1,5 @@
 ---
-  octoprint:
-    virtualenv:
-      path: "/home/{{ octoprint_username }}/application"
-    username: "{{ octoprint_username }}"
-    listen:
-      host: 127.0.0.1
-      port: 5000
+  octoprint_username: "octoprint"
+  octoprint_virtualenv_path: "/home/{{ octoprint_username }}/application"
+  octoprint_listen_host: 127.0.0.1
+  octoprint_listen_port: 5000

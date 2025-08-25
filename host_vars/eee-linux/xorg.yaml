@@ -1,12 +1,11 @@
 ---
+  xorg_options_dpi: 96
+  xorg_options_init_order_monitors:
+  - main
+  xorg_options_init_order_videocards:
+  - first
+
   xorg:
-    options:
-      dpi: 96
-      init_order:
-        monitors:
-        - main
-        videocards:
-        - first
     videocards:
       first:
         vendor: "Intel Corporation"

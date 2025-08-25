@@ -1,17 +1,17 @@
 require("defines")
-monitors_count = {{ merged_vars.xorg.options.init_order.monitors | length }}
+monitors_count = {{ xorg_options_init_order_monitors | length }}
 
 font = {
   regular = {
-    name = "{{ merged_vars.xorg.fonts.regular.name }}",
-    size = {{ merged_vars.xorg.fonts.regular.size }}
+    name = "{{ xorg_fonts_regular_name }}",
+    size = {{ xorg_fonts_regular_size }}
   },
   small = {
-    name = "{{ merged_vars.xorg.fonts.small.name }}",
-    size = {{ merged_vars.xorg.fonts.small.size }}
+    name = "{{ xorg_fonts_small_name }}",
+    size = {{ xorg_fonts_small_size }}
   },
   mono = {
-    name = "{{ merged_vars.xorg.fonts.mono.name }}",
-    size = {{ merged_vars.xorg.fonts.mono.size }}
+    name = "{{ xorg_fonts_mono_name }}",
+    size = {{ xorg_fonts_mono_size }}
   }
 }

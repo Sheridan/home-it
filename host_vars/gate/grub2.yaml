@@ -1,8 +1,4 @@
 ---
-  grub2:
-    boot:
-      device: "LABEL=root"
-      fs: "btrfs"
-    video:
-      vga: '0x037e'
-      
+grub2_boot_device: "LABEL=root"
+grub2_boot_fs: "btrfs"
+grub2_video_vga: "0x037e"

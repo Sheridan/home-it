@@ -1,0 +1,33 @@
+---
+  - name: create dirs for homed-zigbee
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ homed_user }}"
+      recurse: yes
+    loop:
+      - "{{ homed_zigbee_data_root }}/{{ i_zigbee_instance.name }}"
+
+  - name: Настройка ротации логов homed-zigbee
+    import_role:
+      name: logrotate
+      tasks_from: rotate
+    vars:
+      lr:
+        name: "homed-zigbee-{{ i_zigbee_instance.name }}"
+        files:
+        - "{{ homed_log_root }}/zigbee_{{ i_zigbee_instance.name }}.log"
+        options:
+        - missingok
+        - nocreate
+        - rotate 7
+        - daily
+        - compress
+        - copytruncate
+
+  - name: Install homed-zigbee configuration
+    template:
+      src: etc/homed/homed-zigbee.conf.j2
+      dest: "/etc/homed/zigbee_{{ i_zigbee_instance.name }}.conf"
+    notify:
+    - "restart homed-zigbee-{{ i_zigbee_instance.name }}"

@@ -1,0 +1,143 @@
+{
+  "mqtt":
+  {
+    "server": "{{ homed_mqtt_host }}",
+    "port": {{ homed_mqtt_port }},
+    "user": "{{ mqtt_users.exporter.login }}",
+    "password": "{{ mqtt_users.exporter.pw }}",
+    "homed_root_topic": "homed"
+  },
+  "exporter":
+  {
+    "address": "10.0.0.40",
+    "port": 9111,
+    "labels":
+    {
+      "devices":
+      {
+        "Air_BedRoom":                  [{"location": "Спальня"        }, {"title": "Качество воздуха"                }],
+        "Air_Lobby":                    [{"location": "Прихожая"       }, {"title": "Метеостанция"                    }],
+        "Button_20":                    [{"location": "Зал"            }, {"title": "Пульт"                           }, {"roles": "button"}],
+        "Button_One":                   [{"location": "Кухня"          }, {"title": "Кнопка"                          }, {"roles": "button"}],
+        "Button_Two":                   [{"location": "Зал"            }, {"title": "Кнопка"                          }, {"roles": "button"}],
+        "CircuitBreaker_WorkshopLight": [{"location": "Мастерская"     }, {"title": "Освещение"                       }, {"roles": "power_monitoring, light"}],
+        "DoorSensor_BathRoom":          [{"location": "Душевая"        }, {"title": "Датчик двери"                    }, {"roles": "illumination, door"}],
+        "DoorSensor_BedRoom":           [{"location": "Спальня"        }, {"title": "Датчик двери"                    }, {"roles": "illumination, door"}],
+        "DoorSensor_Hall":              [{"location": "Зал"            }, {"title": "Датчик двери"                    }, {"roles": "illumination, door"}],
+        "DoorSensor_HomeEnter":         [{"location": "Прихожая"       }, {"title": "Датчик двери"                    }, {"roles": "door"}],
+        "DoorSensor_WaterPump":         [{"location": "Насосная"       }, {"title": "Датчик двери"                    }, {"roles": "door"}],
+        "DoorSensor_WorkshopEnter":     [{"location": "Мастерская"     }, {"title": "Входная дверь"                   }, {"roles": "door"}],
+        "GasSensor_Kitchen":            [{"location": "Кухня"          }, {"title": "Сенсор газа"                     }],
+        "HOMEd Coordinator":            [{"location": "Серверная"      }, {"title": "Координатор"                     }, {"roles": "coordinator"}],
+        "HumanDetector_BathRoom":       [{"location": "Душевая"        }, {"title": "Датчик присустствия"             }, {"roles": "motion"}],
+        "HumanDetector_BedStairs":      [{"location": "Спальня"        }, {"title": "Датчик присустствия"             }, {"roles": "motion"}],
+        "HumanDetector_Kitchen":        [{"location": "Кухня"          }, {"title": "Датчик присустствия (стена)"     }, {"roles": "motion"}],
+        "HumanDetector_KitchenWorktop": [{"location": "Кухня"          }, {"title": "Датчик присустствия (столешница)"}, {"roles": "motion"}],
+        "HumanDetector_WorkshopRoom":   [{"location": "Мастерская"     }, {"title": "Датчик присутсвия (комната)"     }, {"roles": "motion"}],
+        "Informer_One":                 [{"location": "Зал"            }, {"title": "Информер"                        }, {"roles": "rgb"}],
+        "IR_0":                         [{"location": "Зал"            }, {"title": "ИК пульт"                        }, {"roles": "ir"}],
+        "LedRGB_BedStairs":             [{"location": "Спальня"        }, {"title": "RGB лента ступеней"              }, {"roles": "rgb"}],
+        "LedRGB_Showcase":              [{"location": "Зал"            }, {"title": "RGB лента витрины"               }, {"roles": "rgb"}],
+        "LightRelay_Bar":               [{"location": "Кухня"          }, {"title": "Бар"                             }, {"roles": "light"}],
+        "LightRelay_BathLamp":          [{"location": "Душевая"        }, {"title": "Лампа"                           }, {"roles": "light"}],
+        "LightRelay_BathMirror":        [{"location": "Душевая"        }, {"title": "Зеркало"                         }, {"roles": "light"}],
+        "LightRelay_BedRoom":           [{"location": "Спальня"        }, {"title": "Реле освещения"                  }, {"roles": "light"}],
+        "LightRelay_Hall":              [{"location": "Зал"            }, {"title": "Реле освещения"                  }, {"roles": "light"}],
+        "LightRelay_KitchenTable":      [{"location": "Кухня"          }, {"title": "Стол"                            }, {"roles": "light"}],
+        "LightRelay_KitchenWorktop":    [{"location": "Кухня"          }, {"title": "Столешница"                      }, {"roles": "light"}],
+        "LightRelay_Lobby":             [{"location": "Прихожая"       }, {"title": "Реле освещения"                  }, {"roles": "light"}],
+        "LightSensor_Main":             [{"location": "Зал"            }, {"title": "Датчик освещённости"             }, {"roles": "illumination"}],
+        "MotionSensor_Hall":            [{"location": "Зал"            }, {"title": "Датчик присустствия"             }, {"roles": "motion"}],
+        "MotionSensor_Lobby":           [{"location": "Прихожая"       }, {"title": "Датчик присустствия"             }, {"roles": "motion"}],
+        "MotionSensor_WSEnter":         [{"location": "Мастерская"     }, {"title": "Датчик присутсвия (вход)"        }, {"roles": "illumination, motion"}],
+        "PowerSensor_Main":             [{"location": "Кухня"          }, {"title": "Датчик электричества"            }, {"roles": "power_monitoring"}],
+        "PowerSocket_CCTVMonitor":      [{"location": "Прихожая"       }, {"title": "Видеонаблюдение"                 }, {"roles": "power_monitoring"}],
+        "PowerSocket_KitchenFitoLamp":  [{"location": "Кухня"          }, {"title": "Фитолампа"                       }, {"roles": "power_monitoring"}],
+        "PowerSocket_KitchenNightLamp": [{"location": "Кухня"          }, {"title": "Ночник"                          }, {"roles": "power_monitoring"}],
+        "PowerSocket_PCGate":           [{"location": "Мастерская"     }, {"title": "Server gate"                     }, {"roles": "power_monitoring"}],
+        "PowerSocket_PCGateMonitor":    [{"location": "Мастерская"     }, {"title": "Servers monitor"                 }, {"roles": "power_monitoring"}],
+        "PowerSocket_PrinterHome":      [{"location": "Зал"            }, {"title": "Принтер"                         }, {"roles": "power_monitoring"}],
+        "PowerSocket_ServersCoolers":   [{"location": "Мастерская"     }, {"title": "Вентиляторы серверной"           }, {"roles": "power_monitoring, cooler"}],
+        "PowerSocket_SPCBackLight":     [{"location": "Зал"            }, {"title": "SPC подсветка"                   }, {"roles": "power_monitoring"}],
+        "PowerSocket_SPCMonitors":      [{"location": "Зал"            }, {"title": "SPC мониторы"                    }, {"roles": "power_monitoring"}],
+        "PowerSocket_SPComputer":       [{"location": "Зал"            }, {"title": "SPC компьютер"                   }, {"roles": "power_monitoring"}],
+        "PowerSocket_SPCSound":         [{"location": "Зал"            }, {"title": "SPC звук"                        }, {"roles": "power_monitoring"}],
+        "PowerSocket_SPCSubWoofer":     [{"location": "Зал"            }, {"title": "SPC бас"                         }, {"roles": "power_monitoring"}],
+        "PowerSocket_Street":           [{"location": "Зал"            }, {"title": "Крыльцо"                         }, {"roles": "power_monitoring"}],
+        "PowerSocket_WarmFloor":        [{"location": "Кухня"          }, {"title": "Тёплый пол"                      }, {"roles": "power_monitoring, pump"}],
+        "PowerSocket_WaterPump":        [{"location": "Насосная"       }, {"title": "Насос"                           }, {"roles": "power_monitoring, pump"}],
+        "PowerSocket_WPCMonitors":      [{"location": "Мастерская"     }, {"title": "WPC мониторы"                    }, {"roles": "power_monitoring"}],
+        "PowerSocket_WPComputer":       [{"location": "Мастерская"     }, {"title": "WPC"                             }, {"roles": "power_monitoring"}],
+        "PowerSocket_WSExhaust":        [{"location": "Мастерская"     }, {"title": "Вытяжка"                         }, {"roles": "power_monitoring, cooler"}],
+        "PowerSocket_WSLightMain":      [{"location": "Мастерская"     }, {"title": "Освещение рабочего места"        }, {"roles": "power_monitoring"}],
+        "PowerSocket_WSLightSecond":    [{"location": "Мастерская"     }, {"title": "Освещение второго места"         }, {"roles": "power_monitoring"}],
+        "Radioactivity_Home":           [{"location": "Дом"            }, {"title": "Дозиметр"                        }, {"roles": "alert, radiation"}],
+        "Radioactivity_Workshop":       [{"location": "Мастерская"     }, {"title": "Дозиметр"                        }, {"roles": "alert, radiation"}],
+        "Rain_WaterPump":               [{"location": "Насосная"       }, {"title": "Дождь"                           }, {"roles": "illumination"}],
+        "Relay_WaterPump":              [{"location": "Насосная"       }, {"title": "Реле"                            }, {"roles": "light, cooler"}],
+        "Router_BedRoom":               [{"location": "Спальня"        }, {"title": "Роутер"                          }],
+        "Router_Hall":                  [{"location": "Зал"            }, {"title": "Роутер"                          }],
+        "Router_Lobby":                 [{"location": "Прихожая"       }, {"title": "Роутер"                          }],
+        "Router_WaterPump":             [{"location": "Насосная"       }, {"title": "Роутер"                          }],
+        "Siren_Lobby":                  [{"location": "Прихожая"       }, {"title": "Сирена"                          }, {"roles": "siren"}],
+        "Siren_Workshop":               [{"location": "Мастерская"     }, {"title": "Сирена"                          }, {"roles": "siren"}],
+        "SmokeSensor_BedRoom":          [{"location": "Спальня"        }, {"title": "Сенсор дыма"                     }, {"roles": "alert, smoke"}],
+        "SmokeSensor_Hall":             [{"location": "Зал"            }, {"title": "Сенсор дыма"                     }, {"roles": "alert, smoke"}],
+        "SmokeSensor_Kitchen":          [{"location": "Кухня"          }, {"title": "Сенсор дыма"                     }, {"roles": "alert, smoke"}],
+        "SmokeSensor_Lobby":            [{"location": "Прихожая"       }, {"title": "Сенсор дыма"                     }, {"roles": "alert, smoke"}],
+        "SmokeSensor_Servers":          [{"location": "Мастерская"     }, {"title": "Сенсор дыма (серверы)"           }, {"roles": "alert, smoke"}],
+        "SmokeSensor_WaterPump":        [{"location": "Насосная"       }, {"title": "Сенсор дыма"                     }, {"roles": "alert, smoke"}],
+        "SmokeSensor_WorkshopRoom":     [{"location": "Мастерская"     }, {"title": "Сенсор дыма (комната)"           }, {"roles": "alert, smoke"}],
+        "Temperature_BathRoom":         [{"location": "Душевая"        }, {"title": "Температура и влажность"         }, {"roles": "temperature_and_humidity"}],
+        "Temperature_BedRoom":          [{"location": "Спальня"        }, {"title": "Температура и влажность"         }, {"roles": "temperature_and_humidity"}],
+        "Temperature_Hall":             [{"location": "Зал"            }, {"title": "Температура и влажность"         }, {"roles": "temperature_and_humidity"}],
+        "Temperature_Shed":             [{"location": "Навес"          }, {"title": "Температура и влажность"         }, {"roles": "temperature_and_humidity"}],
+        "Temperature_Kitchen":          [{"location": "Кухня"          }, {"title": "Температура и влажность"         }, {"roles": "temperature_and_humidity"}],
+        "Temperature_Servers":          [{"location": "Серверная"      }, {"title": "Температура и влажность"         }, {"roles": "temperature_and_humidity"}],
+        "Temperature_WaterPump":        [{"location": "Насосная"       }, {"title": "Температура и влажность"         }, {"roles": "temperature_and_humidity"}],
+        "Temperature_WaterPumpOutDoor": [{"location": "Двор"           }, {"title": "Температура и влажность"         }, {"roles": "temperature_and_humidity"}],
+        "Temperature_WorkshopRoom":     [{"location": "Мастерская"     }, {"title": "Температура и влажность"         }, {"roles": "temperature_and_humidity"}],
+        "WaterLeak_KitchenSink":        [{"location": "Кухня"          }, {"title": "Датчик протечки"                 }, {"roles": "alert, water_sink"}],
+        "WaterLeak_Wacher":             [{"location": "Душевая"        }, {"title": "Датчик протечки"                 }, {"roles": "alert, water_sink"}],
+        "WaterLeak_WaterPump":          [{"location": "Насосная"       }, {"title": "Датчик протечки"                 }, {"roles": "alert, water_sink"}]
+      },
+      "endpoints":
+      {
+        "Informer_One":       {
+                                "1": [{"endpoint_location": "Зал"},  {"endpoint_title": "Цвет"}]
+                              },
+        "LightRelay_BedRoom": {
+                                "1": [{"endpoint_location": "Спальня"},  {"endpoint_title": "Люстра"}],
+                                "2": [{"endpoint_location": "Спальня"},  {"endpoint_title": "Ниша"}]
+                              },
+        "LightRelay_Hall":    {
+                                "1": [{"endpoint_location": "Зал"},  {"endpoint_title": "Люстра"}],
+                                "2": [{"endpoint_location": "Зал"},  {"endpoint_title": "Ближний"}],
+                                "3": [{"endpoint_location": "Зал"},  {"endpoint_title": "Центр"}],
+                                "4": [{"endpoint_location": "Зал"},  {"endpoint_title": "Дальний"}]
+                              },
+        "LightRelay_KitchenWorktop": {
+                                "1": [{"endpoint_location": "Кухня"},  {"endpoint_title": "Средний"}],
+                                "2": [{"endpoint_location": "Кухня"},  {"endpoint_title": "Правый"}],
+                                "3": [{"endpoint_location": "Кухня"},  {"endpoint_title": "Левый"}]
+                              },
+        "LightRelay_Lobby":   {
+                                "1": [{"endpoint_location": "Прихожая"},{"endpoint_title": "Вход"}],
+                                "2": [{"endpoint_location": "Крыльцо"}, {"endpoint_title": "Вход"}],
+                                "3": [{"endpoint_location": "Кухня"},   {"endpoint_title": "Центр"}]
+                              },
+        "Relay_WaterPump":   {
+                                "1": [{"endpoint_location": "Насосная"},  {"endpoint_title": "Лампа"}],
+                                "2": [{"endpoint_location": "Насосная"},  {"endpoint_title": "Вентилятор"}]
+                              }
+      }
+    },
+    "ignores":
+    {
+      "devices": ["temp0", "temp1", "temp2", "temp3"],
+      "enpoints": {
+                   "Informer_One": ["2", "3", "4", "5", "6", "7", "8"]
+                  }
+    }
+  }
+}

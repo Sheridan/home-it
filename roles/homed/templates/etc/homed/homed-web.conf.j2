@@ -1,9 +1,10 @@
 [log]
-enabled=true
+enabled=false
 file={{ homed_log_root }}/web.log
+timestamps=false
 
 [mqtt]
-host=localhost
+host={{ homed_mqtt_host }}
 port={{ homed_mqtt_port }}
 username={{ mqtt_users.homed.login }}
 password={{ mqtt_users.homed.pw }}

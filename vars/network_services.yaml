@@ -136,10 +136,20 @@ network_services:
     name: IRC
     ports:
     - 6667
+  kojima:
+    name: Kojima devices
+    ports:
+    - 3478
+    - 1443
+    - 1883
   minecraft_earth:
     name: Minecraft Earth
     ports:
     - 30000-31000
+  mqtt:
+    name: MQTT
+    ports:
+    - 1883
   navitel:
     name: "Navitel"
     ports:
@@ -213,6 +223,7 @@ network_services:
     - 27000-27037
     - 4379-4380
     - 3478
+    - 7778-7783 # proton
   telegram:
     name: Telegram
     ports:
@@ -292,6 +303,37 @@ network_services:
     name: HOMEd
     ports:
     - 8042
+  vsegpt:
+    name: vsegpt
+    ports:
+    - 6400
+  tinyprint:
+    name: Tiny Printer app
+    ports:
+    - 6000
+    - 8500
+  rtmp:
+    name: RTMP
+    ports:
+    - 1935
+  dune_awakening_steam:
+    name: Dune Awakening (PC через Steam)
+    ports:
+    - 27031-27036
+  dune_awakening_playstation_5:
+    name: Dune Awakening (PlayStation 5)
+    ports:
+    - 3478-3480
+    - 3074
+  dune_awakening_xbox_series_x:
+    name: Dune Awakening (Xbox Series X|S)
+    ports:
+    - 3074
+    - 88
+    - 500
+    - 3074
+    - 3544
+    - 4500
   high_ports:
     name: High ports pool
     ports:

@@ -58,7 +58,7 @@ options
   check-names slave ignore;
   check-names response ignore;
   -#}
-  dnssec-enable yes;
+  {# dnssec-enable yes; #}
   dnssec-validation yes;
   dnssec-must-be-secure onion. no;
 };
@@ -126,6 +126,6 @@ zone "onion." in
 
 include "/etc/bind/pri/{{ networks.home.domain }}.zones.include";
 
-{% for zone in merged_vars.bind.zones %}
+{% for zone in bind.zones %}
 include "/etc/bind/pri/{{ zone.domain }}.zones.include";
 {% endfor %}

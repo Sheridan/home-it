@@ -1,8 +1,24 @@
 ---
   - name: restart homed-zigbee
     systemd:
-      name: homed-zigbee-daemon
+      name: "dhcpd@{{ i_zigbee_instance.name }}"
       state: restarted
+    loop: "{{ homed_zigbee_instances }}"
+    loop_control:
+      loop_var: i_zigbee_instance
+    ignore_errors: '{{ ansible_check_mode }}'
+
+  - name: restart homed-zigbee-home
+    systemd:
+      name: homed-zigbee-daemon@home
+      state: restarted
+    ignore_errors: '{{ ansible_check_mode }}'
+
+  - name: restart homed-zigbee-workshop
+    systemd:
+      name: homed-zigbee-daemon@workshop
+      state: restarted
+    ignore_errors: '{{ ansible_check_mode }}'
 
   - name: restart homed-web
     systemd:
@@ -17,4 +33,9 @@
   - name: restart homed-custom
     systemd:
       name: homed-custom-daemon
+      state: restarted
+
+  - name: restart homed_exporter
+    systemd:
+      name: homed_exporter
       state: restarted

@@ -1,8 +1,4 @@
 ---
-  apcupsd:
-    power:
-      voltages:
-        transfer_to_battery:
-          low: 180
-          high: 250
-        output: 220
+  apcupsd_power_voltages_transfer_to_battery_low: 180
+  apcupsd_power_voltages_transfer_to_battery_high: 250
+  apcupsd_power_voltages_output: 220

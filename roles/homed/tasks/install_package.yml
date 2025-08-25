@@ -1,0 +1,16 @@
+  - name: Скачивание .deb файла
+    get_url:
+      url: "{{ package.url }}"
+      dest: "/tmp/{{ package.name }}"
+
+  - name: Установка .deb пакета
+    apt:
+      deb: "/tmp/{{ package.name }}"
+      state: present
+      allow_downgrade: yes
+    notify: "{{ package.notify }}"
+
+  - name: Удаление .deb файла после установки
+    file:
+      path: "/tmp/{{ package.name }}"
+      state: absent

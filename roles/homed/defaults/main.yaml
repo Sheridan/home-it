@@ -1,17 +1,40 @@
 ---
-  homed_port: tcp://10.0.0.68:6638
   homed_frontend_port: 8081
+  homed_mqtt_host: localhost
   homed_mqtt_port: 1883
-  homed_channel: 12
   homed_log_root: /var/log/homed
   homed_data_root: /var/lib/homed
+  homed_conf_root: /etc/homed
   homed_zigbee_data_root: "{{ homed_data_root }}/zigbee"
   homed_web_data_root: "{{ homed_data_root }}/web"
   homed_cloud_data_root: "{{ homed_data_root }}/cloud"
   homed_custom_data_root: "{{ homed_data_root }}/custom"
   homed_user: iot
   homed_zigbee_src: "/storage/data/sources/homed/zigbee"
-  # homed_zigbee_key: "0x000201030405060708090a0b0c0d0e0e"
-  homed_zigbee_key:   "0x123456789abcdef00fedcba987654321"
-  homed_pan_id: "0x0104"
+  homed_zigbee_instances:
+  - name: home
+    controller:
+      port: /dev/zigbee_efr32mg21
+      baudrate: 115200
+      adapter: ezsp
+      power: 9
+      write: yes
+    network:
+      key: "0x123456789abcdef00fedcba987654321"
+      pan_id: "0x2222"
+      channel: 11
+  - name: workshop
+    controller:
+      port: tcp://10.0.0.68:6638
+      baudrate: 460800
+      adapter: znp
+      power: 10
+      write: no
+    network:
+      key: "0x123456789abcdef00fedcba987654321"
+      pan_id: "0x0104"
+      channel: 12
+
+  homed_exporter_version: "0.8.5"
+
 # http://sandbox.u236.org/homed-zigbee/

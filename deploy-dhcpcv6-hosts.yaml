@@ -1,0 +1,14 @@
+---
+- hosts: linux_dhcpcv6
+  remote_user: root
+  vars_files:
+  - vars/vault.yaml
+  - vars/dns.yaml
+  - vars/network.yaml
+  - vars/ssh_keys.yaml
+  - vars/telegram.yaml
+  tasks:
+  - name: Запрет ra
+    include_role:
+      name: dhcp
+      tasks_from: diasble_ra

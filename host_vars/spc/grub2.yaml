@@ -1,18 +1,16 @@
 ---
-  grub2:
-    boot:
-      device: "LABEL=BOOT0"
-      fs: "btrfs"
-    video:
-      uefi: yes
-      vga: '0x11a'
-      resolution: '1920x1080'
-      colorbits: '16'
-    kernel:
-      options:
-      # - 'saa7134.card=157'
-      - 'irqpoll'
-      - 'mitigations=off'
-      - 'pcie_aspm=off'
-      # - 'rcutree.rcu_idle_gp_delay=1'
-      - 'acpi_enforce_resources=lax'
+  grub2_boot_device: "LABEL=BOOT0"
+  grub2_boot_fs: "btrfs"
+
+  grub2_video_uefi: yes
+  grub2_video_vga: "0x11a"
+  grub2_video_resolution: "1920x1080"
+  grub2_video_colorbits: "16"
+
+  grub2_kernel_options:
+  # - "saa7134.card=157"
+  - "irqpoll"
+  - "mitigations=off"
+  - "pcie_aspm=off"
+  # - "rcutree.rcu_idle_gp_delay=1"
+  - "acpi_enforce_resources=lax"

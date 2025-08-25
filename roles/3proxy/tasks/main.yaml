@@ -12,7 +12,7 @@
 
   - name: Создаём пользователя
     user:
-      name: "{{ merged_vars.three_proxy.user }}"
+      name: "{{ three_proxy_user }}"
       comment: 3proxy user
       shell: /bin/false
       group: users
@@ -22,7 +22,7 @@
     file:
       dest: "{{ item }}"
       state: directory
-      owner: "{{ merged_vars.three_proxy.user }}"
+      owner: "{{ three_proxy_user }}"
     with_items:
       - /var/log/3proxy
 
@@ -62,7 +62,7 @@
         name: 3proxy
         description: 3proxy service
         restart: on-failure
-        user: "{{ merged_vars.three_proxy.user }}"
+        user: "{{ three_proxy_user }}"
         exec_start: >
           /usr/bin/3proxy
           /etc/3proxy.cfg

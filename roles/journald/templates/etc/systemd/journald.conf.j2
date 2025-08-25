@@ -2,21 +2,21 @@
 # Sheridan
 
 [Journal]
-Storage={{ merged_vars.journald.storage.type }}
-Compress={{ 'yes' if merged_vars.journald.storage.compress else 'no' }}
-Seal={{ 'yes' if merged_vars.journald.storage.seal else 'no' }}
-SplitMode={{ merged_vars.journald.storage.split_mode }}
+Storage={{ journald_storage_type }}
+Compress={{ 'yes' if journald_storage_compress else 'no' }}
+Seal={{ 'yes' if journald_storage_seal else 'no' }}
+SplitMode={{ journald_storage_split_mode }}
 SyncIntervalSec=2m
 RateLimitIntervalSec={{ 2 | pow(4) | int }}s
 RateLimitBurst={{ 2 | pow(14) | int }}
-SystemMaxUse={{ merged_vars.journald.sizes.system.max_filesystem_usage }}
-SystemKeepFree={{ merged_vars.journald.sizes.system.keep_filesystem_free }}
-SystemMaxFileSize={{ merged_vars.journald.sizes.system.max_file_size }}
-SystemMaxFiles={{ merged_vars.journald.sizes.system.max_files }}
-RuntimeMaxUse={{ merged_vars.journald.sizes.runtime.max_filesystem_usage }}
-RuntimeKeepFree={{ merged_vars.journald.sizes.runtime.keep_filesystem_free }}
-RuntimeMaxFileSize={{ merged_vars.journald.sizes.runtime.max_file_size }}
-RuntimeMaxFiles={{ merged_vars.journald.sizes.runtime.max_files }}
+SystemMaxUse={{ journald_sizes_system_max_filesystem_usage }}
+SystemKeepFree={{ journald_sizes_system_keep_filesystem_free }}
+SystemMaxFileSize={{ journald_sizes_system_max_file_size }}
+SystemMaxFiles={{ journald_sizes_system_max_files }}
+RuntimeMaxUse={{ journald_sizes_runtime_max_filesystem_usage }}
+RuntimeKeepFree={{ journald_sizes_runtime_keep_filesystem_free }}
+RuntimeMaxFileSize={{ journald_sizes_runtime_max_file_size }}
+RuntimeMaxFiles={{ journald_sizes_runtime_max_files }}
 MaxRetentionSec=0
 MaxFileSec=0
 ReadKMsg=yes

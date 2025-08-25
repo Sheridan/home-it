@@ -24,9 +24,9 @@
     loop: "{{ groups.cameras }}"
     loop_control:
       loop_var: i_camera
-    when: "'stream_paths' in hostvars[i_camera].merged_vars"
+    when: "'stream_paths' in hostvars[i_camera]"
     vars:
-      v_camera: "{{ hostvars[i_camera].merged_vars }}"
+      v_camera: "{{ hostvars[i_camera] }}"
 
   - name: Deploying html
     template:

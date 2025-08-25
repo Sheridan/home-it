@@ -318,7 +318,7 @@ SLEEP {{ 60 * 2 }}
 #    A 092 090 088 086
 #    I 208 204 200 196     (default = 0 => not valid)
 #}
-LOTRANSFER {{ apcupsd.power.voltages.transfer_to_battery.low }}
+LOTRANSFER {{ apcupsd_power_voltages_transfer_to_battery_low }}
 
 {# High line voltage causing transfer to batteries
 # The permitted values depend on your model as defined by last letter
@@ -328,7 +328,7 @@ LOTRANSFER {{ apcupsd.power.voltages.transfer_to_battery.low }}
 #    A 108 110 112 114
 #    I 253 257 261 265     (default = 0 => not valid)
 #}
-HITRANSFER {{ apcupsd.power.voltages.transfer_to_battery.high }}
+HITRANSFER {{ apcupsd_power_voltages_transfer_to_battery_high }}
 
 {# Battery charge needed to restore power
 # RETURNCHARGE 00 15 50 90 (default = 15)
@@ -354,7 +354,7 @@ LOWBATT 02
 #    A 100
 #    I 230 240 220 225     (default = 0 => not valid)
 #}
-OUTPUTVOLTS {{ apcupsd.power.voltages.output }}
+OUTPUTVOLTS {{ apcupsd_power_voltages_output }}
 
 {# Self test interval in hours 336=2 weeks, 168=1 week, ON=at power on
 # SELFTEST 336 168 ON OFF  (default = 336)

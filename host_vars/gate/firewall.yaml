@@ -100,3 +100,9 @@
         - "external_kis"
         - "external_he"
         - "external_rt"
+      iperf:
+        name: "iperf"
+        ports:
+        - 5201
+        interfaces:
+        - "internal"

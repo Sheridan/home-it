@@ -5,8 +5,8 @@
       tasks_from: setup_user
     vars:
       user:
-        name: "{{ merged_vars.factorio.user.name }}"
-        password: "{{ merged_vars.factorio.user.pw  }}"
+        name: "{{ factorio.user.name }}"
+        password: "{{ factorio.user.pw  }}"
         comment: Factorio runner
         groups:
         - users
@@ -15,20 +15,20 @@
     file:
       dest: "{{ item }}"
       state: directory
-      owner: "{{ merged_vars.factorio.user.name }}"
-      group: "{{ merged_vars.factorio.user.name }}"
+      owner: "{{ factorio.user.name }}"
+      group: "{{ factorio.user.name }}"
       mode: 0755
     loop:
-      - "{{ merged_vars.factorio.paths.home }}"
-      - "{{ merged_vars.factorio.paths.home }}/mods"
-      - "{{ merged_vars.factorio.paths.home }}/saves"
+      - "{{ factorio.paths.home }}"
+      - "{{ factorio.paths.home }}/mods"
+      - "{{ factorio.paths.home }}/saves"
 
   - name: Скачиваем и распаковываем factorio
     unarchive:
-      src: "https://www.factorio.com/get-download/{{ merged_vars.factorio.version }}/headless/linux64"
-      dest: "{{ merged_vars.factorio.paths.home }}/../"
-      owner: "{{ merged_vars.factorio.user.name }}"
-      group: "{{ merged_vars.factorio.user.name }}"
+      src: "https://www.factorio.com/get-download/{{ factorio.version }}/headless/linux64"
+      dest: "{{ factorio.paths.home }}/../"
+      owner: "{{ factorio.user.name }}"
+      group: "{{ factorio.user.name }}"
       validate_certs: no
       remote_src: yes
     notify:
@@ -40,8 +40,8 @@
     template:
       src: "{{ item }}.j2"
       dest: "/{{ item }}"
-      owner: "{{ merged_vars.factorio.user.name }}"
-      group: "{{ merged_vars.factorio.user.name }}"
+      owner: "{{ factorio.user.name }}"
+      group: "{{ factorio.user.name }}"
       mode: 0644
     loop:
     - opt/factorio/server-settings.json
@@ -53,8 +53,8 @@
     template:
       src: opt/factorio/start.sh.j2
       dest: /opt/factorio/start.sh
-      owner: "{{ merged_vars.factorio.user.name }}"
-      group: "{{ merged_vars.factorio.user.name }}"
+      owner: "{{ factorio.user.name }}"
+      group: "{{ factorio.user.name }}"
       mode: 0755
     notify:
     - restart factorio
@@ -65,7 +65,7 @@
       tasks_from: mod_install
     vars:
       mod: "{{ item }}"
-    loop: "{{ merged_vars.factorio.mods }}"
+    loop: "{{ factorio.mods }}"
     tags:
     - mods
 
@@ -73,7 +73,7 @@
     template:
       src: opt/factorio/mods/mod-list.json.j2
       dest: /opt/factorio/mods/mod-list.json
-      owner: "{{ merged_vars.factorio.user.name }}"
+      owner: "{{ factorio.user.name }}"
       group: users
       mode: 0644
     notify:
@@ -88,14 +88,14 @@
         name: factorio
         description: Factorio server daemon
         restart_sec: 16s
-        working_dir: "{{ merged_vars.factorio.paths.home }}"
-        exec_start: "{{ merged_vars.factorio.paths.home }}/start.sh"
-        user: "{{ merged_vars.factorio.user.name }}"
-        group: "{{ merged_vars.factorio.user.name }}"
+        working_dir: "{{ factorio.paths.home }}"
+        exec_start: "{{ factorio.paths.home }}/start.sh"
+        user: "{{ factorio.user.name }}"
+        group: "{{ factorio.user.name }}"
         after:
         - network-online.target
         wanted_by:
         - multi-user.target
-        on_changed: "{{ 'restarted' if merged_vars.factorio.active else 'noop' }}"
-        state: "{{ 'started' if merged_vars.factorio.active else 'stopped' }}"
-        enabled: "{{ merged_vars.factorio.active }}"
+        on_changed: "{{ 'restarted' if factorio.active else 'noop' }}"
+        state: "{{ 'started' if factorio.active else 'stopped' }}"
+        enabled: "{{ factorio.active }}"

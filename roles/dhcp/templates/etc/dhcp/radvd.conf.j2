@@ -5,9 +5,9 @@ interface {{ interface.ifname }}
     AdvSendAdvert on;
     AdvManagedFlag on;
     AdvOtherConfigFlag on;
-    AdvHomeAgentFlag on;
-    MinRtrAdvInterval {{ radvd.interval }};
-    MaxRtrAdvInterval {{ radvd.interval * 10 }};
+    AdvHomeAgentFlag off;
+    MinRtrAdvInterval {{ radvd_interval }};
+    MaxRtrAdvInterval {{ radvd_interval * 10 }};
 
     prefix {{ networks.home.delegated.full }}
     {
@@ -15,6 +15,12 @@ interface {{ interface.ifname }}
         AdvAutonomous off;
         AdvRouterAddr on;
     };
+    {# prefix {{ networks.home.slaac.full }}
+    {
+        AdvOnLink on;
+        AdvAutonomous on;
+        AdvRouterAddr on;
+    }; #}
     {#
     # AdvRASrcAddress
     # {

@@ -1,0 +1,16 @@
+---
+  network:
+  - name: "Internal"
+    mac: "3c:38:24:81:f6:28"
+    # duid: "00:01:00:01:22:5d:50:dc:84:8e:0c:61:6f:c6"
+    ip: "{{ query('ship', 'ip', 30) | first }}"
+    network: 'home'
+    type: 'dhcp'
+
+  firewall:
+    host_to_internet:
+      services:
+      - sber_online
+      - vpn_super
+      - tinyprint
+      - dns

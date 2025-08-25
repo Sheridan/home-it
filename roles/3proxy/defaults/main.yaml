@@ -1,7 +1,5 @@
 ---
-  three_proxy:
-    ports:
-      http: 3128
-      socks: 8080
-    user: proxy3
-    users: "{{ proxy3_secrets.users }}"
+  three_proxy_user: proxy3
+  three_proxy_http_port: 3128
+  three_proxy_socks_port: 8080
+  three_proxy_users: "{{ proxy3_secrets.users }}"

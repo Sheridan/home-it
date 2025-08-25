@@ -1,14 +1,12 @@
 ---
-  grub2:
-    video:
-      vga: '0x31a'
-      resolution: '1280x1024'
-      colorbits: '16'
-      uefi: yes
-    kernel:
-      options:
-      - 'mitigations=off'
-    boot:
-      #device: "/dev/sda1"
-      device: "LABEL=efi-boot"
-      fs: "btrfs"
+  grub2_video_vga: "0x31a"
+  grub2_video_resolution: "1280x1024"
+  grub2_video_colorbits: "16"
+  grub2_video_uefi: yes
+
+  grub2_kernel_options:
+  - "mitigations=off"
+
+  # grub2_boot_device: "/dev/sda1"
+  grub2_boot_device: "LABEL=efi-boot"
+  grub2_boot_fs: "btrfs"

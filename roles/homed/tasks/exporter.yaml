@@ -1,0 +1,40 @@
+---
+  - include_role:
+      name: homed
+      tasks_from: install_package
+    vars:
+      package:
+        url: "https://github.com/Sheridan/homed_exporter/releases/download/{{ homed_exporter_version }}/homed_exporter_{{ homed_exporter_version }}_aarch64.deb"
+        name: "homed_exporter_{{ homed_exporter_version }}_aarch64.deb"
+        notify:
+        - restart homed_exporter
+    tags:
+    - packages
+
+  - name: Install homed_exporter configuration
+    template:
+      src: etc/homed/homed_exporter.json.j2
+      dest: "{{ homed_conf_root }}/homed_exporter.json"
+    notify:
+    - restart homed_exporter
+
+  - name: Install HOMEd exporter service
+    import_role:
+      name: systemd_unit
+      tasks_from: setup_service
+    vars:
+      service:
+        name: homed_exporter
+        description: The IoT HOMEd Exporter daemon
+        exec_start: "/usr/bin/homed_exporter --config {{ homed_conf_root }}/homed_exporter.json"
+        user: "{{ homed_user }}"
+        group: "{{ homed_user }}"
+        kill_signal: SIGTERM
+        restart: on-failure
+        after:
+        - network-online.target
+        wanted_by:
+        - multi-user.target
+        on_changed: reloaded
+        state: started
+        enabled: yes

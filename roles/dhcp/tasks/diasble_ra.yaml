@@ -1,0 +1,15 @@
+---
+  - name: Настройка sysctl
+    sysctl:
+      name: "{{ item.key }}"
+      value: "{{ item.value }}"
+      state: "{{ item.state|default('present') }}"
+      sysctl_set: yes
+      reload: yes
+    with_items:
+    - { key: net.ipv6.conf.all.accept_ra, value: 0 }
+    - { key: net.ipv6.conf.default.accept_ra, value: 0 }
+    - { key: net.ipv6.conf.lo.accept_ra, value: 0 }
+    - { key: net.ipv6.conf.all.autoconf, value: 0 }
+    - { key: net.ipv6.conf.default.autoconf, value: 0 }
+    - { key: net.ipv6.conf.lo.autoconf, value: 0 }

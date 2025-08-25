@@ -12,3 +12,20 @@
   tasks:
   - debug: msg="got it"
     when: tf
+
+- hosts: localhost
+  remote_user: root
+  tasks:
+  - name: Print all available facts
+    debug:
+      msg: "{{ ansible_facts }}"
+
+  - name: Configuring yum
+    template:
+      src: "etc/yum.repos.d/{{ item }}.j2"
+      dest: "/etc/yum.repos.d/{{ item }}"
+    loop:
+    - RedOS8-Base-local.repo
+    - RedOS8-Update-local.repo
+    - RedOS-Base.repo
+    - RedOS-Updates.repo
