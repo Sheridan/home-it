@@ -39,7 +39,7 @@ class VarsModule(BaseVarsPlugin):
                 data[entity.get_name()] = self._get_entity_variables(entity, loader)
         # self._display.vvvv('Prepared data: %s' % (data, ))
         self._display.vvvv('Group all data: %s' % (DATA['group']['all'] if 'all' in DATA['group'] else {}, ))
-        return {VARIABLE_NAME: data}
+        return {VARIABLE_NAME: data or {}}
 
     def _check_entity(self, entity):
         if isinstance(entity, (Host, Group)):

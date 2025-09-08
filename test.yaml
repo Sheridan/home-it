@@ -1,31 +1,19 @@
 ---
-# - hosts: workstations_linux,gate,without_internet
 - hosts: spc
   remote_user: root
-  # gather_facts: False
-  # vars_files:
-  # - vars/vault.yaml
-  # - vars/network.yaml
-  vars:
-    tf: no
 
   tasks:
-  - debug: msg="got it"
-    when: tf
+  - debug:
+      msg: "debug"
 
-- hosts: localhost
-  remote_user: root
-  tasks:
-  - name: Print all available facts
-    debug:
-      msg: "{{ ansible_facts }}"
-
-  - name: Configuring yum
-    template:
-      src: "etc/yum.repos.d/{{ item }}.j2"
-      dest: "/etc/yum.repos.d/{{ item }}"
-    loop:
-    - RedOS8-Base-local.repo
-    - RedOS8-Update-local.repo
-    - RedOS-Base.repo
-    - RedOS-Updates.repo
+  - name: portage test
+    gentoo_portage:
+      name: sys-process/htop
+      state: present
+      use:
+        enabled:
+        - unicode
+        - lm-sensors
+        - hwloc
+        disabled:
+        - debug

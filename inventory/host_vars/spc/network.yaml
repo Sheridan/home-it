@@ -8,3 +8,5 @@
     ip: "{{ query('ship', 'ip', 10) | first }}"
     network: 'home'
     type: 'dhcp'
+
+  # ansible_host: "{{ network.ip.ipv4.ip }}"
