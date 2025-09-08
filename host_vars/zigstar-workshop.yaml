@@ -1,0 +1,9 @@
+---
+  network:
+  - name: "Internal"
+    mac: "a0:a3:b3:21:9c:eb"
+    ip: "{{ query('ship', 'ip', 68) | first }}"
+    network: 'home'
+    type: 'dhcp'
+
+# Libhof IM-215

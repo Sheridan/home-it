@@ -5,7 +5,7 @@ interface {{ interface.ifname }}
     AdvSendAdvert on;
     AdvManagedFlag on;
     AdvOtherConfigFlag on;
-    AdvHomeAgentFlag on;
+    AdvHomeAgentFlag off;
     MinRtrAdvInterval {{ radvd.interval }};
     MaxRtrAdvInterval {{ radvd.interval * 10 }};
 
